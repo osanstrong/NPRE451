@@ -1,0 +1,16 @@
+.vscode/**
+**.aux**
+**.bbl
+**.bcf
+**.log
+**.run.xml
+**.blg
+**.out
+**.toc
+sty/ieeetran.bst
+**:mshield
+**:Zone.Identifier
+**Thumbs.db
+**.Chn
+Makefile
+__pycache__/**

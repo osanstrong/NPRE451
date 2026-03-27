@@ -1,0 +1,466 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Lab 6: Inorganic Scintillation Detectors}
+\author{Owen Strong \\
+\itshape Prof.: Angela DiFulvio\\
+\itshape TA: Kholod Mahmoud \\
+\itshape TA: Shaffer Bauer \\
+\itshape TA: Justin Jia \\
+}
+\date{March 14, 2026}
+
+\usepackage[
+    style=ieee
+]{biblatex}
+\bibliography{refs.bib}
+
+\usepackage[letterpaper, margin=1in]{geometry}
+\usepackage{xspace}
+
+% Figure Macros
+\newcommand{\figwidth}{0.75\linewidth}
+\newcommand{\figref}[1]{Fig.~\ref{#1}}
+\newcommand{\defplotW}[3]{
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[width=#3\linewidth]{fig/#1.png}
+        \caption{#2}
+        \newcommand{\tmplabel}{#1}
+        \label{\tmplabel}
+    \end{figure}
+}
+\newcommand{\defplot}[2]{\defplotW{#1}{#2}{0.75}}
+
+% Common Macros
+\newcommand{\na}{\xspace$N/A$\xspace}
+\newcommand{\sref}[1]{$^{\ref{#1}}$}
+\newcommand{\micCi}{\xspace$\mathrm{\mu Ci}$\xspace}
+
+\newcommand{\CsSrc}{\xspace$\mathrm{^{137}Cs}$\xspace}
+\newcommand{\NaSrc}{\xspace$\mathrm{^{22}Na}$\xspace}
+\newcommand{\MnSrc}{\xspace$\mathrm{^{54}Mn}$\xspace}
+\newcommand{\CoSrc}{\xspace$\mathrm{^{60}Co}$\xspace}
+\newcommand{\BaSrc}{\xspace$\mathrm{^{133}Ba}$\xspace}
+
+\usepackage{placeins} % FloatBarrier
+\usepackage{amsmath} % align
+\usepackage{xcolor}
+\usepackage[colorlinks=true, citecolor=violet, linkcolor=violet, urlcolor=violet]{hyperref}
+\usepackage{enumitem}
+
+\begin{document}
+\pagenumbering{gobble}
+\maketitle
+\pagebreak
+{\hypersetup{linkcolor=black}\tableofcontents}
+\pagebreak
+\pagenumbering{arabic}
+\begin{abstract}
+    Gamma radiation, having high, energy dependent penetration in materials, is crucial to understand for radiation safetry, and engineering with radiation sources in general.
+    In this laboratory, we use a NaI(Tl) inorganic scintillator to record spectra of several sources and attenuated through several materials, to characterize features in known gamma spectra and use them to calibrate a detector, to identify unknown radiation sources, qualify the resolution of the detector, and measure linear attenuation through different materials.
+    We measured gamma spectra using the inorganic scintillator of background radiation, \NaSrc, \MnSrc, \CoSrc, \BaSrc, \CsSrc sources, and an unknown source to calibrate the detector, characterize detector energy-dependent resolution, and identify isotopes in the unknown source and background.
+    We measured the gamma spectra of the \CoSrc as attenuated by air and varying thicknesses of aluminum, iron, and lead to estimate attenuation coefficients through these materials.
+    We found a calibration curve between channel number $n_c$ and energy $E$ of $E\approx 7.686\mathrm{\frac{keV}{bin}} - 45.651~\mathrm{keV}$, a relationship between energy and normalized spectrum resolution with log-linear slope -0.528, close to the -0.5 expected using Poisson statistics, and identified \CsSrc in the unknown sample and both $^{40}$K and the $^{222}$Rn decay product $^{214}$Bi in background radiation.
+    We calculated linear attenuation coefficients for 1332.5~keV gamma rays of $0.1498~\mathrm{cm^{-1}}$ in aluminum, $0.5814~\mathrm{cm^{-1}}$ in iron, and $0.6055~\mathrm{cm^{-1}}$ in lead, yielding mass attenuation coefficients of $0.0555~\mathrm{cm^2g^{-1}}$, $0.0738~\mathrm{cm^2g^{-1}}$, and $0.0566~\mathrm{cm^2g^{-1}}$, respectively, compared to NIST values of $0.0533~\mathrm{cm^2g^{-1}}$, $0.0520~\mathrm{cm^2g^{-1}}$, and $0.0566~\mathrm{cm^2g^{-1}}$ for this energy.
+    The results demonstrate the power of gamma spectroscopy to identify unknown radioisotopes from a gamma spectrum, highlight the nuance of calibrating gamma spectrometers and correcting for predicted isotope decay, validate the inverse square relationship between energy and normalized resolution predicted for inorganic scintillators, and illustrate the different attenuation of gamma rays in the tested metals, and may be of use to those either seeking to use gamma spectroscopy to identify radioisotopes, or seeking to compare different materials to shield against gamma radiation.
+\end{abstract}
+
+\section{Introduction and Background}
+Gamma radiation, composed of high energy photons, is a common source of radiation from all manner of radioactive sources, and is important to understand for radiation engineering in general, and especially radiation safety, given its ability to penetrate through materials which might normally protect well from other forms of radiation like alpha and beta particles.\cite{tsoulfanidis_measurement_2015}\\
+
+The interaction of gamma rays with matter is highly dependent upon the energy of gamma rays, which can be characterized using an energy-dependent detector like a scintillator.
+In this laboratory, we use a NaI(Tl) inorganic scintillation detector, alongside a computer-based multichannel analyzer to examine the gamma spectra for several sources, with the aim of calibrating the detector response to different energies, identifying unknown gamma-emitting isotopes, generally characterizing photon-matter interactions, and qualifying the energy resolution of the detector.
+We additionally measure the attenuation of a known source through variable thicknesses of three materials to characterize the linear attenuation of these materials for a specific energy of gamma radiation.
+
+\subsection{Gamma Spectroscopy}
+Since each isotope's gamma decay modes consistently produce gamma radiation of certain energies, the combined energy responses of a detector in response to a given isotope can be used as a ``signature'' for that isotope.
+This signature spectrum reflects the various, photoelectric, Compton scattering, and pair-producing gamma interactions in the detector.
+The specific combinations depend on each emission energy and the atomic mass of the detector material, as highlighted in \figref{gamma_modes}.\\
+
+\defplot{gamma_modes}{The relative importance of the three primary modes of gamma interaction: the photoelectric effect dominates for lower energies and high-z materials, pair production at higher energies and high-z materials, and the Compton effect in any combination, but especially intermediate energies and lower-z materials. Figure sourced from lab manual.\cite{npre_lab_6_manual_2025}}
+
+In the photoelectric effect, dominant in high-z materials for lower energy gamma rays, the photon overcomes the binding energy of the electron and imparts its remaining energy into the newly freed particle as kinetic energy.
+Since electron binding energy is typically negligible compared to that of the gamma ray, this results in a detector peak at approximately the original energy of the impinging gamma ray.\\
+
+In the Compton effect, the gamma ray elastically scatters off of the dislodged electron, imparting from a range of energies depending on angle, which can be found using relativistic kinematics.
+This plateau-like distribution of energies ranges from a minimum of zero to the Compton edge, the maximum energy such a Compton electron can have\cite{npre_lab_6_manual_2025}:
+\begin{equation}\label{eq:comp-edge}
+    E_{Compton, max} = E - \frac{E}{1+\frac{2E}{m_ec^2}}
+\end{equation}
+where $E$ is the original gamma energy, $m_e$ the rest mass of an electron and $c$ the speed of light.\\
+
+In addition to this distribution of Compton energies, a ``backscatter'' peak may often be visible, corresponding to the minimum energy of the scattered photon\cite{npre_lab_6_manual_2025}:
+\begin{equation}
+    \label{eq:backscat}
+    E_{backscatter} = \frac{E}{1+\frac{2E}{m_ec^2}}
+\end{equation}
+which arises from these recoil electrons leaving the crystal and being absorbed by the detector casing.\\
+
+Finally, for gamma rays with energy above 1022~keV (twice the rest mass energy of an electron $m_ec^2$), pair production can occur, with the photon spontaneously converting into an electron-positron pair in the electric field near a nucleus.
+Of the photon energy, 511~keV each are converted into the rest mass each of the electron and positron, with the remainder being split between the two as kinetic energy.
+These particles slow down and interact (or in the case of the positron, annihilate) with the material, and the annihilation produces a pair of 511~keV gamma rays which each either escape or deposit their own energy into the crystal.
+If both deposit their energy, then all the produced energy results in a signal equivalent to the full energy $E$, but if one annihilation gamma ray escapes, the signal contributes to a ``single-escape'' peak with that much less energy\cite{npre_lab_6_manual_2025}:
+\begin{equation}
+    \label{eq:sing-esc}
+    E_{single~escape} = E - m_ec^2
+\end{equation}
+and likewise a ``double-escape'' peak may be found as a result of events where both annihilation gamma rays escape\cite{npre_lab_6_manual_2025}:
+\begin{equation}
+    \label{eq:doub-esc}
+    E_{double~escape} = E - 2m_ec^2
+\end{equation}
+In addition to these gamma decay interactions, other radiation modes like positron decay (depositing a single annihilation peak of 511~keV\cite{noauthor_sodium_nodate}) can contribute to rich decay spectra for many isotopes, allowing the identification of radionuclides in a sample from its gamma spectrum and the spectrum features expected from known radioisotopes.
+Should this annihilation event coincide with a gamma emission event, a sum peak may also be observed:
+\begin{equation}
+    \label{eq:sum}
+    E_{sum} = E + m_ec^2
+\end{equation}
+\subsubsection{Calibration}
+A multichannel analyzer interprets events from a variable enrgy detector like a spectroscope and sorts them into different ranges of energy, or ``bins''. The exact relation between bin number and energy can vary from setup to setup, and must be calibrated using known radioisotope sources with clearly identifiable spectrum features.
+In this laboratory, a linear relation between event energy and channel number will be assumed, and several known features of various radioisotope spectra used to estimate this linear relationship using a least squares linear regression.
+\subsubsection{Resolution}
+Rather than each event resulting in a precisely consistent energy response from the detector, a spread distribution of energy will be observed \emph{peaking} at the centroid energy $E_0$.
+The shape and especially width of these peaks determines the useful resolution of the detector.
+This is typically normalized and measured as $R$, for a peak with full width at half maximum (FWHM) of $FWHM$ centered around centroid energy $E_0$\cite{npre_lab_6_manual_2025}:\\
+\begin{equation}\label{eq:resol}
+    R=\frac{FWHM}{E_0}
+\end{equation}
+
+If Poisson statistics may be assumed for the number of signal carrying events created, and sufficiently many of these events are created, the gamma ray peak shapes should have an approximately Gaussian form for a peak with total integral intensity (i.e. area) $A$ and standard deviation $\sigma$\cite{npre_lab_6_manual_2025}:
+\begin{equation}
+    G(E) = \frac{A}{\sigma\sqrt{2\pi}}exp\left(-\frac{(E-E_0)^2}{2\sigma^2}\right)
+\end{equation}
+where $G(E)$ describes the intensity contributed from the peak around centroid $E_0$ for an energy $E$.\\
+
+Solving for half maximum intensity of the Gaussian distribution, $FWHM=2\sqrt{2\ln(2)}\sigma$, and applying Poisson counting statistics, a proportional relationship between resolution and peak energy is expected\cite{npre_lab_6_manual_2025}:
+\begin{equation}
+    \label{eq:res-prop}
+    R(E) = 2K\sqrt{\frac{2\ln(2)}{E}}
+\end{equation}
+where $K$ is a proportional constant.
+This can be converted to a linear relationship by taking the natural logarithm of both sides:
+\begin{align*}
+    \ln(R(E)) &= \ln\left[2K\sqrt{\frac{2\ln(2)}{E}}\right]\\
+    &= \ln\left[2K\left({\frac{2\ln(2)}{E}}\right)^{+0.5}\right]\\
+    &= \ln(2K)+0.5\ln\left[\left({\frac{2\ln(2)}{E}}\right)\right]\\
+    &= \ln(2K)+0.5\left[\ln(2\ln(2))-\ln(E)\right]\\
+\end{align*}
+\begin{equation}\label{eq:res-log}
+    \ln(R(E)) = \ln(2K)+0.5\ln(2\ln(2))-0.5\ln(E)
+\end{equation}
+which means that, for the natural logarithms of the resolutions and energies of a set of peaks, a linear relationship can be expected with a slope of -0.5.\\
+
+\subsubsection{Decay Correction}
+Often, measurements must be taken some time after the moment of interest, such as measuring activities of radiopharmaceuticals in an animal from an autopsy.
+For best practice, a count rate measurement should be corrected for the decay of that isotope in the time elapsed before measurement, to estimate the activity at the original time of interest.\\
+
+This corrected activity $A_0$ can easily be found from the measured activity $A(t)$ using exponential decay law\cite{tsoulfanidis_measurement_2015}:
+\begin{equation}
+    A(t)=A_0e^{-\lambda t}
+\end{equation}
+\begin{equation}\label{eq:dec_cor}
+    A_0=A(t)e^{\lambda t}
+\end{equation}
+where $t$ is the elapsed time, and $\lambda$ the known decay constant of the isotope.
+Since decay properties are usually recorded as half life $t_{\frac{1}{2}}$, this must first be converted to an activity coefficient\cite{tsoulfanidis_measurement_2015}:
+\begin{equation}
+    \lambda = \frac{ln(2)}{t_{\frac{1}{2}}}
+\end{equation}
+
+\subsection{Gamma Attenuation}
+For each mode of interaction with material, a gamma ray has some exponential probability of traversing a distance $x$ in that material: $\exp(-\tau x)$ for the photoelectric effect, $\exp(-\sigma x)$ for Compton scattering, and $\exp(-kx)$ for the photoelectric effect\cite{npre_lab_6_manual_2025}, where $\tau$, $\sigma$, and $k$ are the photoelectric, Compton, and pair production linear attenuation coefficients, respectively.
+This results in a residual intensity $I$ from the initial intensity $I_0$ based on the combination of the three\cite{npre_lab_6_manual_2025}:
+\begin{equation}
+    \label{eq:tot-atten}
+    I=I_0e^{-\tau x}e^{-\sigma x}E^{-kx}=I_0e^{-\mu x}
+\end{equation}
+where $\mu$ is the \emph{total} linear attenuation coefficient.\\
+
+Based on this exponential relationship, we would expect the logarithm of the intensity to follow a linear relationship $y~mx+b$ with distance, where the negative slope $-m$ corresponds to the linear attenuation coefficient, and the exponential of the intercept $e^b$ to the initial intensity $I_0$.\\ 
+
+To account for variations in material density and state, databases often instead record values for mass attenuation coefficients $\mu\rho^{-1}$\cite{noauthor_nist_nodate}, with units of area per unit mass.\\
+
+To experimentally measure attenuation, it is important to properly collimate the incoming beam of gamma rays, to minimize the detection of gamma rays which scatter into a different direction in the material, such as by placing the source behind lead bricks with thin pinholes facing the detector.\\
+\section{Experimental Procedure}\label{sec:methods}
+\FloatBarrier
+Two experiments were conducted involving a NaI(Tl) inorganic scintillator; an integrated photomultiplier tube (PMT), bias supply, preamplifier, and multichannel analyzer (MCA); a USB-B cable; and a computer.
+For both experiments, we constructed a system similarly to described in \figref{Lab6_diag} and shown in \figref{Lab6_setup} to measure gamma spectra with the inorganic scintillator.\\
+In experiment~1, we used this setup to measure the gamma spectra of background radiation; \NaSrc, \MnSrc, \CoSrc, \BaSrc, and \CsSrc sources; and an unknown source to identify.
+In experiment~2, we used the setup to measure the gamma spectra of a \CoSrc source held a constant distance away from the detector, attenuated by different thicknesses of intermediately placed aluminum, iron, and lead blocks, to characterize gamma attenuation in these materials.
+Further details on the specific devices and materials used may be found in Appendix~\ref{app:equip}.\\
+
+\defplot{Lab6_diag}{A diagram of the system constructed for both experiments in this laboratory. Figure sourced from lab manual\cite{npre_lab_6_manual_2025}. Unlike in this diagram, an Ortec digiBASE integrated ``All-in-One'' device was used in lieu of discrete PMT, bias supply, preamplifier, amplifier, or MCA.}
+\defplot{Lab6_setup}{The experimental setup used in this laboratory.}
+
+To perform a spectrum measurement for a given target arrangement, we opened the program Maestro in the computer without calibrating it, set the target time, and recorded the spectrum over that set time, marking regions of interest to analyze peak information such as centroid, integral intensity, intensity uncertainty, and FWHM in Maestro.
+As Maestro does not directly provide uncertainty of its peak centroid estimates, we used the calibrated energy per bin width as the uncertainty of the centroid energy (i.e., assuming the estimate is within the span of a channel width on either side).\\
+
+\FloatBarrier
+\subsection{Experiment 1: Collection of Spectra}
+In this experiment, we performed 5-minute spectra measurements, as described above, of 2017-dated 1.0~\micCi sources of \NaSrc, \MnSrc, \CoSrc, \BaSrc, and \CsSrc, and one unknown radioisotope.
+For each source, we taped the source to the center of the scintillator's face, to maximize solid angle.
+In addition, we performed one 15-minute spectrum measurement with no source attached to the detector, to measure background radiation.
+We scaled all spectra by time to show intensities as count rates, then subtracted background measurement from each source measurement to compare the contributions from each individual non-background source.\\
+
+Using these, we performed a calibration of spectrum bins to energy, to estimate the radioisotope composition of the unknown and background sources.
+We particularly focused on expected spectrum peaks at 1332, 1173, 835, 662, 382, 356, 302, and 276 keV, comparing these to calibrated spectra observations.
+
+\subsection{Experiment 2: Gamma Attenuation}
+In this experiment, we performed 5-minute measurements of a \CoSrc source held a constant distance away from the detector, attenuated by iron, aluminum, and lead in different thickness.
+Specifically, we measured one spectrum with only air between the source and the detector, and four measurements each for each material, with one, two, three and four plates of each material, for a total of 13 spectra measurements forming series of spectra attenuated by 5 distances in each material (including 0). 
+We used plates of iron 12.5~mm thick each, aluminum 25.4~mm thick each, and lead 7.2~mm thick each, for maximum attenuation thicknesses of 50~mm, 101.6~mm, and 28.8~mm, respectively.\\
+
+Using these measurements, we estimated linear attenuation coefficients of a chosen peak energy 1332.5~keV of gamma rays in each material.
+
+\FloatBarrier
+\section{Experimental Results}\label{sec:results}
+In this section, we detail the results of both experiments.
+\subsection{Experiment 1: Collection of Spectra}
+\FloatBarrier
+
+% Calibration coeff: 7.258585555427746+-0.1480902921667787 keV/bin
+% Actually 8.081042927973467+-0.4010545838324704 keV/bin
+
+% Using the highest full-energy photopeak identifiable on each known spectrum, we found a mean calibration coefficient of 8.081 keV per bin, with standard deviation 0.401 keV per bin.\footnote{This is excluding a blank region of exactly 10 bins observed at the start of every spectrum.}\\
+Taking identifiable peaks on the known spectra, and comparing them to expected energy values, we applied a linear regression of expected energy and channel number, which can be seen in \figref{cal_reg}.
+We found a calibration coefficient $m$ of 7.686~keV per bin, and an offset $b$ of -45.651~keV, yielding the following relationship between channel number $n_c$ and energy $E$:\\  
+\begin{equation}
+    \label{eq:calib}
+    E\approx mn_c + b \approx 7.686\mathrm{\frac{keV}{bin}} - 45.651~\mathrm{keV}
+\end{equation}
+
+\defplot{cal_reg}{The peaks identified on measured spectra, compared to their theoretical energy values.}
+
+Using this calibration coefficient, we observed several predicted features in each spectrum.
+\figref{spec_22Na} compares the observed spectrum, with background counds subtracted, of the \NaSrc sample to its expected features, \figref{spec_54Mn} for \MnSrc, \figref{spec_60Co} for \CoSrc, \figref{spec_133Ba} for \BaSrc, and \figref{spec_137Cs} for \CsSrc.
+The spectrum of the unknown sample may be seen in \figref{spec_unknown}, and the background in \figref{spec_bg}.\\
+
+\defplot{spec_22Na}{The gamma spectrum observed of the known \NaSrc source, with predicted features compared to where they may approximately be observed in the spectrum.}
+\defplot{spec_54Mn}{The gamma spectrum observed of the known \MnSrc source, with predicted features compared to where they may approximately be observed in the spectrum.}
+\defplotW{spec_60Co}{The gamma spectrum observed of the known \CoSrc source, with predicted features compared to where they may approximately be observed in the spectrum.}{0.8}
+\defplot{spec_133Ba}{The gamma spectrum observed of the known \BaSrc source, with predicted features compared to where they may approximately be observed in the spectrum.}
+\defplot{spec_137Cs}{The gamma spectrum observed of the known \CsSrc source, with predicted features compared to where they may approximately be observed in the spectrum.}
+\defplot{spec_unknown}{The gamma spectrum observed of the unknown source, with a noted photopeak and predicted secondary features from that photopeak.}
+\defplot{spec_bg}{The gamma spectrum observed of background radiation, with identified peaks.}
+
+\FloatBarrier
+The properties of peaks corresponding to expected photopeaks for each isotope are compared in Table~\ref{tab:peaks}.
+
+
+\begin{table}
+    \centering
+    \caption{Expected $E$, and observed centroid, FWHM, and $\sigma$, for expected peaks. For peaks which could not be successfully resolved in experiment, ``\na'' is listed for impacted values.}
+    \label{tab:peaks}
+    \begin{tabular}{cc|ccc}
+Isotope & $E$~keV & Centroid (keV) & FWHM (keV) & $\sigma$~(keV) \\
+% \CsSrc & 661.657~keV & $663.53\pm8.08$~keV & 64.08~keV & 27.21 \\
+% \NaSrc & 1274.5~keV & $1316.32\pm8.08$~keV & 90.99~keV & 38.64 \\
+% \CoSrc & 1173.2~keV & $1197.53\pm8.08$~keV & 75.40~keV & 32.02 \\
+% \CoSrc & 1332.5~keV & $1371.11\pm8.08$~keV & 78.95~keV & 33.53 \\
+% \MnSrc & 834.8~keV & $846.57\pm8.08$~keV & 64.16~keV & 27.25 \\
+% \BaSrc & 356.0~keV & $331.00\pm8.08$~keV & 47.27~keV & 20.08 \\
+% % \BaSrc & 30.85~keV & $28.36\pm8.08$~keV & 21.09~keV & 8.96 \\
+% % \BaSrc & 81.0~keV & $63.84\pm8.08$~keV & 32.32~keV & 13.73 \\
+% \BaSrc & 276~keV & \na & \na & \na \\
+% \BaSrc & 302~keV & $253.99\pm8.08$~keV & 25.54~keV & 10.84 \\
+\CsSrc & 661.657~keV & $662.28\pm7.69$~keV & 60.95~keV & 25.88 \\
+\NaSrc & 1274.5~keV & $1283.14\pm7.69$~keV & 86.54~keV & 36.75 \\
+\CoSrc & 1173.2~keV & $1170.16\pm7.69$~keV & 71.71~keV & 30.45 \\
+\CoSrc & 1332.5~keV & $1335.25\pm7.69$~keV & 75.09~keV & 31.89 \\
+\MnSrc & 834.8~keV & $836.37\pm7.69$~keV & 61.02~keV & 25.91 \\
+\BaSrc & 356.0~keV & $346.02\pm7.69$~keV & 44.96~keV & 19.09 \\
+\BaSrc & 276~keV & $272.77\pm7.69$~keV & 20.06~keV & 8.52 \\
+\BaSrc & 302~keV & $272.77\pm7.69$~keV & 30.74~keV & 13.06 \\
+\BaSrc & 382~keV & \na & \na & \na \\
+% Unknown & 661~keV & $655.53\pm8.08$~keV & 62.22~keV & 26.42 \\
+Unknown & \na & $654.67\pm7.69$~keV & 13.53~keV & 5.75 \\
+        
+    \end{tabular}
+\end{table}
+
+We could not identify a feasible peak for the predicted \BaSrc 382~keV peak, as the nearest peak was too far absorbed by the nearby 356~keV peak to find useful data, resulting in a non-physical negative intensity seen in \figref{miss_382}.
+
+\defplot{miss_382}{The nearest spectrum peak in the \BaSrc spectrum to an expected 382~keV peak. Note how Gaussian peak analysis yields a non-physical negative intensity, not allowing for meaningful matching of this peak on the spectrum.}
+
+
+\FloatBarrier
+
+Using tabulated half lives of each isotope\cite{noauthor_livechart_nodate} (30.17~years for \CsSrc, 2.6~years for \NaSrc, 312~days for \MnSrc, 5.27~years for \CoSrc, and 10.5~years for \BaSrc), we estimated the decay corrected count rates (assuming constant detector efficiency and layout) at each emission level, and plot these compared to peak energy in \figref{I_v_E}.\\
+
+\defplot{I_v_E}{The integrated intensity of observed photopeaks, decay corrected to original activity in 2017, compared to the respective energy of each peak.}
+
+\FloatBarrier
+Using Eq.~\ref{eq:resol} and a linear least squares regression, we compared the relationship between peak centroid energy and normalized peak resolution for the observed photopeaks, which can be viewed in \figref{r_v_lnE}.
+\defplot{r_v_lnE}{The normalized resolution $R$ of each peak, compared to the logarithm of energy $ln(E)$.}
+
+
+\FloatBarrier
+\subsection{Experiment 2: Attenuated Spectra}
+We measured the intensity of the 1332.5~keV peak in spectra taken of the \CoSrc source attenuated through different thicknesses of iron, aluminum, and lead, as well as for the bare source.
+Using these intensities after attenuation through different thicknesses of each material, we applied a weighted least squares regression\cite{noauthor_131_nodate} (weighted by variance, to prioritize more certain measurements) of the natural logarithm of peak intensity over attenuation distance to fit an exponential attenuation model to each material's observations.
+\figref{att_Al} shows the observed gamma attenuation in aluminum, \figref{att_Fe} in iron, and \figref{att_Pb} in lead.\\
+
+\defplot{att_Al}{Intensity of the 1332.5~keV peak in spectra of the \CoSrc source after attenuation through different thicknesses of aluminum.}
+\defplot{att_Fe}{Intensity of the 1332.5~keV peak in spectra of the \CoSrc source after attenuation through different thicknesses of iron.}
+\defplot{att_Pb}{Intensity of the 1332.5~keV peak in spectra of the \CoSrc source after attenuation through different thicknesses of lead.}
+
+\FloatBarrier
+Using the exponential attenuation models in Figs.~\ref{att_Al} through \ref{att_Pb}, we estimated the linear attenuation coefficients $\mu$ of 1332.5~keV gamma rays in each material.
+Using typical values of density $\rho$ for each material from the National Institute of Standards and Technology (NIST)\cite{noauthor_compositions_nodate}, we then estimated the mass attenuation coefficients $\mu\rho^{-1}$ of each material at this energy, and compared to mass attenuation coefficients interpolated from tabulated NIST data\cite{noauthor_nist_nodate}.
+These values may be found in Table~\ref{tab:atten}.
+
+\begin{table}
+    \centering
+    \caption{The measured attenuation coefficients (linear $\mu$, and mass $\mu\rho^{-1}$) of 1332.5~keV gamma rays in aluminum, iron, and lead, compared to NIST values\cite{noauthor_nist_nodate} (interpolating between data at 1250~keV and 1500~keV).}
+    \label{tab:atten}
+    \begin{tabular}{c|cccc}
+        Material & $\mu~(\mathrm{cm^{-1}})$ & NIST~$\rho~(\mathrm{g~cm^{-3}})$\cite{noauthor_compositions_nodate} & $\mu\rho^{-1}~(\mathrm{cm^{2}g^{-1}})$ & NIST~$\mu\rho^{-1}~(\mathrm{cm^{2}g^{-1}})$\cite{noauthor_nist_nodate} \\
+        Aluminum & 0.1498 & 2.599 & 0.0555 & 0.0533\\
+        Iron & 0.5814 & 7.874 & 0.0738 & 0.0520\\
+        Lead & 0.6055 & 11.35 & 0.0533 & 0.0566
+    \end{tabular}
+\end{table}
+\FloatBarrier
+\section{Discussion}\label{sec:disc}
+In this section, we discuss the implications of experimental results in more detail.
+\subsection{Experiment 1: Measurement of Spectra}
+The calibration of $E\approx 7.686\mathrm{\frac{keV}{bin}} - 45.651~\mathrm{keV}$ is both strong $R^2=0.999$ and appears to match the energies of most spectra features for the isotopes used in calibration in Figs.~\ref{spec_22Na} through \ref{spec_137Cs}, but not perfectly.\\
+
+Lower peaks such as the 30.85~keV and 81~keV are measured higher than expected using the calibration, despite allowing for non-zero calibration intercept to account for blank space at the start of a spectrum.
+This suggests that the linear relationship between channel number and energy, while generally viable, is less useful at very low channels/energies.\\
+
+In addition, we observe the limits of resolution through several peak features bleeding together, such as the 276, 302, 356, and 382~keV photopeaks expected in the \BaSrc spectrum of \figref{spec_133Ba}, the 1332.5~keV Compton edge and 1173.2~keV photopeak in the \CoSrc spectrum of \figref{spec_60Co} (with the 1332.5~keV compton range dubiously visible as an increased intensity to the left of the 1173.2~keV photopeak), and the 1332.5~keV single-escape peak and 1173.2~keV Compton edge of the same \CoSrc spectrum.\\
+
+Subtracting background spectra appeared generally successful in producing clear spectra, with more limited success in the \MnSrc spectrum, though this appears reasonable given the lower count rates (peaking around 0.3~counts per scond in \figref{spec_54Mn}).\\
+
+While the sources should have all been of activity 1.0~\micCi in 2017, the decay corrected intensities of each peak vary wildly in magnitude between isotopes.
+This may simply reflect the uneven distribution of decay modes within each given isotope, inconsistency between experimental layout (e.g. sources being held in slightly different positions), or sources being from different dates (with only the year 2017 specified).
+Notably, the decay-corrected intensity of the \MnSrc photopeak is estimated to have been much higher in 2017 than 2026, as expected from its comparatively low half life of 312~days.\\
+
+We observe a logarithmically linear relationship in \figref{r_v_lnE} between peak energy $E$ and normalized peak resolution $R$ with slope -0.528, very similar to the expected slope of -0.5 from Eq.~\ref{eq:res-log}.
+This reinforces the validity of the Poisson statistical model of resolution expected for inorganic scintillators.\\
+
+In the spectrum of \NaSrc in \figref{spec_22Na}, we observe a peak centered near 511~keV.
+This is likely caused by positron ($\beta+$) decay of \NaSrc, with positrons annihilating on the surface of the detector and releasing two 511~keV gamma rays, one of which travels into the detector\cite{noauthor_sodium_nodate}.\\
+
+The unknown source, with spectrum visible in \figref{spec_unknown} is likely \CsSrc, featuring a gamma peak of  $654.67\pm7.69$~keV to the expected 661.66~keV of \CsSrc, and having generally similar form (backscatter, Compton range and plateau) to the \CsSrc spectrum in \figref{spec_137Cs}.\\
+
+The background spectrum, visible in \figref{spec_bg} features peaks at $649.37\pm7.69$~keV and $1475.82\pm7.69$~keV.
+We believe these may correspond to the common background radiation sources $^{222}$Ra (peak of 609~keV through product $^{214}$Bi) and $^{40}$K (peak of 1461~keV)\cite{phillips_primer_nodate}, due to the similarity in energy and commodity of these sources.
+
+
+\subsection{Experiment 2: Atttenuation}
+For all three materials, we observe a convincing linear relationship between the distance of attenuation and the natural logarithm of peak intensity, validating the model of exponential attenuation.
+The observed linear attenuation coefficients between each material seem to be of similar magnitude, with the denser iron and lead having higher linear attenuation (0.581~cm$^{-1}$, 0.606~cm$^{-1}$) than aluminum (0.150~cm$^{-1}$).
+The intensity measured for a bare \CoSrc source ($1443\pm74$~counts) appears to match (roughly within uncertainty) the unattenuated intensity estimated with the regression intercept $I_0=exp(b)$ for all three materials (1453, 1518, and 1373 for aluminum, iron, and lead, respectively).\\
+
+While the estimated mass attenuation coefficients appear to roughly match NIST estimates for aluminum (0.0555 vs 0.0533~cm$\mathrm{^{2}g^{-1}}$) and lead (0.0533 vs 0.0566~cm$\mathrm{^{2}g^{-1}}$), the estimated mass attenuation for iron was substantially higher than NIST (0.0738 vs 0.0520~cm$\mathrm{^{2}g^{-1}}$).
+Aside from general uncertainty in intensity measurements and imperfect experimental arrangement, a conceivable source of disagreement could be if the iron used was of a higher than typical density, resulting in an overestimate of attenuation per unit mass.
+\section{Conclusions}\label{sec:conc}
+
+The objectives of this laboratory were largely met.\\
+
+A linear spectrum calibration was estimated of $E\approx 7.686\mathrm{\frac{keV}{bin}} - 45.651~\mathrm{keV}$, which holds well for most identified peaks, except for those very close to 0~keV.\\
+
+Several photopeaks and other spectrum features including Compton edges, single and double escape peaks, and annihilation peaks were observed in the source spectra.\\
+
+The unknown radiation source was matched to \CsSrc, featuring a gamma peak at $654.67\pm7.69$~keV and similar Compton scattering features to the spectrum measured for a known \CsSrc.
+Background peaks of $649.37\pm7.69$~keV and $1475.82\pm7.69$~keV were identified, suggesting background presence of the $^{222}$Ra decay product $^{214}$Bi and the isotope $^{40}$K.\\
+
+The resolution of the detector was found to closely match expected dependency to energy, with a log-linear regression having slope -0.528 to the predicted -0.5 using Poisson statistics.\\
+
+Linear attenuation coefficients for 1332.5~keV were measured, of $0.1498~\mathrm{cm^{-1}}$ in aluminum, $0.5814~\mathrm{cm^{-1}}$ in iron, and $0.6055~\mathrm{cm^{-1}}$ in lead, yielding mass attenuation coefficients of $0.0555~\mathrm{cm^2g^{-1}}$, $0.0738~\mathrm{cm^2g^{-1}}$, and $0.0566~\mathrm{cm^2g^{-1}}$, respectively, compared to NIST values of $0.0533~\mathrm{cm^2g^{-1}}$, $0.0520~\mathrm{cm^2g^{-1}}$, and $0.0566~\mathrm{cm^2g^{-1}}$.
+While total mass attenuation coefficients in aluminum and lead approximately matched NIST values, that for iron was higher than NIST values, suggesting either mischaracterization of the material or geometric imperfection of the experimental setup.
+For instance, little was done to collimate the beam of gamma rays reaching the detector, with the plates simply placed between the source and detector, suggesting that if scattering played a substantial role in attenuation, this may have substantially affected the measurements, possibly explaining the less accurate estimation of attenuation in iron.
+
+% \bibliographystyle{sty/ieeetran}
+\pagebreak\printbibliography
+
+\appendix
+\pagebreak
+\FloatBarrier\section{Equipment Details}\label{app:equip}
+In order to better replicate experiments and identify issues, the details of each equipment piece are recorded in Table~\ref{tab:equip}.
+
+\FloatBarrier
+Further details of equipment are listed in Table~\ref{tab:equip}.
+Where a detail could not be identified for a given device, it is replaced with ``\na''.
+\begin{table}[!h]
+    \centering
+    \small
+    \caption{Details of the equipment used in this laboratory.}
+    \label{tab:equip}
+    \scriptsize
+    \begin{tabular}{c|cccc}
+        Item & Manufacturer & Model & ID Type & ID Number\\\hline
+        % Module rack & Canberra (now Mirion)\sref{addr:mirion}& Model 2000 & Inventory \# & NE759377 \\
+        % Geiger-Muller Detector & \na & \na & \na & \na \\
+        % GM Pulse Inverter & Spectrum Techniques\sref{addr:spect} & 2017 GPI & \na & \na \\
+        % Multichannel Analyzer & Ortec\sref{addr:ortec} & EasyMCA & Inventory \# & P10F79090 \\
+        % Alpha Spectrometer & Ortec\sref{addr:ortec} & Model 7401, Si surface barrier detector & Property \# & NE 759377\\
+        Inorganic Detector & Mirion\sref{addr:mirion} & Model 802 NaI(Tl) Scintillator & Illinois Property \# & NE 876034 \\
+        All Sources & Spectrum\sref{addr:spect} & 1.0~\micCi Edu. Source & Year & 2017 \\
+        % Vacuum Pump & Unknown & \na & \na & \na \\
+        % Mylar Sheets & Unknown & $5\times3.6$~microns thick & \na & \na \\
+        % Aluminum Sheets & Unkown & $5\times18$~microns thick & \na & \na \\
+        % Weak Source 1 & Spectrum Techniques\sref{addr:spect} & 1.0\micCi ~$^{137}$Cs Beta Source & Date & Sep. 2017 \\
+        % Weak Source 2 & Spectrum Techniques\sref{addr:spect} & 1.0\micCi ~$^{137}$Cs Beta Source & Date & Sep. 2017 \\
+        % Strong Source & Eckert and Ziegler\sref{addr:eck-zieg} & 30\micCi~$^{137}Cs$ Beta Source & Date & Sep. 2017 \\
+        % \InMeta~Source & \na & Irradiated Indium Foil & Date & Feb. 2026 \\
+        All-in-One PMT & Ortec\sref{addr:ortec} & digiBASE All-in-One 14-Pin & Illinois Property \# & NE ---349 \\
+        % High Voltage Power Supply & Caen\sref{addr:caen} & N1470AL & Inventory \# & P10G96054 \\
+        % Pulser & Ortec\sref{addr:ortec} & Model 480 & \na & \na \\
+        % Oscilloscope & Keysight\sref{addr:keys} & Infiniivision DSO-X 2002A & Inventory \# & P10R03513 \\
+        % Counter & Ortec\sref{addr:ortec} & Model 871 & Serial \# & 1024 \\
+        % Preamplifier & Ortec\sref{addr:ortec} & Model 142PC & Serial \# & 2780r17 \\
+        % Amplifier & Ortec\sref{addr:ortec} & Model 590A & Serial \# & 16076205 \\
+        Computer & Dell\sref{addr:dell} & Precision 360 & Eng. IT ID \# & EWS 20426 \\
+
+    \end{tabular}
+    \begin{enumerate}[label=\alph*]
+        \item\label{addr:mirion}
+        Mirion Technologies, Inc.:
+        1218 Menlo Drive,
+        Atlanta, GA;
+        Phone: 770.432.2744;
+        \url{https://ir.mirion.com/}
+        % \item\label{addr:eck-zieg}
+        % Eckert \& Ziegler Isotope Products:
+        % 24937 Avenue Tibbitts, Valencia, CA 91355;
+        % Phone: +1 866 476-9767;
+        % \url{https://isotopeproducts.com/}
+        \item\label{addr:spect}
+        Spectrum Techniques:
+        106 Union Valley Rd, Oak Ridge, TN 37830;
+        Phone: 865.482.9937;
+        \url{https://www.spectrumtechniques.com/}
+        \item\label{addr:ortec}
+        Advanced Measurement Technology:
+        801 South Illinois Avenue,
+        Oak Ridge, Tennessee 37830,
+        United States;
+        Phone: +1.865.482.4411;
+        Fax: +1.865.483.0396;
+        Email: ortec.info@ametek.com
+        \url{https://www.ortec-online.com}
+        % \item\label{addr:caen}
+        % Caen Sp.A.:
+        % Via della Vetraia, 11, 55049 Viareggio LU - Italy;
+        % Phone: +39 0584 388398;
+        % \url{https://www.caen.it/}
+        % \item\label{addr:keys}
+        % Keysight Technologies: 
+        % 1900 Garden of the Gods Road, Colorado Springs, CO 80907-3423 United States;
+        % Phone: 1 800 829-4444;
+        % \url{https://www.keysight.com}
+        \item\label{addr:dell}
+        Dell Technologies:
+        Dell Technologies
+        1 Dell Way
+        Round Rock, TX 78664.;
+        Phone: 1-877-275-3355;
+        \url{https://www.dell.com/en-us/lp/contact-us}
+    \end{enumerate}
+\end{table}
+\FloatBarrier
+\end{document}

@@ -1,0 +1,12 @@
+.vscode/**
+**.aux**
+**.bbl
+**.bcf
+**.log
+**.run.xml
+**.blg
+sty/ieeetran.bst
+**:mshield
+**:Zone.Identifier
+**.out
+**.toc

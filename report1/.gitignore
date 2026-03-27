@@ -1,0 +1,10 @@
+**.aux**
+**.bbl
+**.bcf
+**.log
+**.run.xml
+**.blg
+**.pdf
+.vscode/**
+sty/ieeetran.bst
+

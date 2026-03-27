@@ -1,0 +1,531 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Lab 2: Introduction to Lab Equipment and Counting Statistics
+}
+\author{Owen Strong \\
+\itshape Prof.: Angela DiFulvio\\
+\itshape TA: Kholod Mahmoud \\
+\itshape TA: Shaffer Bauer \\
+\itshape TA: Justin Jia \\
+}
+\date{7 February 2026}
+
+\usepackage[
+    style=ieee
+]{biblatex}
+\bibliography{refs.bib}
+
+\usepackage[letterpaper, margin=1in]{geometry}
+\newcommand{\figwidth}{0.75\linewidth}
+
+\usepackage{placeins} % FloatBarrier
+\usepackage{amsmath} % align
+\usepackage[hidelinks]{hyperref} % URLS
+\usepackage{enumitem} % fine control over table listings
+
+%%%% Shorthands
+\newcommand{\micCi}{$\mathrm{\mu Ci}$} % Microcuries
+
+\begin{document}
+\pagenumbering{gobble}
+\maketitle
+\pagebreak
+\tableofcontents
+\pagebreak
+\pagenumbering{arabic}
+\begin{abstract}
+
+The ability to interpret measurements and quantify the certainty of resulting inferences is crucial to the detection and measurement of radiation. In this laboratory, we performed a series of experiments to demonstrate the variation of certain measurements and methods to model and quantify the uncertainty of random radiation measurements.\\
+
+We recorded spectra of 60-second pulser outputs at different output amplitudes.
+Using a Geiger-Muller detector, we took a series of 20 radiation counts over 30 seconds each, followed by a series of 200 5-second counts, and modeled these results usign Poisson, binomial, and normal distributions.
+We then measured radiation counts for the same detector and source over 5 minutes, followed by a background count of the detector without the source over 10 minutes, and used thes to estimate a net count rate.\\
+
+We observed a strong linear relation ($R^2=0.996$) between pulse voltage and MCA channel output, with pulses of a single voltage consistently being binned into nearly one channel on the MCA spectrum, demonstrating the reliability of the pulser and MCA.
+For the detector and beta source, we observed a mean gross count of 364.600 with variance 277.727 over the 20 trials lasting 30 seconds, and over the 200 trials lasting 5 seconds a mean gross count of 58.705 with variance 49.315.
+We successfully fit the three theoretical models to both series, with the series of 200 trials matching theoretical distributions more closely than the 20 trials, which produced a somewhat bimodal distribution.
+In both cases, the expected Poisson model of random counts appeared to sufficiently credibly model experimental data, alongside matching normal and binomial models.
+We measured a net count rate of the source for the beta detector of $10.920\pm0.196 \mathrm{s^{-1}}$, substantially lower than that of the calibrated source, simultaneously demonstrating an ability to calculate net radiation count rates with usable uncertainty by measuring gross and background radiation count rates, and the limitations of a detector to capture the full activity of a source.\\
+
+We determine the application of key statistical techniques like fitting theoretical probability distributions and the propagation of measurement errors were demonstrated successfully, and these results will allow for the effective interpretation of data gathered in future laboratories.
+\end{abstract}
+
+\section{Introduction and Background}\label{sec:intr}
+% In the detection of radiation, it is particularly crucial to understand the detector itself.
+% There are several types of radiation detectors, each of which best suited for different environments and types of radiation.
+% Of particular interest is the Geiger-Muller detector, a type of detector using low-pressure gas in a voltage gap to detect radiation\cite{tsoulfanidis_measurement_2015}.
+% When a particle 
+A key requirement in detecting radiation is the ability to interpret measurements.
+In a perfect world, a person wishing to work with radiation would be perfectly and acutely aware of the nature of every material, understanding the presence and interaction of every particle of any kind of radiation.
+In the real world, just as macroscopic phenomena and objects must be inferred from visual and sensory information, the precise behavior microscopic phenomena like radiation interaction must be inferred through devices which respond to those interactions.
+The field of statistics exists to illustrate this gap and quantify exactly what can be estimated from limited physical measurements.\\
+
+Consider the radioactivity of a material sample.
+Even when modeling the sample as emitting a consistent, deterministic rate of particles, it is at the very least \emph{unreasonable} to know exactly when each particle is released, and that exact rate.
+Instead, a radiation detector would produce a predictable stimulus response to some of this radiation.
+A statistical model would then, based on a theory of how the overall ``population'' of radiation events behave and relate to a given ``sample'' of detections, predict something about that population based on a sample, and quantify exactly how certain one can be about that estimate. (Or at least, the related ``population'' of how the detector will respond to radiation).\\
+
+This laboratory investigates the behavior of a Geiger Muller detection in response to a beta radiation source, and compares certain statistical models of its behavior in order to describe the behavior's uncertainty. \\
+
+The rest of this report proceeds as follows:
+In the remainder of the introduction, an overview of equipment and theory will be given.
+In Section~\ref{sec:methods}, details on equipment and specific procedures follow.
+Section~\ref{sec:results} displays the results of these procedures, Section~\ref{sec:disc} highlights notable observations, and Section~\ref{sec:conc} concludes with important implications and results.
+
+\subsection{Geiger-Muller (GM) Detector}
+In this laboratory we use a Geiger-Muller (GM) Detector.
+A GM detector (referred to by the textbook as a GM counter) is a gas-filled detector, usually cylindrical in shape, in which one radiation detection triggers an avalanche of charge interactions to produce a signal independent of the first gas atom ionized.\cite{tsoulfanidis_measurement_2015} \\
+
+This laboratory only makes introductory use of a GM detector, and does not explore in detail more involved aspects and behaviour such as dead time. For the purposes of this laboratory, the output of the detector given a consistent radiation source will be modeled as independent random events, which can be modeled using a Poisson distribution.
+
+\subsection{Multichannel Analyzer (MCA)}
+A Multichannel Analyzer takes incoming pulses and categorizes them into several channels (sometimes referred to as bins) based on their amplitude.\cite{tsoulfanidis_measurement_2015}
+These bins may be presented in the form of a histogram called a spectrum, where the x-axis corresponds to the channel number, and the y-axis the number of counts sorted into that channel.
+By calibrating the multichannel analyzer, each of these bins may be associated with a specific voltage or quantity of interest, but in this laboratory we will only focus on introductory use of this device.
+
+\subsection{Counting Statistics}
+A key variable of interest in this laboratory is the number of counts measured by the system in a fixed period of time.
+This can, theoretically, be modeled by a Poisson Distribution, which describes the number of random events taking place in a fixed time period.\\
+\subsubsection{Poisson Distribution}
+A Poisson distribution $Pois(\lambda)$ for a time period is parameterized by $\lambda$, the expected number of events during that time period.
+The likelihood of a certain number $x$ of such events happening during one time period can be found by using the distribution's probability mass function $p(x;\lambda)$\cite{nist_1366_nodate}:
+\begin{equation}
+    p(x;\lambda) = \frac{e^{-\lambda}\lambda^x}{x!}, x\in\{0, 1, 2, ...\}
+\end{equation}
+If we assume the likelihood of observing some number of counts can be modeled by this distribution, then we expect those measurements to vary by this distribution's standard deviation $\sigma_P$\cite{nist_1366_nodate}:
+\begin{equation}
+    \sigma_P = \sqrt{\lambda}
+\end{equation}
+By assuming a theoretical frequency similar enough to that experimentally observed, uncertainty of a radiation count $N$ can thus be estimated as $\sigma_N=\sqrt{N}$.
+
+\subsubsection{Normal Distribution}
+Another distribution that may be of interest is the Normal Distribution.
+The normal distribution can be used to model the results of a wide variety of random circumstances, and is parameterized directly by a distribution mean $\mu$ and standard deviation $\sigma$.
+The differential probability density $f(x)$ of a given quantity $x$ being sampled from a normal distribution $Norm(\mu, \sigma)$ may be found \cite{nist_1366_nodate}:
+\begin{equation}
+    f(x) = \frac{e^{-(x-\mu)^2}/(2\sigma^2)}{\sigma\sqrt{2\pi}}
+\end{equation}
+
+\subsubsection{Binomial Distribution}
+Finally, we consider a third potential distribution of interest, the Binomial Distribution. \\
+
+Suppose rather than being modeled by independent random detections, the counts $x$ of a detector were better modeled as the number of \emph{successful} detections, where a \emph{fixed} number $n$ of events occur, but only some average proportion $p$ are successfully detected. 
+The counts could then be modeled using a binomial distribution $Binom(n, p)$, with the probability mass function $p(x;n,p)$\cite{nist_1366_nodate}:
+\begin{equation}
+    \left(\frac{n!}{x!(n-x)!}\right)(p)^x(1-p)^{(n-x)}, x\in{0,1,2,...,n}
+\end{equation}
+
+This binomial distribution would have an expected mean of $np$, and standard deviation of $\sqrt{np(1-p)}$.\\
+
+\subsubsection{Error Propagation}
+Of course, it is not just the measurement itself which is of interest.
+Given measurement(s) of certain uncertainty, it is typically desired to then calculate some secondary quantity of interest as a function of the uncertain measurements, in which case the uncertainty of that secondary quantity may be quantified as a function of the measurements' own.\\
+
+For example, if a quantity $C$ were a function of two measurements $A$ and $B$ with variances $\sigma^2_A$ and $\sigma^2_B$, added or subtracted from each other:
+\begin{equation}
+    C=A\pm B
+\end{equation}
+then the variance of C would correspond to the sum of these two variances\cite{tsoulfanidis_measurement_2015}:
+\begin{equation}
+    \sigma^2_C = \sigma^2_A + \sigma^2_B
+\end{equation}
+
+Such propagation calculations can be determined for arbitrary functions using the derivative of such a function with respect to any uncertain values\cite{tsoulfanidis_measurement_2015}, but in this lab only addition or subtraction will be considered, in the context of measuring gross and background radiation count rates to estimate a net count rate.
+% For example, when tasked with measuring a net radiation count rate, one might compare a gross measurement of the source $G$ (uncertainty $\sigma_G$) with a measurement of background radiation $B$ (uncertainty $\sigma_B$).
+% In this example, if the net count were a function of these two in that background were subtracted from the 
+
+\section{Experimental Procedure}\label{sec:methods}
+
+In this section, we detail the equipment used and the experiments performed in this laboratory.
+Further equipment details are given in Appendix~\ref{app:equip}.
+
+\subsection{Equipment}
+In this laboratory, we employed the following equipment:
+
+\subsubsection{Module Rack}
+
+We used a Canberra Model 2000 Module Rack. This component will be henceforth referred to as the module rack.
+
+\subsubsection{Geiger-Muller Detector}
+In this laboratory, we used a GM Detector, henceforth referred to as the detector, accompanied by a Spectrum Techniques GPI GM Pulse Inverter.
+
+\subsubsection{Multichannel Analyzer}
+We used an Ortec EasyMCA multichannel analyzer, which we will henceforth refer to as the MCA, to validate signal details.
+
+\subsubsection{Radiation Source}
+In this laboratory, we used a 2017 1.0 \micCi~$^{137}$Cs beta radiation source, and will henceforth refer to it as the beta source.
+
+\subsubsection{Programmable Power Supply}
+To supply the detector and its inverter, we used a Caen N1470AL 2CH High Voltage Programmable Power Supply, henceforth referred to as the power supply.
+
+\subsubsection{Pulser}
+In this laboratory, we used an Ortec Model 480 Pulser, henceforth called the pulser.
+A serial number tag was not attached externally, and the module could not be removed to identify the Illinois property number on its side.
+
+
+\subsubsection{Oscilloscope}
+
+In this laboratory, we used an Infiniivision DSO-X 2002A Oscilloscope.
+The particular oscilloscope used in this experiment will henceforth be referred to as the oscilloscope.
+
+\subsubsection{Counter}
+
+We used an Ortec Model 871 Timer-Counter, which will henceforth be referred to as the counter.
+
+\subsubsection{Preamplifier}
+In this laboratory, we used an Ortec 142PC Preamplifier, henceforth referred to as the preamplifier.
+No Illinois property number was identifiable on the preamplifier.
+
+\subsubsection{Amplifier}
+
+We used an Ortec Model 590A Amplifier and Timing Single Channel Analyzer, henceforth referred to as the amplifier.
+
+\subsubsection{Computer}
+
+In this laboratory, we used a Dell Precision 3630, henceforth referred to as the computer.
+
+\subsubsection{Software: Maestro}
+
+To interpret and display output from the MCA, we used the Maestro software provided by Ortec.\cite{ortec_maestro_2012}
+
+\subsection{Experiment 6: The Multichannel Analyzer}
+
+In this experiment, we used the pulser to observe voltage-dependent behavior of the MCA.
+We fed pulser output to the MCA as shown in Figure~\ref{fig:mat-exp6-setup}.\\
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\figwidth]{figs/Mat0_Exp6-setup.png}
+    \caption{The setup for experiment 6. Sourced from lab manual 2.\cite{npre_lab_2_manual_2025}}
+    \label{fig:mat-exp6-setup}
+\end{figure}
+
+We first logged into the lab computer and started Maestro, ensuring the MCA was connected to the computer before configuring the equipment as shown in Figure~\ref{fig:mat-exp6-setup}.
+We set the amplifier gain to its lowest value, and adjusted the pulser gain to find the maximum attainable pulse voltage, then to achieve approximately 25\% of that pulse voltage.\\
+
+We set the collect time in Maestro to 1 minute (under ``Acquire'', ``MCB Properties'') before pressing the Start Acquisition button, as shown in Figure~\ref{fig:mat-start-acquisition}
+We then clicked on the spectrum as shown in Figure~\ref{fig:mat-sample-spectrum} to show channel number and count, or right clicked to identify precise peak details as in Figure~\ref{fig:mat-peak-info} to record details such as the centroid of a peak.\\
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\figwidth]{figs/Mat1_StartAcquisition.png}
+    \caption{The button to start spectrum acquisition in Maestro, highlighted by a red box.}
+    \label{fig:mat-start-acquisition}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\figwidth]{figs/Mat2_MCA-Spectrum.png}
+    \caption{An example of how Maestro displays an acquired spectrum. Clicking on the spectrum places a line over the nearest channel, revealing the channel number and the number of counts recorded under that channel.}
+    \label{fig:mat-sample-spectrum}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.4\linewidth]{figs/Mat3_peak-id.png}
+    \caption{Peak information as displayed by Maestro, found by right-clicking on a peak and selecting ``Peak Info''}
+    \label{fig:mat-peak-info}
+\end{figure}
+
+In this way, we recorded the centroid of the peak of the spectrum produced using a pulse amplitude voltage approximately 25\% of the maximum, then repeated for 3 more pulse amplitudes, each time recording the acquired spectrum and the centroid of the identified peak.
+
+\subsection{Experiment 7: Statistical Uncertainty of a Series of Independent Measurements}
+
+In this experiment, we measured two series of independent radiation counts, using the experimental setup shown in Figure~\ref{fig:mat-exp7-setup}. \\
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\figwidth]{figs/Mat4_Exp7-setup.png}
+    \caption{The setup for experiment 7. The connection to the oscilloscope is dotted to signify that while the oscilloscope may be used to debug signals sent to the counter, it is not crucial to the experiment and may be removed afterwards.}
+    \label{fig:mat-exp7-setup}
+\end{figure}
+
+
+After acquiring the beta source from the lab instructors, we removed the cap from the detector and taped the source to the detector front, with the sticker side of the source facing the center of the detector.
+We then ensure all equipment is connected as in Figure~\ref{fig:mat-exp7-setup}.
+With assistance from the TA to choose an appropriate bias setting for the detector, we then set the power supply to this setting, slowly incrementing the knob one setting at a time to avoid the risk of damaging the detector. (Specifically, using the clear dial at the top: Rotating the dial either changed a digit's value or selected a new digit, with pressing the dial toggling between these two nodes. While selecting the ``VSET'' option, the press function instead switched between setting voltage bias and ramping the voltage to its new setting) \\
+
+Once the detector was ready, we then set the timer on the counter to 30 seconds, started the timer and recorded the number of counts after completion. 
+We repeated this process for 19 further trials, recording the counts from a total of 20 trials each lasting 30 seconds.
+Additionally, in the same fashion we performed a second series, with 200 trials each measuring counts over 5 seconds.
+We compared these series of radiation counts to poisson, normal, and binomial distributions fit to these series of sample data.
+
+\subsection{Experiment 8: Accuracy of a Single Measurement}
+
+In this experiment we performed one source and one background measurement to estimate the net activity of the beta source.\\
+
+We began by reusing the setup for experiment 7, shown in Figure~\ref{fig:mat-exp7-setup}. 
+We set the counter to record for 5 minutes (300 seconds) with the source still attached to the detector, and recorded the number of counts measured after this time as the gross count.\\
+
+We then removed the beta source from the detector, returning it to the TA and ensuring there were no sources remaining near the detector.
+Setting the counter to record for 10 minutes (600 seconds) with the beta source no longer attached to the detector, we recorded the number of counts measured after this time as the background count.
+After completing these measurements, we slowly ramped down the bias on the power supply.\\
+
+Using the gross and background counts, we estimated a net activity and calculated the associated uncertainty, to compare with the calibrated activity of the beta source.\\
+
+
+\section{Experimental Results}\label{sec:results}
+In this section, we detail key results from experiments 6, 7, and 8.
+
+%%%% Experiment 6: Multichannel Analyzer
+\FloatBarrier\subsection{Experiment 6: Multichannel Analyzer}
+We recorded pulses from the pulser in the MCA for several 60-second trials at different voltages.
+Figure~\ref{fig:exp6-4v-spec} shows the spectrum acquired from a 4~V amplitude pulser output, and Figure~\ref{fig:exp6-v-v-chan} compares the peak location on the spectrum recorded for pulser output of several amplitudes.
+% Plot of the acquired spectrum
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\figwidth]{figs/Exp6_4vSpectrum.png}
+    \caption{The spectrum acquired from the Multichannel Analyzer with a pulse amplitude of 4V.}
+    \label{fig:exp6-4v-spec}
+\end{figure}
+
+% "Plots of sample spectra as a function of the pulse amplitude"
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\figwidth]{figs/Exp6_V_v_chan.png}
+    \caption{The peak centroid of spectra acquired from the Multichannel Analyzer with pulse amplitudes of varying voltage.}
+    \label{fig:exp6-v-v-chan}
+\end{figure}
+
+%%%% Experiment 6: Repeated Measurements
+\FloatBarrier\subsection{Statistical Uncertainty of a Series of Independent Measurements}
+
+We performed two series of count measurements, one of 20 trials lasting 30 seconds each and one of 200 trials lasting 5 seconds each.
+For both data series, we calculated the sample mean and standard deviation, and used Method of Moments (MoM) to fit experimental results to theoretical Normal, Poisson, and Binomial distributions.\\
+
+For each series, we calculated experimental mean $\bar{x}$ (where $n\in\{20,200\}$ is the number of measurements, and $x_i$ the (count) value measured for trial $i$):
+\begin{equation}
+    \bar{x} = \frac{1}{n}\sum_{i=1}^{n}x_i
+\end{equation}
+We then calculated the deviation $d_i$ of each point $x_i$:
+\begin{equation}
+    d_i = x_i - \bar{x}
+\end{equation}
+Using these deviations we calculated the sample variance\footnote{As this is the variance of a \emph{sample} and not a known population, the sample mean inherently depends on the specific sample itself, removing a degree of freedom. We thus normalized deviation by $n-1$ rather than by $n$.} $s^2$:
+\begin{equation}
+   s^2 = \frac{1}{n-1}\sum_{i=1}^{n}d_i 
+\end{equation}
+And sample standard deviation:
+\begin{equation}
+    s = \sqrt{s^2}
+\end{equation}
+For the 20 trials lasting 30 seconds, a mean count of 364.6 was recorded, with variance 277.727 counts. 
+For the 200 trials lasting 5 seconds, a mean of 58.705 counts was recorded, with variance of 49.315 counts.
+
+Using these two `moments', we fit theoretical Normal, Poisson, and Binomial distributions to the data using Method of Moments\cite{kotz_encyclopedia_2006}.
+For the Poisson distribution $Pois(\lambda)$, the theoretical mean $\mu$ is equivalent to the frequency parameter $\lambda$, and we fit ($\hat{\lambda}$) using the sample mean as such:
+\begin{align}
+    \mu &= \lambda = \bar{x}\\
+    \hat{\lambda} &= \bar{x}
+\end{align}
+For the Normal distribution $Norm(\mu, \sigma)$ the moments mean $\mu$ and standard deviation $\sigma$ are themselves parameters, and may be fit to sample values as such:
+\begin{align}
+    \hat{\mu} &= \bar{x} \\
+    \hat{\sigma} &= s \\
+\end{align}
+For the Binomial distribution $Binom(n, p)$ these moments are functions of parameters $n$ and $p$, and may be inverted to fit to sample moments:
+\begin{align}
+    \mu &= np = \bar{x} \\
+    \sigma &= np(1-p) &= s \\
+    &... \\\
+    \hat{n} &= \mathrm{round}\left(\frac{\bar{x}^2}{\bar{x} - s^2}\right) \\
+    \hat{p} &= \bar{x}/\hat{n}
+\end{align}
+
+Histograms of both series' (20 trials lasting 30 seconds each and 200 trials lasting 5 seconds each) results are displayed and compared to analogous histograms of theoretical distributions in Figures~\ref{fig:exp7-30s-hist-v-fits} and \ref{fig:exp7-5s-hist-v-fits}, respectively.
+The specific \texttt{Python} script used to perform these calculations is made public and linked in Appendix~\ref{app:script}.
+
+% Histogram of the counts as explained in the text.
+% 20 trials, 30 seconds each
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\figwidth]{figs/Exp7_20x30_hist_v_fits.png}
+    \caption{
+        A histogram of the counts observed over 20 trials each lasting 30 seconds, compared to expected counts under theoretical Normal, Poisson, and Binomial distribution distributions.
+        Theoretical distributions were fit using Method of Moments.
+    }
+    \label{fig:exp7-30s-hist-v-fits}
+\end{figure}
+% 200 trials, 5 seconds each
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\figwidth]{figs/Exp7_200x5_hist_v_fits.png}
+    \caption{
+        A histogram of the counts observed over 200 trials each lasting 5 seconds, compared to expected counts under theoretical Normal, Poisson, and Binomial distribution distributions.
+        Theoretical distributions were fit using Method of Moments.
+    }
+    \label{fig:exp7-5s-hist-v-fits}
+\end{figure}
+
+
+
+
+% Experiment 8: The Accuracy of a Single Measurement
+\FloatBarrier\subsection{Experiment 8: The Accuracy of a Single Measurement}
+
+Detector pulses were counted over a period of 5 minutes while attached to the beta source for 5 minutes, and again without the source for 10 minutes.\\
+
+Over the 5-minute (300 second) source period, we observed gross count $n_G$ of 3469, with an uncertainty of $\sigma_G=\sqrt{n_G}=58.90~\mathrm{s^{-1}}$.
+This yields a gross count rate $f_G=3469\times(300~\mathrm{s})^{-1}=11.562~\mathrm{s^{-1}}$.
+Since the error of a scaled function $a\times A$ is equivalent to its error scaled $a\times \sigma_A$\cite{tsoulfanidis_measurement_2015}, this yields a frequency uncertainty $\sigma_{f,G}=300^{-1}\times58.90=0.196~\mathrm{s^{-1}}$.\\
+
+Over the 10-minute (600 second) source-free period, we observed a background count $n_B$ of 386, with an uncertainty of $\sigma_B=\sqrt{n_B}=19.647~\mathrm{s^{-1}}$. 
+This yields a background count rate $f_B=386\times(600~\mathrm{s})^{-1}=0.643~\mathrm{s^{-1}}$, and an error $\sigma_{f,B}=600^{-1}\times19.647=0.00739~\mathrm{s^{-1}}$.\\
+
+Assuming infinite timing precision, we estimated the net activity rate $f_N$ by subtracting $f_B$ from $f_G$:
+\begin{align}
+    f_N &= f_G - f_B \\
+    &= 11.562 - 0.643 \\
+    f_N &= 10.920~\mathrm{s^{-1}}
+\end{align}
+As the variance of a difference $A-B$ is equivalent to the sum of each quantity's variance $\sigma_A^2+\sigma_B^2$\cite{tsoulfanidis_measurement_2015}, we quantified the uncertainty of this measurement:
+\begin{align}
+    \sigma_f &= \sqrt{\sigma_{f,G}^2 + \sigma_{f,B}^2} \\
+    &= \sqrt{0.196^2 + 0.007^2} \\
+    \sigma_f &= 0.1964~\mathrm{s^{-1}}\\
+\end{align}
+
+The beta source's calibrated activity was 1.0 microCurie\cite{npre_lab_2_manual_2025}, equivalent to $3.7\times10^{10}~\mathrm{s^{-1}}\times\mathrm{\frac{1Ci}{10^6\mu Ci}}=37,000~\mathrm{s^{-1}}$.
+Notably, this is dramatically higher than the net \emph{observed} activity of $10.920\pm0.196~\mathrm{s^{-1}}$.
+
+
+\FloatBarrier\section{Discussion}\label{sec:disc}
+We may infer several things from the experiments performed, but particularly experiments 7 and 8.
+\subsection{Experiment 6}
+As expected of pulser output, the amplitudes of pulser output are very consistent.
+While we observe a very clear linear relationship ($R^2=0.996$) between pulse amplitude and spectrogram bin as seen in Figure~\ref{fig:exp6-v-v-chan}, the spectrum peak for a given voltage output is extremely consistent, with only a few pulses in a bin higher or lower out of approximately 3600, as can be seen in Figure~\ref{fig:exp6-4v-spec}.
+This confirms the consistency of the pulser and the predictability of MCA output.
+\subsection{Experiment 7}
+As expected, the Poisson distribution appears to appropriately model the count data series, especially for the series with the higher number of trials, but notably the other distributions produce believable fits. The series additionally both have similar (if slightly lower) variances to the number of counts, reminiscent of the Poisson distribution, which only has one degree of freedom and for which variance corresponds to average counts.\\
+
+Notably, the distribution of 200 5-second trials in Figure~\ref{fig:exp7-5s-hist-v-fits} much more closely resembles theoretical distributions, forming a stable bell curve in contrast to the bimodal distribution seen in Figure~\ref{fig:exp7-30s-hist-v-fits} of the 20 30-second trials.
+This can likely be explained by simple chance, as with so few trials it is not inexplicable that more would have slightly lower or higher than average number of counts than have an average one.\\
+
+Additionally, the Normal and Bimodal distributions almost entirely overlap; this is expected, as at high $n$, Binomial distributions approach that of a Normal distribution with equivalent mean and standard deviation\cite{nist_1366_nodate}.\\
+
+Given the convincing Poisson theory of radiation as independent random events of a certain frequency and these results, the Poisson model for radiation count appears to hold.
+\subsection{Experiment 8}
+While a net count rate was observed within $10.920\pm0.196~\mathrm{s^{-1}}$, the calibrated activity of the beta source is 1.0 \micCi\cite{npre_lab_2_manual_2025}, equivalent to $3.7\times10^{10}~\mathrm{s^{-1}}\times\mathrm{\frac{1~Ci}{10^6~\mu Ci}}=37,000~\mathrm{s^{-1}}$, dramatically higher.\\
+
+This can likely be explained by the nature of the detector and setup: only a small fraction of the beta particles produced by the source would happen to travel in the direction of the detector, a small fraction of that be absorbed by the thin gas inside the detector rather than the metal casing or passing through entirely, and some fraction of those gas interactions result in a successful voltage discharge to the system. It is thus unsurprising that the rate at which the system recorded detector pulses was a small fraction of the nominal activity of the source.\\
+
+Additionally, the source was calibrated in 2017: given the $^{137}$Cs half life of roughly 30 years, roughly 80\% of the original activity should remain, though this difference pales to the likely effect of loss between source and detection.
+\section{Conclusions}\label{sec:conc}
+The laboratory was broadly successful. 
+Spectra of 60-second pulser outputs were recorded at different output amplitudes.
+A series of 20 radiation counts were taken by a GM detector of a beta source over 30 seconds each, followed by a series of 200 5-second counts, and modeled by Poisson, binomial, and normal models.
+Radiation counts were measured for the same detector and source over 5 minutes, followed by a background count of the detector without the source over 10 minutes, and used to estimate a net count rate.\\
+
+A strong linear relation ($R^2=0.996$) between pulse voltage and MCA channel output was observed, with pulses of a single voltage consistently being binned into one channel on the MCA spectrum, demonstrating the reliability of the pulser and MCA.
+For the detector and beta source, a mean gross count of 364.600 with variance 277.727 was observed over the 20 trials lasting 30 seconds, and over the 200 trials lasting 5 seconds a mean gross count of 58.705 with variance 49.315 was observed.
+Theoretical models were successfully fit to both series, with the series of 200 trials matching theoretical distributions more closely than the 20 trials, which produced a somewhat bimodal distribution.
+In both cases, the expected Poisson model of random counts appeared to sufficiently credibly model experimental data, alongside matching normal and binomial models, though both cases appeared to display slightly less variance than expected under a Poisson distribution.
+A net count rate of the source for the beta detector of $10.920\pm0.196~\mathrm{s^{-1}}$ was measured, substantially lower than that of the calibrated source, simultaneously demonstrating an ability to calculate net radiation count rates with usable uncertainty by measuring gross and background radiation count rates, and the limitations of a detector to capture the full activity of a source.\\
+
+In all, the application of key statistical techniques like fitting theoretical probability distributions and the propagation of measurement errors were demonstrated successfully, and these results will allow for the effective interpretation of data gathered in future laboratories.
+
+
+\appendix
+\section{Equipment Details}\label{app:equip}
+
+\newcommand{\na}{$N/A$}
+\newcommand{\sref}[1]{$^{\ref{#1}}$}
+\FloatBarrier
+Further details of equipment are listed in Table~\ref{tab:equip}.
+Where a detail could not be identified for a given device, it is replaced with ``\na''.
+\begin{table}[!h]
+    \centering
+    \small
+    \caption{Details of the equipment used in this laboratory.}
+    \label{tab:equip}
+    \scriptsize
+    \begin{tabular}{c|cccc}
+        Item & Manufacturer & Model & ID Type & ID Number\\\hline
+        Module rack & Canberra (now Mirion)\sref{addr:mirion}& Model 2000 & Inventory \# & NE759377 \\
+        Geiger-Muller Detector & \na & \na & \na & \na \\
+        GM Pulse Inverter & Spectrum Techniques\sref{addr:spect} & 2017 GPI & \na & \na \\
+        Multichannel Analyzer & Ortec\sref{addr:ortec} & EasyMCA & Inventory \# & P10F79090 \\
+        Radiation Source & Spectrum Techniques\sref{addr:spect} & 2017 1.0\micCi $^{137}$Cs Beta Source & Number & 2037 \\
+        High Voltage Power Supply & Caen\sref{addr:caen} & N1470AL & Inventory \# & P10G96054 \\
+        Pulser & Ortec\sref{addr:ortec} & Model 480 & \na & \na \\
+        Oscilloscope & Keysight\sref{addr:keys} & Infiniivision DSO-X 2002A & Inventory \# & P10R03513 \\
+        Counter & Ortec\sref{addr:ortec} & Model 871 & Serial \# & 1024 \\
+        Preamplifier & Ortec\sref{addr:ortec} & Model 142PC & Serial \# & 2780r17 \\
+        Amplifier & Ortec\sref{addr:ortec} & Model 590A & Serial \# & 16076205 \\
+        Computer & Dell\sref{addr:dell} & Precision 360 & Eng. IT ID \# & EWS 20426 \\
+
+    \end{tabular}
+    \begin{enumerate}[label=\alph*]
+        \item\label{addr:mirion}
+        Mirion Technologies, Inc.:
+        1218 Menlo Drive,
+        Atlanta, GA;
+        Phone: 770.432.2744;
+        \url{https://ir.mirion.com/}
+        \item\label{addr:spect}
+        Spectrum Techniques:
+        106 Union Valley Rd, Oak Ridge, TN 37830;
+        Phone: 865.482.9937;
+        \url{https://www.spectrumtechniques.com/}
+        \item\label{addr:ortec}
+        Advanced Measurement Technology:
+        801 South Illinois Avenue,
+        Oak Ridge, Tennessee 37830,
+        United States;
+        Phone: +1.865.482.4411;
+        Fax: +1.865.483.0396;
+        \url{https://www.ortec-online.com};
+        Email: ortec.info@ametek.com
+        \item\label{addr:caen}
+        Caen Sp.A.:
+        Via della Vetraia, 11, 55049 Viareggio LU - Italy;
+        Phone: +39 0584 388398;
+        \url{https://www.caen.it/}
+        \item\label{addr:keys}
+        Keysight Technologies: 
+        1900 Garden of the Gods Road, Colorado Springs, CO 80907-3423 United States;
+        Phone: 1 800 829-4444;
+        \url{https://www.keysight.com}
+        \item\label{addr:dell}
+        Dell Technologies:
+        Dell Technologies
+        1 Dell Way
+        Round Rock, TX 78664.;
+        Phone: 1-877-275-3355;
+        \url{https://www.dell.com/en-us/lp/contact-us}
+    \end{enumerate}
+\end{table}
+\FloatBarrier
+
+\section{Calculation Script}\label{app:script}
+A \texttt{Python} script \texttt{histplots.py} was created to perform and record the calculations of experiment 8. The script may be observed at:\\
+
+\url{https://github.com/osanstrong/451-report2/blob/main/histplots.py}\\
+
+A summary of important calculations is provided below:
+\begin{verbatim}
+# Stats
+def mean(dat_list) -> float:
+    return sum(dat_list) / len(dat_list)
+
+def deviations(dat_list) -> list[float]:
+    dat_mean = mean(dat_list)
+    return [(n-dat_mean) for n in dat_list]
+
+def sample_variance(dat_list) -> float:
+    devs = deviations(dat_list)
+    n = len(dat_list)
+    return sum([dev*dev for dev in devs]) / (n-1)
+
+def sample_stddev(dat_list) -> float:
+    return sample_variance(dat_list)**0.5
+
+def scl(dat_list, factor) -> list:
+    return [factor*dat for dat in dat_list]
+
+
+\end{verbatim}
+
+% \bibliographystyle{sty/ieeetran}
+\printbibliography
+\end{document}

@@ -1,0 +1,14 @@
+.vscode/**
+**.aux**
+**.bbl
+**.bcf
+**.log
+**.run.xml
+**.blg
+**.out
+**.toc
+**.pdf
+sty/ieeetran.bst
+**:mshield
+**:Zone.Identifier
+Makefile
