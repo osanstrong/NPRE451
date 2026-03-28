@@ -1,14 +1,14 @@
 \documentclass[12pt]{article}
 \usepackage{graphicx} % Required for inserting images
 
-\title{Lab 5: Digital Electronics Acquisition and Demonstration of Compton Scattering}
+\title{Lab 7: HPGe Detectors: Efficiency Calibration and spectroscopy}
 \author{Owen Strong \\
 \itshape Prof.: Angela DiFulvio\\
 \itshape TA: Kholod Mahmoud \\
 \itshape TA: Shaffer Bauer \\
 \itshape TA: Justin Jia \\
 }
-\date{March 7, 2026}
+\date{April 4, 2026}
 
 \usepackage[
     style=ieee
@@ -34,7 +34,15 @@
 
 % Common Macros
 \newcommand{\micCi}{\xspace$\mathrm{\mu Ci}$\xspace}
+\new
+
 \newcommand{\CsSrc}{\xspace$\mathrm{^{137}Cs}$\xspace}
+\newcommand{\MnSrc}{\xspace$\mathrm{^{54}Mn}$\xspace}
+\newcommand{\CoSrcA}{\xspace$\mathrm{^{60}Co}$\xspace}
+\newcommand{\CoSrcB}{\xspace$\mathrm{^{57}Co}$\xspace}
+\newcommand{\BaSrc}{\xspace$\mathrm{^{133}Ba}$\xspace}
+
+\newcommand{\EuSrc}{\xspace$\mathrm{^{154}Eu}$\xspace}
 
 \usepackage{placeins} % FloatBarrier
 \usepackage{amsmath} % align
@@ -58,10 +66,6 @@
 \section{Experimental Procedure}\label{sec:methods}
 \section{Experimental Results}\label{sec:results}
 
-
-% Calibration:
-% 0.251980198019802 keV/chan for inorganic
-% 1.924892774995428 keV/chan for organic
 
 \section{Discussion}\label{sec:disc}
 \section{Conclusions}\label{sec:conc}
@@ -87,20 +91,26 @@ Where a detail could not be identified for a given device, it is replaced with `
     \scriptsize
     \begin{tabular}{c|cccc}
         Item & Manufacturer & Model & ID Type & ID Number\\\hline
-        Module rack & Canberra (now Mirion)\sref{addr:mirion}& Model 2000 & Inventory \# & NE759377 \\
+        % Module rack & Canberra (now Mirion)\sref{addr:mirion}& Model 2000 & Inventory \# & NE759377 \\
         % Geiger-Muller Detector & \na & \na & \na & \na \\
         % GM Pulse Inverter & Spectrum Techniques\sref{addr:spect} & 2017 GPI & \na & \na \\
-        Multichannel Analyzer & Ortec\sref{addr:ortec} & EasyMCA & Inventory \# & P10F79090 \\
-        Alpha Spectrometer & Ortec\sref{addr:ortec} & Model 7401, Si surface barrier detector & Property \# & NE 759377\\
-        Alpha Source & Unknown & 0.1 \micCi \AmSrc & \na & \na\\
-        Vacuum Pump & Unknown & \na & \na & \na \\
-        Mylar Sheets & Unknown & $5\times3.6$~microns thick & \na & \na \\
-        Aluminum Sheets & Unkown & $5\times18$~microns thick & \na & \na \\
+        Multichannel Analyzer & Ortec\sref{addr:ortec} & EasyMCA & Inventory \# & P10R45550 \\
+        \CsSrc Source & Spectrum\sref{addr:spect} & 1.0~\micCi & Manuf. & Sep 1, 2017 \\
+        \CoSrcA Source & '' & '' & Manuf. & Sep 1, 2017 \\
+        \CoSrcB Source & '' & '' & Manuf. & Oct 1, 2017 \\
+        \BaSrc Source & '' & '' & Manuf. & Sep 1, 2017 \\
+        \MnSrc Source & '' & '' & Manuf. & Oct 1, 2017 \\
+        \EuSrc Source & Amersham\sref{addr:amer} & 10~\micCi & Manuf. & Unknown \\
+        % Alpha Spectrometer & Ortec\sref{addr:ortec} & Model 7401, Si surface barrier detector & Property \# & NE 759377\\
+        % Alpha Source & Unknown & 0.1 \micCi \AmSrc & \na & \na\\
+        % Vacuum Pump & Unknown & \na & \na & \na \\
+        % Mylar Sheets & Unknown & $5\times3.6$~microns thick & \na & \na \\
+        % Aluminum Sheets & Unkown & $5\times18$~microns thick & \na & \na \\
         % Weak Source 1 & Spectrum Techniques\sref{addr:spect} & 1.0\micCi ~$^{137}$Cs Beta Source & Date & Sep. 2017 \\
         % Weak Source 2 & Spectrum Techniques\sref{addr:spect} & 1.0\micCi ~$^{137}$Cs Beta Source & Date & Sep. 2017 \\
         % Strong Source & Eckert and Ziegler\sref{addr:eck-zieg} & 30\micCi~$^{137}Cs$ Beta Source & Date & Sep. 2017 \\
         % \InMeta~Source & \na & Irradiated Indium Foil & Date & Feb. 2026 \\
-        High Voltage Power Supply & Caen\sref{addr:caen} & N1470AL & Inventory \# & P10G96054 \\
+        % High Voltage Power Supply & Caen\sref{addr:caen} & N1470AL & Inventory \# & P10G96054 \\
         % Pulser & Ortec\sref{addr:ortec} & Model 480 & \na & \na \\
         % Oscilloscope & Keysight\sref{addr:keys} & Infiniivision DSO-X 2002A & Inventory \# & P10R03513 \\
         % Counter & Ortec\sref{addr:ortec} & Model 871 & Serial \# & 1024 \\
@@ -110,22 +120,12 @@ Where a detail could not be identified for a given device, it is replaced with `
 
     \end{tabular}
     \begin{enumerate}[label=\alph*]
-        \item\label{addr:mirion}
-        Mirion Technologies, Inc.:
-        1218 Menlo Drive,
-        Atlanta, GA;
-        Phone: 770.432.2744;
-        \url{https://ir.mirion.com/}
-        % \item\label{addr:spect}
-        % Spectrum Techniques:
-        % 106 Union Valley Rd, Oak Ridge, TN 37830;
-        % Phone: 865.482.9937;
-        % \url{https://www.spectrumtechniques.com/}
-        % \item\label{addr:eck-zieg}
-        % Eckert \& Ziegler Isotope Products:
-        % 24937 Avenue Tibbitts, Valencia, CA 91355;
-        % Phone: +1 866 476-9767;
-        % \url{https://isotopeproducts.com/}
+        % \item\label{addr:mirion}
+        % Mirion Technologies, Inc.:
+        % 1218 Menlo Drive,
+        % Atlanta, GA;
+        % Phone: 770.432.2744;
+        % \url{https://ir.mirion.com/}
         \item\label{addr:ortec}
         Advanced Measurement Technology:
         801 South Illinois Avenue,
@@ -134,17 +134,32 @@ Where a detail could not be identified for a given device, it is replaced with `
         Phone: +1.865.482.4411;
         Fax: +1.865.483.0396;
         \url{https://www.ortec-online.com};
-        \item\label{addr:caen}
-        Caen Sp.A.:
-        Via della Vetraia, 11, 55049 Viareggio LU - Italy;
-        Phone: +39 0584 388398;
-        \url{https://www.caen.it/}
+        Email: ortec.info@ametek.com
+        \item\label{addr:spect}
+        Spectrum Techniques:
+        106 Union Valley Rd, Oak Ridge, TN 37830;
+        Phone: 865.482.9937;
+        \url{https://www.spectrumtechniques.com/}
+        \item\label{addr:amer}
+        Amersham plc (Acquired by GE Healthcare);
+        500 West Monroe Street, Chicago, Illinois, 60661;
+        Phone: 1 203 3604369;
+        \url{https://www.gehealthcare.com/}
+        % \item\label{addr:eck-zieg}
+        % Eckert \& Ziegler Isotope Products:
+        % 24937 Avenue Tibbitts, Valencia, CA 91355;
+        % Phone: +1 866 476-9767;
+        % \url{https://isotopeproducts.com/}
+        % \item\label{addr:caen}
+        % Caen Sp.A.:
+        % Via della Vetraia, 11, 55049 Viareggio LU - Italy;
+        % Phone: +39 0584 388398;
+        % \url{https://www.caen.it/}
         % \item\label{addr:keys}
         % Keysight Technologies: 
         % 1900 Garden of the Gods Road, Colorado Springs, CO 80907-3423 United States;
         % Phone: 1 800 829-4444;
         % \url{https://www.keysight.com}
-        Email: ortec.info@ametek.com
         \item\label{addr:dell}
         Dell Technologies:
         Dell Technologies
