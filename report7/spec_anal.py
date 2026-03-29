@@ -79,17 +79,67 @@ target_labels = {
     "Background":"background"
 }
 
-# Centroid, FWHM, Net count rate
+# Expected E (keV): Centroid, FWHM, Net count rate, error : bf, br
 id_peaks = {
     "137Cs":[
-        "1005.71,11.77,152.83,"
+        "661.57:1005.71,11.77,93502,476:",
+    ],
+    "60Co":[
+        "1173:1783.94,20.57,21207,412",
+        "1332:2026.79,24.59,19193,245"
+    ],
+    "54Mn":[
+        "835:1274.12,4.98,186,28"
+    ],
+    "133Ba":[
+        "81:120.35,3.87,68831,472",
+        "276:417.6,6.94,12052,308",
+        "302:457.92,7.11,40740,522",
+        "356:539.11,7.71,85055,412",
+        "384:581.68,8.18,10686,174"
+    ],
+    "57Co":[
+        "136:195.76,1.21,175,27",
+        "122:182.01,4.97,1102,41"
+    ],
+    "EuUnknown":[
+        "1408:2143.64,26.3,17031,384:"
     ]
 }
+half_lives_y = {
+    "EuUnknown":13.517
+}
+calpeaks = [ #Must be 1st in list
+    "137Cs",
+    "60Co"
+    # id_peaks["137Cs"][0],
+    # id_peaks["60Co"][0]
+]
+
+cy = [float(id_peaks[peak][0].split(":")[0]) for peak in calpeaks]
+cx = [float(id_peaks[peak][0].split(":")[1].split(",")[0]) for peak in calpeaks]
+m = (cy[1]-cy[0]) / (cx[1]-cx[0])
+b = cy[0]-(cx[0]*m)
+
+im = (cx[1] - cx[0]) / (cy[1]-cy[0])
+ib = cx[0] - (cy[0]*im)
+print(f"Calibration: {m:.5f} x + {b:.5f}")
+
+for target in id_peaks:
+    for peak in id_peaks[target]:
+        energy = float(peak.split(":")[0])
+        bin = im*energy + ib
+        print(f"For E = {energy:.5f}keV expect bin {bin:.5f}")
+
+
 target_specs = {}
+target_times = {}
 for t in target_labels:
     path = f"dat/{t}.mca"
-    target_specs[t] = get_spec_cps(path)
-    make_maestro_file(path)
+    spec_c, time_s = get_spec(path)
+    target_times[t] = time_s
+    target_specs[t] = spec_c / time_s
+    # make_maestro_file(path)
 
 # ehhhhhhhhh i'll do the plotting n stuff tomorrow
 
