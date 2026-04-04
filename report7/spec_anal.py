@@ -63,6 +63,24 @@ $SHAPE_CAL:
     with open(f"{path}.Spe", "w") as out:
         out.write(string)
 
+DIST = 45 + 5 # mm
+DIST_ERR = 0.1 # mm
+DET_RADIUS = 49.1 / 2 # mm
+DET_LENGTH = 36 # mm
+def average_dist2(h, r, c):
+    return r**2/2 + h**2/12 + c**2
+def geom_atten(a, d):
+    d2 = average_dist2(DET_LENGTH, DET_RADIUS, d)
+    return a**2/(4*d2)
+def geom_error(a, d, d_err):
+    Omeg = geom_atten(a, d)
+    return Omeg * (2*d_err/d)
+
+GEOM_ATTEN = geom_atten(DET_RADIUS, DIST)
+GEOM_ERROR = geom_error(DET_RADIUS, DIST, DIST_ERR)
+print(f"Geometric Efficiency: {GEOM_ATTEN:.5f} +- {GEOM_ERROR:.5f}")
+
+
 
 def vbar(x, label, c=None, style="dashed"):
     [ymin, ymax] = plt.ylim()
@@ -112,12 +130,15 @@ id_peaks = {
         # "964:1466.18,18.52,16109,542:",
         
         # Using data from gammaspectacular
-        "1408:2143.64,26.3,17031,384:21.005,72.08" # b+
-        "122:181.84,5.06,181140,1245:28.58,72.08", # b+
+        # "1408:2143.64,26.3,17031,384:21.005,72.08" # b+
+        # "122:181.84,5.06,181140,1245:28.58,72.08", # b+
         "244:369.22,6.83,32375,968:7.583,72.08", # b+
-        "344:521.26,7.72,55067,961:26.5,27.92", # b-
-        "779:1183.91,15.09,17175,647:12.942,27.92",
-        "964:1466.18,18.52,16109,542:14.605,72.08", 
+        # "344:521.26,7.72,55067,961:26.5,27.92", # b-
+        "344:521.26,7.72,76021,492:26.5,27.92", # b-
+        # "779:1183.91,15.09,17175,647:12.942,27.92",
+        "779:1183.91,15.09,16301,357:12.942,27.92",
+        # "964:1466.18,18.52,16109,542:14.605,72.08", 
+        # "964:1466.10,18.22,14806,305:14.605,72.08", 
     ]
 }
 for iso in id_peaks:
@@ -231,39 +252,54 @@ print(f"S = A * T * (BF * BR)")
 all_E = []
 all_aeff = []
 all_aerr = []
+all_ieff = []
+all_ierr = []
 for iso in known_isos:
     E_list = []
     aeff_list = []
     aerr_list = []
+    ieff_list = []
+    ierr_list = []
     peaks = id_peaks[iso]
     for peak in peaks:
         E = int(peak.split(":")[0])
         E, eff, err = abs_eff(iso, E)
-        print(f"Efficiency at {E} keV: {eff:.5f} +- {err:.5f}")
+        ieff = eff / GEOM_ATTEN
+        ierr = ieff * ((err/eff)**2 + (GEOM_ERROR/GEOM_ATTEN)**2)**0.5
+        print(f"Absolute efficiency at {E} keV: {eff:.5f} +- {err:.5f}")
+        print(f"Geometric efficiency of {GEOM_ATTEN:.5f} +- {GEOM_ERROR:.5f}")
+        print(f"--> Intrinsic efficiency @ {E} keV: {ieff:.5f} +- {ierr:.5f}")
         E_list.append(E)
         all_E.append(E)
         aeff_list.append(eff)
         all_aeff.append(eff)
         aerr_list.append(err)
         all_aerr.append(err)
+        
+        ieff_list.append(ieff)
+        all_ieff.append(ieff)
+        ierr_list.append(ierr)
+        all_ierr.append(ierr)
     E_list = np.array(E_list)
     aeff_list = np.array(aeff_list)*100
     aerr_list = np.array(aerr_list)*100
-    plt.scatter(E_list, aeff_list, label=f"{iso}", marker="x")
+    ieff_list = np.array(ieff_list)*100
+    ierr_list = np.array(ierr_list)*100
+    plt.scatter(E_list, ieff_list, label=f"{iso}", marker="x")
 # l0, = plt.plot(0, 0, marker='o', color='b')
-    (_, caps, _) = plt.errorbar(E_list, aeff_list, yerr=aerr_list, capsize=10, elinewidth=1, fmt="none")
+    (_, caps, _) = plt.errorbar(E_list, ieff_list, yerr=ierr_list, capsize=10, elinewidth=1, fmt="none")
     for cap in caps:
         cap.set_color('black')
         cap.set_markeredgewidth(1)
 
 ln_E = np.log(np.array(all_E))
-ln_aeff = np.log(np.array(all_aeff))
-all_aerr = np.log(np.array(all_aerr))
+ln_ieff = np.log(np.array(all_ieff))
+all_ierr = np.log(np.array(all_ierr))
 N_TERMS = 4
-poly = np.polynomial.polynomial.Polynomial.fit(ln_E, ln_aeff, N_TERMS-1, domain=[-1,1], w=1/all_aerr)
+poly = np.polynomial.polynomial.Polynomial.fit(ln_E, ln_ieff, N_TERMS-1, domain=[-1,1], w=1/all_ierr)
 print(poly)
 ln_E_range = np.linspace(min(ln_E), max(ln_E), 1000)
-ln_aeff_fit = poly(ln_E_range)
+ln_ieff_fit = poly(ln_E_range)
 print(f"{poly(0)}")
 print(f"{poly(10)}")
 # print(f"{np.polyval(poly.convert().coef, 0)}")
@@ -277,7 +313,8 @@ for peak in id_peaks["EuUnknown"]:
     dat_Eu = peak.split(":")
 
     E_Eu = int(dat_Eu[0])
-    aeff_Eu = np.exp(poly(np.log(E_Eu)))
+    ieff_Eu = np.exp(poly(np.log(E_Eu)))
+    aeff_Eu = ieff_Eu * GEOM_ATTEN
     Eu_Es.append(E_Eu)
     Eu_effs.append(aeff_Eu)
     print("_"*30)
@@ -314,11 +351,11 @@ elap_range = np.log(decay_range) / (-lamb_Eu)
 print(elap_range[1:3]-elap_range[0:2])
 print(f"{elap_range} years passed")
 
-plt.plot(np.exp(ln_E_range), np.exp(ln_aeff_fit)*100, label=f"{N_TERMS} term ln fit")
+plt.plot(np.exp(ln_E_range), np.exp(ln_ieff_fit)*100, label=f"{N_TERMS} term ln fit")
 # plt.plot(np.exp(ln_E), np.exp(poly(ln_E))*100, label="Four term fit 2")
-plt.scatter(np.array(Eu_Es), np.array(Eu_effs)*100, label="Est. for 152Eu")
+plt.scatter(np.array(Eu_Es), np.array(Eu_effs)*100/GEOM_ATTEN, label="Est. for 152Eu")
 
-plt.ylabel("Absolute Efficiency (%)")
+plt.ylabel("Intrinsic Efficiency (%)")
 plt.xlabel("Energy (keV)")
 plt.loglog()
 plt.legend()
@@ -340,6 +377,14 @@ for t in target_labels:
     spec_c, time_s = get_spec(path)
     target_times[t] = time_s
     target_specs[t] = spec_c / time_s
+    spec_bins = np.array(range(len(spec_c)))
+    spec_e = m*spec_bins + b
+    plt.plot(spec_e, spec_c/time_s, label=f"{target_labels[t]}")
+    plt.xlabel("Energy (keV)")
+    plt.ylabel("Intensity (counts per second)")
+    plt.legend()
+    plt.show()
+
     # make_maestro_file(path)
 
 # ehhhhhhhhh i'll do the plotting n stuff tomorrow
@@ -354,11 +399,7 @@ min_height = 0.02
 min_width = 20 #bins
 peaks = sig.find_peaks(test_spec, height=min_height, width=min_width)
 print(peaks)
-plt.plot(spec_bins, target_specs[test], label=target_labels[test])
-plt.xlabel("Energy (keV)")
-plt.ylabel("Intensity (counts per second)")
-plt.legend()
-plt.show()
+
 
 DIST = 45 #mm
 DIST_S = 1 #also mm, uncertainty
