@@ -1,4 +1,5 @@
 \documentclass[12pt]{article}
+\usepackage{subcaption}
 \usepackage{graphicx} % Required for inserting images
 
 \title{Lab 7: HPGe Detectors: Efficiency Calibration and spectroscopy}
@@ -31,18 +32,29 @@
     \end{figure}
 }
 \newcommand{\defplot}[2]{\defplotW{#1}{#2}{0.75}}
+\newcommand{\defsubplotW}[3]{
+    % \hfill
+    \begin{subfigure}{#3\linewidth}
+        \includegraphics[width=\textwidth]{fig/#1.png}
+        \caption{#2}
+        \newcommand{\tmplabel}{#1}
+        \label{\tmplabel}
+    \end{subfigure}
+    % \hfill
+}
+\newcommand{\defsubplot}[2]{\defsubplotW{#1}{#2}{0.45}}
 
 % Common Macros
-\newcommand{\micCi}{\xspace$\mathrm{\mu Ci}$\xspace}
+\newcommand{\micCi}{$\mathrm{\mu Ci}$\xspace}
 
 
-\newcommand{\CsSrc}{\xspace$\mathrm{^{137}Cs}$\xspace}
-\newcommand{\MnSrc}{\xspace$\mathrm{^{54}Mn}$\xspace}
-\newcommand{\CoSrcA}{\xspace$\mathrm{^{60}Co}$\xspace}
-\newcommand{\CoSrcB}{\xspace$\mathrm{^{57}Co}$\xspace}
-\newcommand{\BaSrc}{\xspace$\mathrm{^{133}Ba}$\xspace}
+\newcommand{\CsSrc}{$\mathrm{^{137}Cs}$\xspace}
+\newcommand{\MnSrc}{$\mathrm{^{54}Mn}$\xspace}
+\newcommand{\CoSrcA}{$\mathrm{^{60}Co}$\xspace}
+\newcommand{\CoSrcB}{$\mathrm{^{57}Co}$\xspace}
+\newcommand{\BaSrc}{$\mathrm{^{133}Ba}$\xspace}
 
-\newcommand{\EuSrc}{\xspace$\mathrm{^{154}Eu}$\xspace}
+\newcommand{\EuSrc}{$\mathrm{^{154}Eu}$\xspace}
 
 \usepackage{placeins} % FloatBarrier
 \usepackage{amsmath} % align
@@ -68,7 +80,7 @@ While the unique spectra created as a result of rich interaction phenomena from 
 Most notably, since the rate of gamma emissions at a specific energy can be predicted from isotope properties and a source's overall activity, the number of counts a detector registers near that energy can be used to estimate a \emph{detection efficiency} of the spectrometry system at that energy, and thus predict the activity of an identified radioisotope from the spectrum that same detector produces in response to it.
 This efficiency is energy dependent, and the relationship may be quantified for a given detector and geometry.\\
 
-In this laboratory, we perform gamma spectrum measurements of several sources of known composition and activity using a High Performance Germanium (HPGe) scintillator, to characterize the energy-dependent efficiency of this detector and predict the age of a \EuSrc source with known initial activity.
+In this laboratory, we perform gamma spectrum measurements of several sources of known composition and activity using a High Purity Germanium (HPGe) scintillator, to characterize the energy-dependent efficiency of this detector and predict the age of a \EuSrc source with known initial activity.
 
 \subsection{Detection Efficiency}
 The overall, or ``absolute'' efficiency $\varepsilon_{abs}$ of a detector, that is the ratio of decay instances detected $N$ to the known true count $S$, may be broken up into an ``intrinsic'' efficiency to the detector $\varepsilon_{intr}$, and a ``geometric'' efficiency (a.k.a. fractional solid angle) $\Omega_f$ of the given experimental setup:
@@ -91,6 +103,11 @@ Thus, the true specific activity $S$ for a source of known activity $A$ measured
 In Eq.~\ref{eq:specific-activity}, $BR$ represents the \emph{branching ratio}, the fraction of all decays which are of the specific decay mode associated with this energy (such as the fraction of decays which are electron capture, as opposed to the competing beta).
 $BF$ then represents the \emph{branching fraction}, the fraction of decays in that mode which release the desired form of radiation (such as the fraction which then emit 662~keV gamma rays specifically).
 These values have been measured and tabulated across a wide variety of isotopes and decay phenomena, and may be readily used for these specific activity and efficiency estimates.
+For an isotope of half-life $t_{1/2}$ (and corresponding activity coefficient $\lambda=\ln(1/2)/t_{1/2}$), the age $t$ of a sample can be used to estimate the activity $A$ from its initial activity $A_0$, or vice versa, using the exponential decay rate law\cite{tsoulfanidis_measurement_2015}:
+\begin{equation}
+    \label{eq:exp-decay}
+    A=A_0e^{-\lambda t}
+\end{equation}
 
 \subsection{Solid Angle Estimation}
 
@@ -120,6 +137,10 @@ To extend Eq.~\ref{eq:point-circle-sang} to a volumetric, cylindrical detector r
 \end{equation}
 Given known dimensions, and an error in distance $\sigma_d$, the error of this estimate can also be determined:
 \begin{equation}
+    \label{eq:gen-err-prop}
+    \sigma(f(x,y,\dots))=\sqrt{(\frac{df}{dx} \sigma_x)^2 + (\frac{df}{dy} \sigma_y)^2 \dots}
+\end{equation}
+\begin{equation}
     \label{eq:sangle-error}
     \begin{gathered}
         \sigma(f(x,y,\dots))=\sqrt{(\frac{df}{dx} \sigma_x)^2 + (\frac{df}{dy} \sigma_y)^2 \dots} \\
@@ -131,10 +152,16 @@ Given known dimensions, and an error in distance $\sigma_d$, the error of this e
 where, in Eq.~\ref{eq:sangle-error}, if $d$ is replaced with an average distance $\avd$, the error is likewise replaced with $\sigma_{\avd}=\frac{d\avd}{dc}\sigma_c$ for a distance to front $c$, as in Eq.~\ref{eq:avg-dist}.\\
 
 As many detectors are of cylindrical shape\cite{knoll_radiation_2010}, these approximations can be highly useful in radiation detection, provided proper care is taken to align the source on the axis of the cylinder, and a sufficiently small source (or one at sufficiently large distance) is used.
+
+\subsection{High Purity Germanium Scintillators}
+High Purity Germanium (HPGe) scintillators are a class of semiconductor detectors with high energy resolution compared to other similar scintillators, and are thus extremely useful in spectrometry measurements such as of \BaSrc, which release gamma rays of several closely-packed energies.
+Tsoulfanidis and Landseberger provide a more detailed explanation of HPGe detectors and their usage\cite{tsoulfanidis_measurement_2015}, but for the purposes of this laboratory, it is most crucial that HPGe detectors, in addition to having high energy resolution, may be stored at room temperature, requiring active cooling only during usage for best performance.
+
 \section{Experimental Procedure}\label{sec:methods}
 \FloatBarrier
 We arranged an HPGe scintillator, cooling device, and multichannel analyzer (MCA)  to measure activity from a coaxially located radiation source, as shown in \figref{Lab7_setup}.
 The MCA was connected to a workstation computer, and was set using the computer to provide a bias of $+3400$~V.
+Crucially, the cooling device was active during all measurements to cool the HPGe detector to usable temperatures.
 Dimensions of the HPGe detector, alongside other material details, may be found in Appendix~\ref{app:equip}.
 We placed a marked foam block against the detector, such that the source would be placed $45\pm1$~mm from the detector.\\
 
@@ -148,13 +175,24 @@ Each spectrum measurement consisted of placing the source (if applicable) in the
 \section{Experimental Results}\label{sec:results}
 \FloatBarrier
 
-We measured gamma spectra for the six sources and background, which may each be seen in Figs.~\ref{spec_137Cs} through \ref{spec_bg}.
+We measured gamma spectra for the six sources and background, which may each be seen in Figs.~\ref{fig:known-specs} for the five fully known sources, for the \EuSrc source in \figref{spec_152Eu}, and for the background in \figref{spec_bg}.
 
-\defplot{spec_137Cs}{The gamma spectrum recorded of the \CsSrc source over 10~minutes.}
-\defplot{spec_54Mn}{The gamma spectrum recorded of the \MnSrc source over 10~minutes.}
-\defplot{spec_60Co}{The gamma spectrum recorded of the \CoSrcA source over 10~minutes.}
-\defplot{spec_57Co}{The gamma spectrum recorded of the \CoSrcB source over 10~minutes.}
-\defplot{spec_133Ba}{The gamma spectrum recorded of the \BaSrc source over 10~minutes.}
+\begin{figure}
+    \centering
+    \defsubplot{spec_137Cs}{Of the \CsSrc source.}\hfill
+    \defsubplot{spec_54Mn}{Of the \MnSrc source.}\hfill
+    \defsubplot{spec_60Co}{Of the \CoSrcA source.}\hfill
+    \defsubplot{spec_57Co}{Of the \CoSrcB source.}\hfill
+    \defsubplot{spec_133Ba}{Of the \BaSrc source.}
+    \caption{Gamma spectra recorded of the \CsSrc, \MnSrc, \CoSrcA, \CoSrcB, and \BaSrc sources, all over a period of 10~minutes.}
+    \label{fig:known-specs}
+\end{figure}
+
+% \defplot{spec_137Cs}{The gamma spectrum recorded of the \CsSrc source over 10~minutes.}
+% \defplot{spec_54Mn}{The gamma spectrum recorded of the \MnSrc source over 10~minutes.}
+% \defplot{spec_60Co}{The gamma spectrum recorded of the \CoSrcA source over 10~minutes.}
+% \defplot{spec_57Co}{The gamma spectrum recorded of the \CoSrcB source over 10~minutes.}
+% \defplot{spec_133Ba}{The gamma spectrum recorded of the \BaSrc source over 10~minutes.}
 \defplot{spec_152Eu}{The gamma spectrum recorded of the \EuSrc source over 5~minutes.}
 \defplot{spec_bg}{The background gamma spectrum, as recorded over 20~minutes.}
 
@@ -164,46 +202,128 @@ These peak fits may be seen in Figs.~\ref{peak_1332} through \ref{peak_81}.
 Using these peaks, the expected activity of each source given ages and half lives\cite{noauthor_livechart_nodate}, tabulated branching ratios and branching factors on the table of nuclides\cite{noauthor_livechart_nodate}, and the geometric efficiency of the detector ($0.04492\pm0.00134$), we estimated the intrinsic efficiency at each peak energy, tabulated in Table~\ref{tab:ieffs}.
 \\
 
-\newcommand{\peakplot}[1]{\defplotW{peak_#1}{The spectrum in the vicinity of an expected peak at #1~keV, compared to a Gaussian fit.}{0.5}}
-\peakplot{1332}
-\peakplot{1173}
-\peakplot{835}
-\peakplot{662}
-\peakplot{356}
-\peakplot{302}
-\peakplot{276}
-\peakplot{136}
-\peakplot{122}
-\peakplot{81}
+% \newcommand{\peakplot}[1]{\defplotW{peak_#1}{The spectrum in the vicinity of an expected peak at #1~keV, compared to a Gaussian fit.}{0.5}}
+\newcommand{\peakplot}[1]{\defsubplotW{peak_#1}{#1~keV.}{0.45}}
+\begin{figure}
+    \centering
+    \peakplot{1332}\hfill
+    \peakplot{1173}\hfill
+    \peakplot{835}\hfill
+    \peakplot{662}\hfill
+    \peakplot{356}\hfill
+    \peakplot{302}
+    \caption{Spectra measured near expected peaks of 1332, 1173, 835, 662, 356, and 302~keV, compared to Gaussian fits of these features.}
+    \label{fig:peak-fits-a}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \peakplot{276}\hfill
+    \peakplot{136}\hfill
+    \peakplot{122}\hfill
+    \peakplot{81}
+    \caption{Spectra measured near expected peaks of 276, 136, 122, and 81~keV, compared to Gaussian fits of these features.}
+    \label{fig:peak-fits-a}
+\end{figure}
+
 
 \begin{table}
+    \centering
     \caption{Peak information, both from observed spectra and expected phenomena, and the resulting intrinsic efficiency calculated at their corresponding energies, for the photopeaks chosen in this experiment. For all five known sources, measurements were taken over a time $T=600$~seconds.}
     \label{tab:ieffs}
-    \begin{tabular}{cc|c|cc|c|c}
-Isotope & $E_0$~(keV) & Total~$N$~(counts) & BR & BF & Activity $A$~(\micCi) & $\varepsilon_{intr}$ \\\hline
-\CsSrc & 662 & $93502 \pm 476$ & 1.0000 & 0.8510 & 0.821 & $0.13422 \pm 0.00407$ \\
+    \begin{tabular}{cc|c|cc|cc|c}\hline
+Isotope & $E_0$~(keV) & Total~$N$~(counts) & BR & BF & $t_{1/2}$~(y) & $A$~(\micCi) & $\varepsilon_{intr}$ \\\hline
+\rule{0pt}{2.5ex}\CsSrc & 662 & $93502 \pm 476$ & 1.0 & 0.851 & 30.080 & 0.821 & $0.1342 \pm 0.0041$ \\
 % qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
-\CoSrcA & 1173 & $21207 \pm 412$ & 1.0000 & 0.9985 & 0.324 & $0.06570 \pm 0.00234$ \\
-\CoSrcA & 1332 & $19193 \pm 245$ & 1.0000 & 0.9998 & 0.324 & $0.05938 \pm 0.00193$ \\
-\MnSrc & 835 & $186 \pm 28$ & 1.0000 & 0.9998 & 0.001 & $0.18153 \pm 0.02786$ \\
-\BaSrc & 81 & $68831 \pm 472$ & 1.0000 & 0.3290 & 0.570 & $0.36831 \pm 0.01129$ \\
-\BaSrc & 276 & $10915 \pm 144$ & 1.0000 & 0.0716 & 0.570 & $0.26837 \pm 0.00877$ \\
-\BaSrc & 302 & $26014 \pm 198$ & 1.0000 & 0.1834 & 0.570 & $0.24971 \pm 0.00770$ \\
-\BaSrc & 356 & $82174 \pm 316$ & 1.0000 & 0.6205 & 0.570 & $0.23314 \pm 0.00702$ \\
-\BaSrc & 384 & $10868 \pm 121$ & 1.0000 & 0.0894 & 0.570 & $0.21401 \pm 0.00682$ \\
-\CoSrcB & 136 & $175 \pm 27$ & 1.0000 & 0.1068 & 0.000 & $4.45352 \pm 0.69988$ \\
-\CoSrcB & 122 & $1102 \pm 41$ & 1.0000 & 0.8560 & 0.000 & $3.49900 \pm 0.16696$ \\
+\CoSrcA & 1173 & $21207 \pm 412$ & 1.0 & 0.998 & 5.271 & 0.324 & $0.0657 \pm 0.0023$ \\
+\CoSrcA & 1332 & $19193 \pm 245$ & 1.0 & 1.000 & 5.271 & 0.324 & $0.0594 \pm 0.0019$ \\
+\MnSrc & 835 & $186 \pm 28$ & 1.0 & 1.000 & 0.855 & 0.001 & $0.1815 \pm 0.0279$ \\
+\BaSrc & 81 & $68831 \pm 472$ & 1.0 & 0.329 & 10.551 & 0.570 & $0.3683 \pm 0.0113$ \\
+\BaSrc & 276 & $10915 \pm 144$ & 1.0 & 0.072 & 10.551 & 0.570 & $0.2684 \pm 0.0088$ \\
+\BaSrc & 302 & $26014 \pm 198$ & 1.0 & 0.183 & 10.551 & 0.570 & $0.2497 \pm 0.0077$ \\
+\BaSrc & 356 & $82174 \pm 316$ & 1.0 & 0.620 & 10.551 & 0.570 & $0.2331 \pm 0.0070$ \\
+\BaSrc & 384 & $10868 \pm 121$ & 1.0 & 0.089 & 10.551 & 0.570 & $0.2140 \pm 0.0068$ \\
+\CoSrcB & 136 & $175 \pm 27$ & 1.0 & 0.107 & 0.744 & 0.000 & $4.4535 \pm 0.6999$ \\
+\CoSrcB & 122 & $1102 \pm 41$ & 1.0 & 0.856 & 0.744 & 0.000 & $3.4990 \pm 0.1670$ \\\hline
     \end{tabular}
 \end{table}
 
-Performing an error-weighted fit of $\ln(\varepsilon_{intr})$ against $\ln(E)$, we obtained a four-term logarithmic polynomial fit of intrinsic efficiency at each different energy.
+Performing an error-weighted fit of $\ln(\varepsilon_{intr})$ versus $\ln(E)$, we obtained a four-term logarithmic polynomial fit of intrinsic efficiency at each different energy.\\
+
+The fit taken over the \BaSrc, \CoSrcA, and \CsSrc measurements may be viewed in \figref{E_v_ieff}, with a closer view in \figref{E_v_ieff_zoom}, while a less usable fit additionally containing the negligible \CoSrcB and \MnSrc may be seen in \figref{E_v_ieff_cursed}.
+
+\defplot{E_v_ieff}{A weighted fit of $\ln(\varepsilon_{intr})$ versus $\ln(E)$ for the detector measurements, for sources with usable activity (excluding \CoSrcB and \MnSrc).}
+\defplot{E_v_ieff_zoom}{A selected portion of a weighted fit of $\ln(\varepsilon_{intr})$ versus $\ln(E)$ for the detector measurements, for sources with usable activity (excluding \CoSrcB and \MnSrc), zoomed in to view the slim residuals of activities from those predicted by the fit.}
+\defplot{E_v_ieff_cursed}{A weighted fit of $\ln(\varepsilon_{intr})$ versus $\ln(E)$ for the detector measurements, including sources \CoSrcB and \MnSrc with negligible activity.}
+
+\FloatBarrier
+We then fit Gaussian peaks to estimate counts at peaks of 244, 344, and 779~keV in the \EuSrc spectrum (which may be observed in Figs.~\ref{peak_244} through \ref{peak_779}).
+We selected these three peaks because of their prominence and energies falling comfortably within the range used to estimate intrinsic efficiency, as displayed in the fit in \figref{E_v_ieff}.
+Using tabulated branching data\cite{noauthor_livechart_nodate}, the fit of $\varepsilon_{intr}$, the geometric efficiency, and Eqs.~\ref{eq:abs-eff} and \ref{eq:specific-activity}, we produced estimates of the current activity of the \EuSrc source using each of these three peaks, tabulated in Table~\ref{tab:eu-act}.
+
+Using these three peaks (and propagating error using Eq.~\ref{eq:gen-err-prop} where applicable), we estimated an activity of the \EuSrc sample to have been $2.56954 \pm 0.03766$~\micCi.
+Given the known half-life of \EuSrc, 13.52~years\cite{noauthor_livechart_nodate}, and an original activity of 10.0~\micCi\cite{npre_lab_7_manual_2025}, we estimated using Eq.~\ref{eq:exp-decay} a sample age of $26.499 \pm 0.286$~years.
+Compared to the laboratory date of March 27, 2026, this yields an estimated creation date of approximately September 1999.\\
+
+\begin{figure}
+    \centering
+    \peakplot{244}\hfill
+    \peakplot{344}\hfill
+    \peakplot{779}
+    \caption{Spectra measurements near expected peaks in \EuSrc spectra, of 244, 344, and 779~keV, compared to Gaussian fits of these features.}
+    \label{fig:peak-fits-a}
+\end{figure}
+
+\begin{table}
+    \centering
+    \caption{The peak intensities, tabulated branching information, and corresponding estimates of the \EuSrc source, of photopeaks at 244, 344, and 779~keV. This measurement was taken over 5~minutes.}
+    \label{tab:eu-act}
+    \begin{tabular}{c|ccc}\hline
+$E$~(keV) & Total~$N$~(counts) & Est.~$\varepsilon_{abs}$ & Est.~$A$~(\micCi) \\\hline
+244 & $32375 \pm 968$ & $0.01288 \pm 0.00013$ & $2.98547 \pm 0.09433$ \\
+344 & $76021 \pm 492$ & $0.01048 \pm 0.00011$ & $2.46667 \pm 0.02983$ \\
+779 & $16301 \pm 357$ & $0.00503 \pm 0.00005$ & $2.25649 \pm 0.05453$ \\\hline
+    \end{tabular}
+\end{table}
 
 
 \FloatBarrier
 
 
 \section{Discussion}\label{sec:disc}
+As the detector used in this experiment was of non-negligible length, an average distance was used as shown in Eq.~\ref{eq:avg-dist}.
+As such, the error in the measurement of distance $c=50\pm1$~mm to the tip of the detector had to be propagated twice, first through the average distance (Eq.~\ref{eq:avg-dist}), then through the solid angle calculation of Eq.~\ref{eq:point-circle-sang}:
+\begin{gather}
+    \label{eq:sang-err-rederiv}
+    % \begin{gathered}
+    % \end{gathered}\\
+    \begin{aligned}
+        \sigma(f(x,y,\dots))&=\sqrt{(\frac{df}{dx} \sigma_x)^2 + (\frac{df}{dy} \sigma_y)^2 \dots}\\
+        \sigma(f(x))&=\left|\frac{df}{dx} \sigma_x\right|\\
+        \sigma(\Omega_f(c))&=\left|\frac{d\Omega_f}{dc}\sigma_c\right|\\
+        &=\left|\frac{d\Omega_f}{d\avd}\frac{d\avd}{dc}\sigma_c\right|\\
+        &\color{gray}\rightarrow\frac{d\Omega_f}{d\avd}=-\frac{1}{2}\left(\frac{a^{2}}{\left(\avd^{2}+a^{2}\right)^{1.5}}\right)\\
+        &\color{gray}\rightarrow\frac{d\avd}{dc}=\frac{c}{\sqrt{c^{2}+\frac{a^{2}}{2}+\frac{h^{2}}{12}}}\\
+        &=\left|-\frac{1}{2}\left(\frac{a^{2}}{\left(\avd^{2}+a^{2}\right)^{1.5}}\right)\frac{c}{\sqrt{c^{2}+\frac{a^{2}}{2}+\frac{h^{2}}{12}}}\sigma_c\right|\\
+        \sigma(\Omega_f(c))&=\frac{1}{2}\left(\frac{a^{2}}{\left(\sqrt{\frac{3a^{2}}{2}+\frac{h^{2}}{12}+c^{2}}\right)^{3}}\right)\frac{c}{\sqrt{c^{2}+\frac{a^{2}}{2}+\frac{h^{2}}{12}}}\sigma_c
+    \end{aligned}
+\end{gather}
+
+We find that the logarithmic fit of intrinsic efficiency to energy (\figref{E_v_ieff}) fairly closely matched that expected from previous experiments\cite{npre_lab_7_manual_2025}, having a region of high efficiency near low energies before gradually becoming lower and lower for higher energies.
+Additionally, as seen most clearly in \figref{E_v_ieff_zoom}, the fit captures the measured efficiency at each peak within the margin of error for that peak's efficiency.
+However, this requires the elimination of the peaks from \CoSrcB and \MnSrc : as seen in Table~\ref{tab:ieffs}, and Figs.~\ref{peak_835} and \ref{peak_136}, these isotopes possess such short half-lives that the samples' activity could not be feasibly separated even from the noise of the spectrum (as the background activity was already subtracted using the 20~minutes background recording), yielding results without meaning (such as a $>1$ efficiency estimate using the \CoSrcB sample).
+Were we to include these uninterpretable ``data'', an unusable efficiency fit, seen in \figref{E_v_ieff_cursed} is found, yielding a much less useful age estimate of $30.67217 \pm 8.80292$~years.\\
+
+Using the appropriate intrinsic efficiency fit, the estimates for activity of the \EuSrc source stayed relatively consistent across the three peaks (Table~\ref{tab:eu-act}), which allow us using the known original activity of the source (10~\micCi), to estimate that the sample is $26.499 \pm 0.286$~years old, created around September of 1999.\\
+
+While we carry out error analysis accounting for errors such as in peak fitting or measurement of detector distance, we recognize that other sources of error may have affected the laboratory.
+These include potential epistemic errors, such as falsely observing the \CoSrcB and \MnSrc activities to be negligible, or the polynomial fit being inappropriate (or of too high degree).
+Additionally, even after subtracting background radiation, some amount of background noise can still be seen, possibly owing to time variation in background radiation, or simply random statistical phenomena.
+For example, a 2204~keV peak, still visible in some spectra after background subtraction, is a typical indicator of $^{222}$Rn decay (through the daughter product $^{214}$Bi)\cite{phillips_primer_nodate}.
+
 \section{Conclusions}\label{sec:conc}
+
+The objectives of this laboratory were largely met.
 
 % \bibliographystyle{sty/ieeetran}
 \pagebreak\printbibliography
