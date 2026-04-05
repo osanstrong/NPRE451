@@ -244,9 +244,9 @@ for eu_peak in id_peaks["EuUnknown"]:
 
 known_isos = [
     "137Cs", "60Co", 
-    "54Mn", 
+    # "54Mn", 
     "133Ba",
-    "57Co",
+    # "57Co",
     ]
 
 MICROCURIE = 3.7e4
@@ -428,7 +428,7 @@ for peak in id_peaks["EuUnknown"]:
     A_micCi_err = A_Eu_err / MICROCURIE
     Eu_As.append(A_Eu)
     Eu_A_errs.append(A_Eu_err)
-    print(f"{E_Eu} & ${N_Eu} \\pm {Nerr_Eu}$ & ${aeff_Eu:.5f} \\pm {aeff_err:.5f}$ & ${A_micCi:.5f} \\pm {A_micCi_err:.5f}$ \\\\")
+    print(f"{E_Eu} & ${N_Eu} \\pm {Nerr_Eu}$ & {BR_Eu:.3f} & {BF_Eu:.3f} & ${aeff_Eu:.5f} \\pm {aeff_err:.5f}$ & ${A_micCi:.5f} \\pm {A_micCi_err:.5f}$ \\\\")
     # A_Eu = np.array([S_Eu-Serr_Eu, S_Eu, S_Eu+Serr_Eu]) / (TB_Eu * Time_Eu)
     # decay_Eu = A_Eu / OG_A_Eu
     # decays_Eu.append(decay_Eu[1])
