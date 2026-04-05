@@ -233,14 +233,6 @@ for iso in id_peaks:
 
         rel_E = rel_bins*m + b
 
-        # plt.plot(rel_E, base_peak, label=f"Net Rate ({target_labels[iso]}, {E} keV)")
-        # plt.plot(rel_E, fit_peak, label=f"Gaussian Fit")
-        # plt.fill_between(rel_E, fit_low, fit_high, color="C1", alpha=0.5, label="Fit Error")
-        # plt.xlabel("Energy (keV)")
-        # plt.ylabel("Intensity (Counts per second)")
-        # plt.legend()
-        # plt.show()
-
 
 
 

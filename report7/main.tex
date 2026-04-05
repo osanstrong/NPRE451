@@ -71,12 +71,12 @@
 \pagenumbering{arabic}
 \begin{abstract}
     Gamma spectroscopy is a widely used technique to characterize both the composition and activity of radioactive material.
-    In this laboratory, we aimed to characterize the (energy-dependent) detection efficiency of a High Purity Germanium (HPGe) detector, and thus estimate the activity of a \EuSrc source of unknown age.
+    In this laboratory, we characterize the (energy-dependent) detection efficiency of a High Purity Germanium (HPGe) detector, and use this detector to estimate the activity of a \EuSrc source of unknown age.
     We measured gamma spectra of \CsSrc, \MnSrc, \CoSrcA, \CoSrcB, and \BaSrc sources with known initial activity and age, of the \EuSrc source with known initial activity but unknown age, and of background radiation, and identified the count rates of key photopeaks at 1332, 1173, 835, 662, 356, 302, 276, 136, 133, and 81~keV, comparing using known activity and branching factors to build an intrinsic efficiency curve of the HPGe detector.
-    Using this curve, we estimated its efficiency at \EuSrc peaks of 244, 344, and 779~keV to compare with branching factors to estimate the current activity of the source, and its probably age.
+    Using this curve, we estimated detection efficiency at \EuSrc peaks of 244, 344, and 779~keV to compare with branching factors to estimate the current activity and probable age of the source.
     We found an efficiency curve matching initial expectations, having a hump of high efficiency at low energy with steadily decreasing efficiency for higher energies.
-    Using this curve, we estimated the age of the \EuSrc source to be $26.499 \pm 0.286$~years, with a manufacturing date around September 1999.
-    The results demonstrate the consistency of the model of efficiency as a combination of intrinsic and geometric factors, and demonstrate (across consistent geometric layout) the effectiveness of gamma spectroscopy as a tool to measure the activity and age of radioisotope samples.
+    Using this curve, we estimated the activity of the \EuSrc source to be $2.56954 \pm 0.03766$~\micCi, compared to a known initial activity of 10~\micCi, implying the age of the \EuSrc source to be $26.499 \pm 0.286$~years, with a manufacturing date around September 1999.
+    The results demonstrate the consistency of the model of efficiency as a combination of intrinsic and geometric factors, and demonstrate the effectiveness of gamma spectroscopy (across consistent geometric layouts) as a tool to measure the activity and age of radioisotope samples.
     They may be of interest to those aiming to use spectroscopy to date objects using radioactive material, and in particular to those seeking to use HPGe scintillators for this purpose.
 \end{abstract}
 
@@ -84,7 +84,7 @@
 
 Gamma spectroscopy is a crucial technique for characterizing radioactive material.
 While the unique spectra created as a result of rich interaction phenomena from the different combinations of radiation released by radioisotopes serve well to distinguish and identify such isotopes, the intensity (count rates) of known features are also numerically useful.
-Most notably, since the rate of gamma emissions at a specific energy can be predicted from isotope properties and a source's overall activity, the number of counts a detector registers near that energy can be used to estimate a \emph{detection efficiency} of the spectrometry system at that energy, and thus predict the activity of an identified radioisotope from the spectrum that same detector produces in response to it.
+Most notably, since the rate of gamma emissions at a specific energy can be predicted from isotope properties and a source's overall activity, the number of counts a detector registers near that energy can be used to estimate a \emph{detection efficiency} of the spectrometry system at that energy, and thus predict the activity of an identified radioisotope from the spectrum the detector produces in response to a source.
 This efficiency is energy dependent, and the relationship may be quantified for a given detector and geometry.\\
 
 In this laboratory, we perform gamma spectrum measurements of several sources of known composition and activity using a High Purity Germanium (HPGe) scintillator, to characterize the energy-dependent efficiency of this detector and predict the age of a \EuSrc source with known initial activity.
@@ -204,7 +204,11 @@ We measured gamma spectra for the six sources and background, which may each be 
 \defplot{spec_bg}{The background gamma spectrum, as recorded over 20~minutes.}
 
 \FloatBarrier
+Using the clearly identifiable peaks of 661.7~keV in the \CsSrc spectrum and 1173~keV in the \CoSrcA spectrum, we found a calibration relationship $E=0.65662n + 1.63249$~keV, where $n$ is the channel number of the spectrum.
+We used this relationship to quantify the energy of all spectra used in this laboratory.\\
+
 Using the multichannel analysis software Maestro\cite{ortec_maestro_2012} (by converting to an appropriate format, as elaborated upon in Appendix~\ref{app:codes}), we fit Gaussian peaks to the spectrum peaks at 1332, 1173, 835, 662, 356, 302, 276, 136, 133, and 81~keV.
+
 These peak fits may be seen in Figs.~\ref{peak_1332} through \ref{peak_81}.
 Using these peaks, the expected activity of each source given ages and half lives\cite{noauthor_livechart_nodate}, tabulated branching ratios and branching factors on the table of nuclides\cite{noauthor_livechart_nodate}, and the geometric efficiency of the detector ($0.04492\pm0.00134$), we estimated the intrinsic efficiency at each peak energy, tabulated in Table~\ref{tab:ieffs}.
 \\
@@ -255,13 +259,22 @@ Isotope & $E_0$~(keV) & Total~$N$~(counts) & BR & BF & $t_{1/2}$~(y) & $A$~(\mic
     \end{tabular}
 \end{table}
 
-Performing an error-weighted fit of $\ln(\varepsilon_{intr})$ versus $\ln(E)$, we obtained a four-term logarithmic polynomial fit of intrinsic efficiency at each different energy.\\
+Performing an error-weighted, four-term polynomial fit of $\ln(\varepsilon_{intr})$ versus $\ln(E)$ (such as described by Eq.~\ref{eq:four-term-fit}), we obtained a four-term logarithmic polynomial fit of intrinsic efficiency at each different energy.\\
+
+\begin{equation}
+    \label{eq:four-term-fit}
+    \begin{gathered}
+        y\approx ax^3 + bx^2 + cx + d\\
+        y=\ln(\varepsilon_{intr})\\
+        x=\ln(E)
+    \end{gathered}
+\end{equation}
 
 The fit taken over the \BaSrc, \CoSrcA, and \CsSrc measurements may be viewed in \figref{E_v_ieff}, with a closer view in \figref{E_v_ieff_zoom}, while a less usable fit additionally containing the negligible \CoSrcB and \MnSrc may be seen in \figref{E_v_ieff_cursed}.
 
-\defplot{E_v_ieff}{A weighted fit of $\ln(\varepsilon_{intr})$ versus $\ln(E)$ for the detector measurements, for sources with usable activity (excluding \CoSrcB and \MnSrc).}
-\defplot{E_v_ieff_zoom}{A selected portion of a weighted fit of $\ln(\varepsilon_{intr})$ versus $\ln(E)$ for the detector measurements, for sources with usable activity (excluding \CoSrcB and \MnSrc), zoomed in to view the slim residuals of activities from those predicted by the fit.}
-\defplot{E_v_ieff_cursed}{A weighted fit of $\ln(\varepsilon_{intr})$ versus $\ln(E)$ for the detector measurements, including sources \CoSrcB and \MnSrc with negligible activity.}
+\defplot{E_v_ieff}{A four-term weighted fit of $\ln(\varepsilon_{intr})$ versus $\ln(E)$ for the detector measurements, for sources with usable activity (excluding \CoSrcB and \MnSrc).}
+\defplot{E_v_ieff_zoom}{A selected portion of the weighted fit of $\ln(\varepsilon_{intr})$ versus $\ln(E)$ for the detector measurements, for sources with usable activity (excluding \CoSrcB and \MnSrc), zoomed in to highlight the slim residuals of activities from those predicted by the fit.}
+\defplot{E_v_ieff_cursed}{A four-term weighted fit of $\ln(\varepsilon_{intr})$ versus $\ln(E)$ for the detector measurements, including sources \CoSrcB and \MnSrc with negligible activity.}
 
 \FloatBarrier
 We then fit Gaussian peaks to estimate counts at peaks of 244, 344, and 779~keV in the \EuSrc spectrum (which may be observed in Figs.~\ref{peak_244} through \ref{peak_779}).
@@ -318,7 +331,7 @@ As such, the error in the measurement of distance $c=50\pm1$~mm to the tip of th
 
 We find that the logarithmic fit of intrinsic efficiency to energy (\figref{E_v_ieff}) fairly closely matched that expected from previous experiments\cite{npre_lab_7_manual_2025}, having a region of high efficiency near low energies before gradually becoming lower and lower for higher energies.
 Additionally, as seen most clearly in \figref{E_v_ieff_zoom}, the fit captures the measured efficiency at each peak within the margin of error for that peak's efficiency.
-However, this requires the elimination of the peaks from \CoSrcB and \MnSrc : as seen in Table~\ref{tab:ieffs}, and Figs.~\ref{peak_835} and \ref{peak_136}, these isotopes possess such short half-lives that the samples' activity could not be feasibly separated even from the noise of the spectrum (as the background activity was already subtracted using the 20~minutes background recording), yielding results without meaning (such as a $>1$ efficiency estimate using the \CoSrcB sample).
+However, this requires the elimination of the peaks from \CoSrcB and \MnSrc : as seen in Table~\ref{tab:ieffs}, and Figs.~\ref{peak_835} and \ref{peak_136}, these isotopes possess such short half-lives that the samples' activity could not be feasibly separated even from the noise of the spectrum (even after subtracting background activity using the 20~minutes background recording), yielding results without meaning (such as a $>1$ efficiency estimate using the \CoSrcB sample).
 Were we to include these uninterpretable ``data'', an unusable efficiency fit, seen in \figref{E_v_ieff_cursed} is found, yielding a much less useful age estimate of $30.67217 \pm 8.80292$~years.\\
 
 Using the appropriate intrinsic efficiency fit, the estimates for activity of the \EuSrc source stayed relatively consistent across the three peaks (Table~\ref{tab:eu-act}), which allow us using the known original activity of the source (10~\micCi), to estimate that the sample is $26.499 \pm 0.286$~years old, created around September of 1999.\\
@@ -334,7 +347,7 @@ The objectives of this laboratory, which aimed to build an efficiency curve of a
 
 Spectra were measured of \CsSrc, \MnSrc, \CoSrcA, \CoSrcB, and \BaSrc sources for 10~minutes, of an \EuSrc source for 5~minutes, and of background radiation for 20~minutes.\\
 
-A logarithmic polynomial fit was created of intrinsic efficiency $\varepsilon_{intr}$ as a function of energy $E$ for the HPGe scintillator using the sources of known age (all except \EuSrc), matching expected behavior with highest efficiency at a range of lower energies, and decreasing efficiency over higher energies.\\
+A logarithmic four-term polynomial fit was created of intrinsic efficiency $\varepsilon_{intr}$ as a function of energy $E$ for the HPGe scintillator using the sources of known age (all except \EuSrc), matching expected behavior with highest efficiency at a range of lower energies, and decreasing efficiency over higher energies.\\
 
 This curve was used to estimate the current activity of the \EuSrc at $2.56954 \pm 0.03766$~\micCi, which, compared to the known original activity of 10.0~\micCi, yielded an estimated manufacturing date of September 1999.
 
