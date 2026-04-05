@@ -349,11 +349,12 @@ for iso in known_isos:
         E, eff, err, A = abs_eff(iso, E)
         ieff = eff / GEOM_ATTEN
         ierr = ieff * ((err/eff)**2 + (GEOM_ERROR/GEOM_ATTEN)**2)**0.5
+        hl_y = half_lives_y[iso]
         # print(f"Absolute efficiency at {E} keV: {eff:.5f} +- {err:.5f}")
         # print(f"Geometric efficiency of {GEOM_ATTEN:.5f} +- {GEOM_ERROR:.5f}")
         # print(f"--> Intrinsic efficiency @ {E} keV: {ieff:.5f} +- {ierr:.5f}")
         A_micCi = A / MICROCURIE
-        print(f"{latex_labels[iso]} & {E} & ${int(N)} \\pm {int(N_err)}$ & {BF:.4f} & {jBR:.4f} & {A_micCi:.3f} & ${ieff:.5f} \\pm {ierr:.5f}$ \\\\")
+        print(f"{latex_labels[iso]} & {E} & ${int(N)} \\pm {int(N_err)}$ & {BF:.1f} & {jBR:.3f} & {hl_y:.3f} & {A_micCi:.3f} & ${ieff:.4f} \\pm {ierr:.4f}$ \\\\")
         E_list.append(E)
         all_E.append(E)
         aeff_list.append(eff)
@@ -411,18 +412,18 @@ for peak in id_peaks["EuUnknown"]:
 
     Eu_Es.append(E_Eu)
     Eu_effs.append(aeff_Eu)
-    print("_"*30)
-    print(f"Efficiency @ {E_Eu} keV: {aeff_Eu:.5f} +- {aeff_err:.5f}")
+    # print("_"*30)
+    # print(f"Efficiency @ {E_Eu} keV: {aeff_Eu:.5f} +- {aeff_err:.5f}")
     # eff = N / S
     N_Eu = int(dat_Eu[1].split(",")[2])
     Nerr_Eu = int(dat_Eu[1].split(",")[3])
     
     S_Eu = int(N_Eu / aeff_Eu)
     Serr_Eu = S_Eu * ((Nerr_Eu / N_Eu)**2 + (aeff_err/aeff_Eu)**2)**0.5
-    print(f"152Eu @ {E_Eu} keV: N = {N_Eu} +- {Nerr_Eu} -> S = {S_Eu} +- {Serr_Eu}")
+    # print(f"152Eu @ {E_Eu} keV: N = {N_Eu} +- {Nerr_Eu} -> S = {S_Eu} +- {Serr_Eu}")
     # S = A * T * TBF
     
-    print(f"{E_Eu} & ${N_Eu} \\pm {Nerr_Eu} & ${aeff_Eu:.5f} \\pm {aeff_err:.5f}$")
+    
     
     
     BF_Eu = float(dat_Eu[2].split(",")[0]) / 100
@@ -430,9 +431,12 @@ for peak in id_peaks["EuUnknown"]:
     TB_Eu = BF_Eu
     Time_Eu = 300
     A_Eu = S_Eu / (TB_Eu * Time_Eu)
+    A_micCi = A_Eu / MICROCURIE
     A_Eu_err = Serr_Eu / (TB_Eu * Time_Eu)
+    A_micCi_err = A_Eu_err / MICROCURIE
     Eu_As.append(A_Eu)
     Eu_A_errs.append(A_Eu_err)
+    print(f"{E_Eu} & ${N_Eu} \\pm {Nerr_Eu}$ & ${aeff_Eu:.5f} \\pm {aeff_err:.5f}$ & ${A_micCi:.5f} \\pm {A_micCi_err:.5f}$ \\\\")
     # A_Eu = np.array([S_Eu-Serr_Eu, S_Eu, S_Eu+Serr_Eu]) / (TB_Eu * Time_Eu)
     # decay_Eu = A_Eu / OG_A_Eu
     # decays_Eu.append(decay_Eu[1])
@@ -444,7 +448,7 @@ for peak in id_peaks["EuUnknown"]:
 
 net_A = sum(Eu_As) / len(Eu_As)
 net_A_err = np.sqrt(sum(err**2 for err in Eu_A_errs)) / len(Eu_A_errs)
-print(f"Activity estimate: {int(net_A)} +- {net_A_err:.3f}")
+print(f"Activity estimate: ${net_A/MICROCURIE:.5f} \\pm {net_A_err/MICROCURIE:.5f}$~\miCi")
 OG_A_Eu = 10*MICROCURIE
 decay_Eu = net_A / OG_A_Eu
 decay_err = net_A_err / OG_A_Eu
@@ -453,7 +457,7 @@ ln_dec = np.log(decay_Eu)
 ln_dec_err = decay_err / decay_Eu
 elap_Eu = ln_dec / (-lamb_Eu)
 elap_err = ln_dec_err / (lamb_Eu)
-print(f"Final age estimate: {elap_Eu:.5f} +- {elap_err:.5f} years")
+print(f"Final age estimate: ${elap_Eu:.5f} \\pm {elap_err:.5f}$~years")
 
 Eu_Es = np.array(Eu_Es)
 Eu_ln_ieffs_base = poly(np.log(Eu_Es))
@@ -478,8 +482,12 @@ ieff_upper = np.exp(ln_ieff_fit+ln_ieff_fit_err)
 plt.plot(np.exp(ln_E_range), np.exp(ln_ieff_fit)*100, label=f"{N_TERMS} term ln fit")
 plt.fill_between(E_range, ieff_lower*100, ieff_upper*100, label="Mean Residual", alpha=0.3, zorder=-5)
 # plt.plot(np.exp(ln_E), np.exp(poly(ln_E))*100, label="Four term fit 2")
-# plt.scatter(np.array(Eu_Es), np.array(Eu_effs)*100/GEOM_ATTEN, label="Est. for 152Eu")
-plt.vlines(Eu_Es, Eu_ieffs_lower*100, Eu_ieffs_upper*100, label="Est. for 152Eu", color=f"C{len(known_isos)}")
+plt.scatter(np.array(Eu_Es), np.array(Eu_effs)*100/GEOM_ATTEN, label="Est. for 152Eu", color=f"C{len(known_isos)}")
+# plt.vlines(Eu_Es, Eu_ieffs_lower*100, Eu_ieffs_upper*100, label="Est. for 152Eu", color=f"C{len(known_isos)}")
+# (_, caps, _) = plt.errorbar(Eu_Es, np.exp(Eu_ln_ieffs_base), yerr=(Eu_ieffs_upper-Eu_ieffs_lower)/2, capsize=10, elinewidth=1, fmt="none")
+# for cap in caps:
+#     cap.set_color('black')
+#     cap.set_markeredgewidth(1)
 plt.ylabel("Intrinsic Efficiency (%)")
 plt.xlabel("Energy (keV)")
 plt.loglog()
