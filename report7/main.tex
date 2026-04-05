@@ -70,7 +70,14 @@
 \pagebreak
 \pagenumbering{arabic}
 \begin{abstract}
-
+    Gamma spectroscopy is a widely used technique to characterize both the composition and activity of radioactive material.
+    In this laboratory, we aimed to characterize the (energy-dependent) detection efficiency of a High Purity Germanium (HPGe) detector, and thus estimate the activity of a \EuSrc source of unknown age.
+    We measured gamma spectra of \CsSrc, \MnSrc, \CoSrcA, \CoSrcB, and \BaSrc sources with known initial activity and age, of the \EuSrc source with known initial activity but unknown age, and of background radiation, and identified the count rates of key photopeaks at 1332, 1173, 835, 662, 356, 302, 276, 136, 133, and 81~keV, comparing using known activity and branching factors to build an intrinsic efficiency curve of the HPGe detector.
+    Using this curve, we estimated its efficiency at \EuSrc peaks of 244, 344, and 779~keV to compare with branching factors to estimate the current activity of the source, and its probably age.
+    We found an efficiency curve matching initial expectations, having a hump of high efficiency at low energy with steadily decreasing efficiency for higher energies.
+    Using this curve, we estimated the age of the \EuSrc source to be $26.499 \pm 0.286$~years, with a manufacturing date around September 1999.
+    The results demonstrate the consistency of the model of efficiency as a combination of intrinsic and geometric factors, and demonstrate (across consistent geometric layout) the effectiveness of gamma spectroscopy as a tool to measure the activity and age of radioisotope samples.
+    They may be of interest to those aiming to use spectroscopy to date objects using radioactive material, and in particular to those seeking to use HPGe scintillators for this purpose.
 \end{abstract}
 
 \section{Introduction and Background}
@@ -274,7 +281,7 @@ Compared to the laboratory date of March 27, 2026, this yields an estimated crea
     \label{fig:peak-fits-a}
 \end{figure}
 
-\begin{table}
+\begin{table}[htp!]
     \centering
     \caption{The peak intensities, tabulated branching information, and corresponding estimates of the \EuSrc source, of photopeaks at 244, 344, and 779~keV. This measurement was taken over 5~minutes.}
     \label{tab:eu-act}
@@ -323,7 +330,13 @@ For example, a 2204~keV peak, still visible in some spectra after background sub
 
 \section{Conclusions}\label{sec:conc}
 
-The objectives of this laboratory were largely met.
+The objectives of this laboratory, which aimed to build an efficiency curve of an HPGe detector, and use this curve to estimate the unknown activity and age of a radioactive sample, were largely met.\\
+
+Spectra were measured of \CsSrc, \MnSrc, \CoSrcA, \CoSrcB, and \BaSrc sources for 10~minutes, of an \EuSrc source for 5~minutes, and of background radiation for 20~minutes.\\
+
+A logarithmic polynomial fit was created of intrinsic efficiency $\varepsilon_{intr}$ as a function of energy $E$ for the HPGe scintillator using the sources of known age (all except \EuSrc), matching expected behavior with highest efficiency at a range of lower energies, and decreasing efficiency over higher energies.\\
+
+This curve was used to estimate the current activity of the \EuSrc at $2.56954 \pm 0.03766$~\micCi, which, compared to the known original activity of 10.0~\micCi, yielded an estimated manufacturing date of September 1999.
 
 % \bibliographystyle{sty/ieeetran}
 \pagebreak\printbibliography
