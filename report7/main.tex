@@ -34,7 +34,7 @@
 
 % Common Macros
 \newcommand{\micCi}{\xspace$\mathrm{\mu Ci}$\xspace}
-\new
+
 
 \newcommand{\CsSrc}{\xspace$\mathrm{^{137}Cs}$\xspace}
 \newcommand{\MnSrc}{\xspace$\mathrm{^{54}Mn}$\xspace}
@@ -65,9 +65,141 @@
 
 Gamma spectroscopy is a crucial technique for characterizing radioactive material.
 While the unique spectra created as a result of rich interaction phenomena from the different combinations of radiation released by radioisotopes serve well to distinguish and identify such isotopes, the intensity (count rates) of known features are also numerically useful.
-Most notably, since the rate of gamma emissions at a specific energy can be predicted from isotope properties and a source's overall activity, the number of counts a detector registers near that energy can be used to estimate a \emph{detection efficiency} of the spectrum detector at that energy
+Most notably, since the rate of gamma emissions at a specific energy can be predicted from isotope properties and a source's overall activity, the number of counts a detector registers near that energy can be used to estimate a \emph{detection efficiency} of the spectrometry system at that energy, and thus predict the activity of an identified radioisotope from the spectrum that same detector produces in response to it.
+This efficiency is energy dependent, and the relationship may be quantified for a given detector and geometry.\\
+
+In this laboratory, we perform gamma spectrum measurements of several sources of known composition and activity using a High Performance Germanium (HPGe) scintillator, to characterize the energy-dependent efficiency of this detector and predict the age of a \EuSrc source with known initial activity.
+
+\subsection{Detection Efficiency}
+The overall, or ``absolute'' efficiency $\varepsilon_{abs}$ of a detector, that is the ratio of decay instances detected $N$ to the known true count $S$, may be broken up into an ``intrinsic'' efficiency to the detector $\varepsilon_{intr}$, and a ``geometric'' efficiency (a.k.a. fractional solid angle) $\Omega_f$ of the given experimental setup:
+\begin{equation}
+    \label{eq:abs-eff}
+    \varepsilon_{abs} = \frac{N}{S} = \Omega_f \varepsilon_{intr}
+\end{equation}
+A solid angle $\Omega$ (units of steradians, $0\leq\Omega\leq4\pi$) describes a field of view, in this case the angular exposure of the detector to the source.
+The fractional solid angle $\Omega_f=\Omega/4\pi$, describing the fraction of radiation quanta which might even reach the detector in a given setup, can be calculated for the specific geometry of that setup, and used to estimate the \emph{intrinsic} efficiency of the detector at that energy, which can be applied to other measurements at that energy.
+By taking efficiency estimates over a representative range of energies, the efficiency may be estimated at other energies (such as by using a polynomial fit).
+
+\subsection{Specific Activity}
+While the overall activity of a source might be known, this must be then interpreted using decay properties to find the activity expected for a specific type of radiation, such as the 1408~keV gamma rays emitted by a \EuSrc sample.
+Thus, the true specific activity $S$ for a source of known activity $A$ measured over a sufficiently short time $T$ may be described using Eq.~\ref{eq:specific-activity}:
+
+\begin{equation}
+    \label{eq:specific-activity}
+    S = BF \times BR \times T \times A
+\end{equation}
+In Eq.~\ref{eq:specific-activity}, $BR$ represents the \emph{branching ratio}, the fraction of all decays which are of the specific decay mode associated with this energy (such as the fraction of decays which are electron capture, as opposed to the competing beta).
+$BF$ then represents the \emph{branching fraction}, the fraction of decays in that mode which release the desired form of radiation (such as the fraction which then emit 662~keV gamma rays specifically).
+These values have been measured and tabulated across a wide variety of isotopes and decay phenomena, and may be readily used for these specific activity and efficiency estimates.
+
+\subsection{Solid Angle Estimation}
+
+The solid angle ``visible'' to the detector can be calculated by integrating over the visible area of the detector from the perspective of the source location\cite{knoll_radiation_2010}:
+\begin{equation}
+    \label{eq:gen-solid-angle}
+    \Omega=4\pi\Omega_f=\int_{A}^{0}\frac{\cos\alpha}{r^2}dA
+\end{equation}
+In the conceptual integral of Eq.~\ref{eq:gen-solid-angle}, 
+For a detector of substantial volume, this must be extended over that volume (or taken over an average, representative area), and likewise this integral must be nested and evaluated over the volume of a non-point source.\\
+\defplot{intr0-sangle}{A geometric approximation, of the source as a point aligned with a perfectly cylindrical detector with radius $a$ at distance $d$, to estimate the solid angle subtended by the detector.}
+This is equivalent to projecting the area of the detector onto a normalized sphere.
+In the case of a sufficiently small source, aligned to the axis of a circular detector (as shown in \figref{intr0-sangle}), the circle already overlaps with a portion of a sphere with radius $R=\sqrt{a^2+d^2}$, and so this integral can be evaluated by comparing that region to the overall sphere radius:
+\begin{equation}
+    \label{eq:point-circle-sang}
+    \begin{gathered}
+        \Omega_f=\frac{\Omega}{4\pi}=\frac{A}{4\pi R^2}=\frac{1}{4\pi R^2}\int_{0}^{2\pi}d\phi\int_{0}^{\arctan(r/d)}R^2\sin\theta d\theta\\
+        \Omega_f = \frac{2\pi R^2}{4\pi R^2}\left.\left[-\cos\theta\right]\right|_{\theta=0}^{\arctan(r/d)}\\
+        \Omega_f = \frac{1}{2}\left(1-\cos\left[\arctan(r/d)\right]\right)\\
+        \Omega_f = \frac{1}{2}\left(1-\frac{d}{\sqrt{r^2+d^2}}\right)
+    \end{gathered}
+\end{equation}
+To extend Eq.~\ref{eq:point-circle-sang} to a volumetric, cylindrical detector rather than a perfectly flat circle, an average distance $\langle d\rangle$ to circular cross-sections of the cylinder (of radius $r$, height $h$, and a face distance $c$ away from the source) may be substituted\cite{npre_lab_7_manual_2025}:
+\begin{equation}
+    \label{eq:avg-dist}
+    \langle d\rangle = \frac{r^2}{2} + \frac{h^2}{12} + c^2
+\end{equation}
+Given known dimensions, and an error in distance $\sigma_d$, the error of this estimate can also be determined:
+\begin{equation}
+    \label{eq:sangle-error}
+    \begin{gathered}
+        \sigma(f(x,y,\dots))=\sqrt{(\frac{df}{dx} \sigma_x)^2 + (\frac{df}{dy} \sigma_y)^2 \dots} \\
+        \sigma(\Omega_f(d))=\sqrt{(\frac{d\Omega_f}{dd} \sigma_d)^2}\\
+        \sigma(\Omega_f(d))=\Omega_f\left(\frac{2\sigma_d}{d}\right)
+    \end{gathered}
+\end{equation}
+\newcommand{\avd}{\langle d\rangle}
+where, in Eq.~\ref{eq:sangle-error}, if $d$ is replaced with an average distance $\avd$, the error is likewise replaced with $\sigma_{\avd}=\frac{d\avd}{dc}\sigma_c$ for a distance to front $c$, as in Eq.~\ref{eq:avg-dist}.\\
+
+As many detectors are of cylindrical shape\cite{knoll_radiation_2010}, these approximations can be highly useful in radiation detection, provided proper care is taken to align the source on the axis of the cylinder, and a sufficiently small source (or one at sufficiently large distance) is used.
 \section{Experimental Procedure}\label{sec:methods}
+\FloatBarrier
+We arranged an HPGe scintillator, cooling device, and multichannel analyzer (MCA)  to measure activity from a coaxially located radiation source, as shown in \figref{Lab7_setup}.
+The MCA was connected to a workstation computer, and was set using the computer to provide a bias of $+3400$~V.
+Dimensions of the HPGe detector, alongside other material details, may be found in Appendix~\ref{app:equip}.
+We placed a marked foam block against the detector, such that the source would be placed $45\pm1$~mm from the detector.\\
+
+We measured six sources of known composition (\CsSrc, \MnSrc, \CoSrcA, \CoSrcB, \BaSrc, and \EuSrc) and activity, alongside standalone background radiation, in order to estimate the age of the \EuSrc using the other five sources of known age.
+For each measurement, we placed the source (if any) in the foam slot $45\pm1$~mm away from the detector (that is, $50\pm1$~mm from the internal crystal), corresponding to a geometric efficiency (or fractional solid angle) of $0.04492\pm0.00134$ using Eqs.~\ref{eq:point-circle-sang} and \ref{eq:sangle-error} (adjusting both solid angle and error calculations for the length of the detector).\\
+
+\defplotW{Lab7_setup}{The HPGe detector setup used in this laboratory.}{0.8}
+
+Each spectrum measurement consisted of placing the source (if applicable) in the foam fixture at the fixed distance aligned to the detector, after which we used the computer to initiate a spectrum recording over a set time (10 minutes each for the five fully known sources, 5 minutes for the \EuSrc source, and 20 minutes for background with no source), before swapping out for the next source, taking care not to disturb the foam mount.\\
+\FloatBarrier
 \section{Experimental Results}\label{sec:results}
+\FloatBarrier
+
+We measured gamma spectra for the six sources and background, which may each be seen in Figs.~\ref{spec_137Cs} through \ref{spec_bg}.
+
+\defplot{spec_137Cs}{The gamma spectrum recorded of the \CsSrc source over 10~minutes.}
+\defplot{spec_54Mn}{The gamma spectrum recorded of the \MnSrc source over 10~minutes.}
+\defplot{spec_60Co}{The gamma spectrum recorded of the \CoSrcA source over 10~minutes.}
+\defplot{spec_57Co}{The gamma spectrum recorded of the \CoSrcB source over 10~minutes.}
+\defplot{spec_133Ba}{The gamma spectrum recorded of the \BaSrc source over 10~minutes.}
+\defplot{spec_152Eu}{The gamma spectrum recorded of the \EuSrc source over 5~minutes.}
+\defplot{spec_bg}{The background gamma spectrum, as recorded over 20~minutes.}
+
+\FloatBarrier
+Using the multichannel analysis software Maestro\cite{ortec_maestro_2012} (by converting to an appropriate format, as elaborated upon in Appendix~\ref{app:codes}), we fit Gaussian peaks to the spectrum peaks at 1332, 1173, 835, 662, 356, 302, 276, 136, 133, and 81~keV.
+These peak fits may be seen in Figs.~\ref{peak_1332} through \ref{peak_81}.
+Using these peaks, the expected activity of each source given ages and half lives\cite{noauthor_livechart_nodate}, tabulated branching ratios and branching factors on the table of nuclides\cite{noauthor_livechart_nodate}, and the geometric efficiency of the detector ($0.04492\pm0.00134$), we estimated the intrinsic efficiency at each peak energy, tabulated in Table~\ref{tab:ieffs}.
+\\
+
+\newcommand{\peakplot}[1]{\defplotW{peak_#1}{The spectrum in the vicinity of an expected peak at #1~keV, compared to a Gaussian fit.}{0.5}}
+\peakplot{1332}
+\peakplot{1173}
+\peakplot{835}
+\peakplot{662}
+\peakplot{356}
+\peakplot{302}
+\peakplot{276}
+\peakplot{136}
+\peakplot{122}
+\peakplot{81}
+
+\begin{table}
+    \caption{Peak information, both from observed spectra and expected phenomena, and the resulting intrinsic efficiency calculated at their corresponding energies, for the photopeaks chosen in this experiment. For all five known sources, measurements were taken over a time $T=600$~seconds.}
+    \label{tab:ieffs}
+    \begin{tabular}{cc|c|cc|c|c}
+Isotope & $E_0$~(keV) & Total~$N$~(counts) & BR & BF & Activity $A$~(\micCi) & $\varepsilon_{intr}$ \\\hline
+\CsSrc & 662 & $93502 \pm 476$ & 1.0000 & 0.8510 & 0.821 & $0.13422 \pm 0.00407$ \\
+% qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+\CoSrcA & 1173 & $21207 \pm 412$ & 1.0000 & 0.9985 & 0.324 & $0.06570 \pm 0.00234$ \\
+\CoSrcA & 1332 & $19193 \pm 245$ & 1.0000 & 0.9998 & 0.324 & $0.05938 \pm 0.00193$ \\
+\MnSrc & 835 & $186 \pm 28$ & 1.0000 & 0.9998 & 0.001 & $0.18153 \pm 0.02786$ \\
+\BaSrc & 81 & $68831 \pm 472$ & 1.0000 & 0.3290 & 0.570 & $0.36831 \pm 0.01129$ \\
+\BaSrc & 276 & $10915 \pm 144$ & 1.0000 & 0.0716 & 0.570 & $0.26837 \pm 0.00877$ \\
+\BaSrc & 302 & $26014 \pm 198$ & 1.0000 & 0.1834 & 0.570 & $0.24971 \pm 0.00770$ \\
+\BaSrc & 356 & $82174 \pm 316$ & 1.0000 & 0.6205 & 0.570 & $0.23314 \pm 0.00702$ \\
+\BaSrc & 384 & $10868 \pm 121$ & 1.0000 & 0.0894 & 0.570 & $0.21401 \pm 0.00682$ \\
+\CoSrcB & 136 & $175 \pm 27$ & 1.0000 & 0.1068 & 0.000 & $4.45352 \pm 0.69988$ \\
+\CoSrcB & 122 & $1102 \pm 41$ & 1.0000 & 0.8560 & 0.000 & $3.49900 \pm 0.16696$ \\
+    \end{tabular}
+\end{table}
+
+Performing an error-weighted fit of $\ln(\varepsilon_{intr})$ against $\ln(E)$, we obtained a four-term logarithmic polynomial fit of intrinsic efficiency at each different energy.
+
+
+\FloatBarrier
 
 
 \section{Discussion}\label{sec:disc}
@@ -98,6 +230,7 @@ Where a detail could not be identified for a given device, it is replaced with `
         % Geiger-Muller Detector & \na & \na & \na & \na \\
         % GM Pulse Inverter & Spectrum Techniques\sref{addr:spect} & 2017 GPI & \na & \na \\
         Multichannel Analyzer & Ortec\sref{addr:ortec} & EasyMCA & Inventory \# & P10R45550 \\
+        HPGe Scintillator & Ortec\sref{addr:ortec} & GEM10P4 & Serial \# & 44-TP21936B \\
         \CsSrc Source & Spectrum\sref{addr:spect} & 1.0~\micCi & Manuf. & Sep 1, 2017 \\
         \CoSrcA Source & '' & '' & Manuf. & Sep 1, 2017 \\
         \CoSrcB Source & '' & '' & Manuf. & Oct 1, 2017 \\
@@ -173,4 +306,8 @@ Where a detail could not be identified for a given device, it is replaced with `
     \end{enumerate}
 \end{table}
 \FloatBarrier
+\section{Additional Codes}\label{app:codes}
+To assist in reliably evaluating derivatives of functions for error propagation, the tool \texttt{Desmos} was used, in a repository viewable at \url{https://www.desmos.com/calculator/t2e4wghni1}.\\
+
+Additionally, to open spectrum data in the software \texttt{Maestro}, a \texttt{Python} script was used, which may be viewed at \url{https://github.com/osanstrong/NPRE451/blob/main/report7/make_maestro_specs.py}.
 \end{document}

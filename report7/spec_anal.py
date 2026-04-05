@@ -64,20 +64,22 @@ $SHAPE_CAL:
         out.write(string)
 
 DIST = 45 + 5 # mm
-DIST_ERR = 0.1 # mm
+DIST_ERR = 1 # mm
 DET_RADIUS = 49.1 / 2 # mm
 DET_LENGTH = 36 # mm
-def average_dist2(h, r, c):
-    return r**2/2 + h**2/12 + c**2
-def geom_atten(a, d):
-    d2 = average_dist2(DET_LENGTH, DET_RADIUS, d)
-    return a**2/(4*d2)
+def average_dist(h, r, c):
+    return np.sqrt((r**2)/2 + (h**2)/12 + c**2)
+def geom_atten(a, c):
+    d = average_dist(DET_LENGTH, DET_RADIUS, c)
+    # return a**2/(4*d2)
+    return 0.5*(1 - (d/(np.sqrt(d**2 + a**2))))
 def geom_error(a, d, d_err):
     Omeg = geom_atten(a, d)
     return Omeg * (2*d_err/d)
 
 GEOM_ATTEN = geom_atten(DET_RADIUS, DIST)
 GEOM_ERROR = geom_error(DET_RADIUS, DIST, DIST_ERR)
+GEOM_ERROR = 0.00134215660207 # https://www.desmos.com/calculator/t2e4wghni1
 print(f"Geometric Efficiency: {GEOM_ATTEN:.5f} +- {GEOM_ERROR:.5f}")
 
 
@@ -112,10 +114,10 @@ id_peaks = {
     ],
     "133Ba":[
         "81:120.35,3.87,68831,472:32.9,100", # Should we add the 2.65% from the 79.6keV peak i wonder
-        "276:417.6,6.94,12052,308:7.16,100",
-        "302:457.92,7.11,40740,522:18.34,100",
-        "356:539.11,7.71,85055,412:62.05,100",
-        "384:581.68,8.18,10686,174:8.94,100",
+        "276:417.56,6.73,10915,144:7.16,100",
+        "302:457.92,6.93,26014,198:18.34,100",
+        "356:539.11,7.66,82174,316:62.05,100",
+        "384:581.65,8.14,10868,121:8.94,100",
     ],
     "57Co":[
         "136:195.76,1.21,175,27:10.68,100",
@@ -190,17 +192,69 @@ b = cy[0]-(cx[0]*m)
 
 im = (cx[1] - cx[0]) / (cy[1]-cy[0])
 ib = cx[0] - (cy[0]*im)
+
+
+target_specs = {}
+target_times = {}
+for t in target_labels:
+    path = f"dat/{t}.mca"
+    spec_c, time_s = get_spec(path)
+    target_times[t] = time_s
+    target_specs[t] = spec_c / time_s
+    spec_bins = np.array(range(len(spec_c)))
+    spec_e = m*spec_bins + b
+    # plt.plot(spec_e, spec_c/time_s, label=f"{target_labels[t]}")
+    # plt.xlabel("Energy (keV)")
+    # plt.ylabel("Intensity (counts per second)")
+    # plt.legend()
+    # plt.show()
+def norm(x, mu, sig):
+    return (1/np.sqrt(2*np.pi*sig**2)) * np.exp(-(x-mu)**2 / (2*sig**2))
+for iso in id_peaks:
+    base_spec = target_specs[iso] - target_specs["Background"]
+    for peak in id_peaks[iso]:
+        info_sets = peak.split(":")
+        E = info_sets[0]
+
+        spec_info = info_sets[1].split(",")
+        centroid = float(spec_info[0])
+        FWHM = float(spec_info[1])
+        N = float(spec_info[2])
+        N_err = float(spec_info[3])
+
+        sigma = FWHM / 2.355
+        
+        range_bins = [int(centroid-3*sigma), int(centroid+7*sigma)+1]
+        rel_bins = np.array(range(range_bins[0], range_bins[1]))
+        base_peak = base_spec[range_bins[0]:range_bins[1]]
+        fit_peak = norm(rel_bins, centroid, sigma)*N / target_times[iso]
+        fit_low = fit_peak * (N-N_err)/N
+        fit_high = fit_peak * (N+N_err)/N
+
+        rel_E = rel_bins*m + b
+
+        # plt.plot(rel_E, base_peak, label=f"Net Rate ({target_labels[iso]}, {E} keV)")
+        # plt.plot(rel_E, fit_peak, label=f"Gaussian Fit")
+        # plt.fill_between(rel_E, fit_low, fit_high, color="C1", alpha=0.5, label="Fit Error")
+        # plt.xlabel("Energy (keV)")
+        # plt.ylabel("Intensity (Counts per second)")
+        # plt.legend()
+        # plt.show()
+
+
+
+
 print(f"Calibration: {m:.5f} x + {b:.5f}")
 for eu_peak in id_peaks["EuUnknown"]:
-    bin = float(eu_peak.split(":")[1].split(",")[0])
-    E = m*bin + b
-    print(f"bin {int(bin)} -> {int(E)} keV")
+    centroid = float(eu_peak.split(":")[1].split(",")[0])
+    E = m*centroid + b
+    print(f"bin {int(centroid)} -> {int(E)} keV")
 
 known_isos = [
     "137Cs", "60Co", 
-    # "54Mn", 
+    "54Mn", 
     "133Ba",
-    # "57Co",
+    "57Co",
     ]
 
 MICROCURIE = 3.7e4
@@ -214,8 +268,12 @@ def abs_eff(iso, E_int):
     for p in peak_infos:
         info_sets = p.split(":")
         E = int(info_sets[0])
-        if not E == E_int:
+        # print(E)
+        if not E == int(E_int):
+            # print(f"{E_int} does not match {E}")
             continue
+        # else:
+            # print(f"Peak found: {E}")
 
         hl_y = half_lives_y[iso]
         lamb_y = np.log(2) / hl_y
@@ -231,22 +289,23 @@ def abs_eff(iso, E_int):
         BR = float(branch_info[0]) / 100 #pretty sure the TBR is tabulated as just branching ratio
         TB = BR 
 
+
         S = A*T*TB
 
         N = float(spec_info[2])
         N_err = float(spec_info[3])
-        print(f"___________________________________________________")
-        print(f"{iso} @ {E} keV:")
-        print(f"A = {BASE_ACTIVITY} * exp(-{lamb_y:.5f} * {elapsed_y:.3f})")
-        print(f"S = {A:.3f} * {T} * ({TB:.3f})")
-        print(f"S = {S:.3f} vs observed N={N:.3f}+-{N_err:.3f}")
+        # print(f"___________________________________________________")
+        # print(f"{iso} @ {E} keV:")
+        # print(f"A = {BASE_ACTIVITY} * exp(-{lamb_y:.5f} * {elapsed_y:.3f})")
+        # print(f"S = {A:.3f} * {T} * ({TB:.3f})")
+        # print(f"S = {S:.3f} vs observed N={N:.3f}+-{N_err:.3f}")
 
         eff = N / S
         err = N_err / S
-        return E, eff, err
+        return E, eff, err, A
         
     print(f"Unable to find peak info for {iso} {E_int}keV")
-    return None, None, None
+    return None, None, None, None
 
 print(f"S = A * T * (BF * BR)")
 all_E = []
@@ -254,6 +313,14 @@ all_aeff = []
 all_aerr = []
 all_ieff = []
 all_ierr = []
+
+latex_labels={
+    "137Cs":"\\CsSrc",
+    "60Co":"\\CoSrcA",
+    "57Co":"\\CoSrcB",
+    "54Mn":"\\MnSrc",
+    "133Ba":"\\BaSrc",
+}
 for iso in known_isos:
     E_list = []
     aeff_list = []
@@ -262,13 +329,31 @@ for iso in known_isos:
     ierr_list = []
     peaks = id_peaks[iso]
     for peak in peaks:
-        E = int(peak.split(":")[0])
-        E, eff, err = abs_eff(iso, E)
+
+        info_sets = peak.split(":")
+        E = info_sets[0]
+
+        spec_info = info_sets[1].split(",")
+        centroid = float(spec_info[0])
+        FWHM = float(spec_info[1])
+        N = float(spec_info[2])
+        N_err = float(spec_info[3])
+
+        branch_info = info_sets[2].split(",")
+        BF = float(branch_info[1])/100
+        BR = float(branch_info[0])/100 #pretty sure the TBR is tabulated as just branching ratio
+        
+        jBR = BR / (BF)
+
+        # E = int(peak.split(":")[0])
+        E, eff, err, A = abs_eff(iso, E)
         ieff = eff / GEOM_ATTEN
         ierr = ieff * ((err/eff)**2 + (GEOM_ERROR/GEOM_ATTEN)**2)**0.5
-        print(f"Absolute efficiency at {E} keV: {eff:.5f} +- {err:.5f}")
-        print(f"Geometric efficiency of {GEOM_ATTEN:.5f} +- {GEOM_ERROR:.5f}")
-        print(f"--> Intrinsic efficiency @ {E} keV: {ieff:.5f} +- {ierr:.5f}")
+        # print(f"Absolute efficiency at {E} keV: {eff:.5f} +- {err:.5f}")
+        # print(f"Geometric efficiency of {GEOM_ATTEN:.5f} +- {GEOM_ERROR:.5f}")
+        # print(f"--> Intrinsic efficiency @ {E} keV: {ieff:.5f} +- {ierr:.5f}")
+        A_micCi = A / MICROCURIE
+        print(f"{latex_labels[iso]} & {E} & ${int(N)} \\pm {int(N_err)}$ & {BF:.4f} & {jBR:.4f} & {A_micCi:.3f} & ${ieff:.5f} \\pm {ierr:.5f}$ \\\\")
         E_list.append(E)
         all_E.append(E)
         aeff_list.append(eff)
@@ -296,16 +381,22 @@ ln_E = np.log(np.array(all_E))
 ln_ieff = np.log(np.array(all_ieff))
 all_ierr = np.log(np.array(all_ierr))
 N_TERMS = 4
-poly = np.polynomial.polynomial.Polynomial.fit(ln_E, ln_ieff, N_TERMS-1, domain=[-1,1], w=1/all_ierr)
+poly, info = np.polynomial.polynomial.Polynomial.fit(ln_E, ln_ieff, N_TERMS-1, domain=[-1,1], w=1/all_ierr, full=True)
 print(poly)
+print(info)
+resid = info[0][0] #/ len(ln_ieff)
+ln_ieff_fit_err = resid**0.5
+ln_aeff_fit_err = ln_ieff_fit_err * GEOM_ATTEN # Ignore the geometric error because we're discounting that effect entirely
 ln_E_range = np.linspace(min(ln_E), max(ln_E), 1000)
 ln_ieff_fit = poly(ln_E_range)
 print(f"{poly(0)}")
-print(f"{poly(10)}")
+print(f"{poly(2)}")
 # print(f"{np.polyval(poly.convert().coef, 0)}")
 
 Eu_Es = []
 Eu_effs = []
+Eu_As = [] # Activity estimates from each peak
+Eu_A_errs = [] # Error for each activity estimate, taking into account the error of the fit and the error of the peak
 Eu_ages = []
 decays_Eu = []
 decay_vars_Eu = []
@@ -314,47 +405,81 @@ for peak in id_peaks["EuUnknown"]:
 
     E_Eu = int(dat_Eu[0])
     ieff_Eu = np.exp(poly(np.log(E_Eu)))
+    ieff_err = ln_ieff_fit_err*ieff_Eu
     aeff_Eu = ieff_Eu * GEOM_ATTEN
+    aeff_err = ieff_err * GEOM_ATTEN # Don't factor the geometric error in, we're using the data straight
+
     Eu_Es.append(E_Eu)
     Eu_effs.append(aeff_Eu)
     print("_"*30)
-    print(f"Efficiency @ {E_Eu} keV: {aeff_Eu:.5f}")
+    print(f"Efficiency @ {E_Eu} keV: {aeff_Eu:.5f} +- {aeff_err:.5f}")
     # eff = N / S
     N_Eu = int(dat_Eu[1].split(",")[2])
     Nerr_Eu = int(dat_Eu[1].split(",")[3])
     
     S_Eu = int(N_Eu / aeff_Eu)
-    Serr_Eu = int(Nerr_Eu / aeff_Eu)
+    Serr_Eu = S_Eu * ((Nerr_Eu / N_Eu)**2 + (aeff_err/aeff_Eu)**2)**0.5
     print(f"152Eu @ {E_Eu} keV: N = {N_Eu} +- {Nerr_Eu} -> S = {S_Eu} +- {Serr_Eu}")
     # S = A * T * TBF
+    
+    print(f"{E_Eu} & ${N_Eu} \\pm {Nerr_Eu} & ${aeff_Eu:.5f} \\pm {aeff_err:.5f}$")
+    
+    
     BF_Eu = float(dat_Eu[2].split(",")[0]) / 100
     BR_Eu = float(dat_Eu[2].split(",")[1]) / 100
     TB_Eu = BF_Eu
-    T_Eu = 300
-    A_Eu = np.array([S_Eu-Serr_Eu, S_Eu, S_Eu+Serr_Eu]) / (TB_Eu * T_Eu)
-    OG_A_Eu = 10*MICROCURIE
-    decay_Eu = A_Eu / OG_A_Eu
-    decays_Eu.append(decay_Eu[1])
-    decay_vars_Eu.append((decay_Eu[1]-decay_Eu[0])**2)
-    lamb_Eu = np.log(2) / half_lives_y["EuUnknown"]
-    elap_Eu = np.log(decay_Eu) / (-lamb_Eu)
-    Eu_ages.append(elap_Eu)
-    print(f"From A of {OG_A_Eu:,.3f} to {A_Eu} -> {elap_Eu} years elapsed")
+    Time_Eu = 300
+    A_Eu = S_Eu / (TB_Eu * Time_Eu)
+    A_Eu_err = Serr_Eu / (TB_Eu * Time_Eu)
+    Eu_As.append(A_Eu)
+    Eu_A_errs.append(A_Eu_err)
+    # A_Eu = np.array([S_Eu-Serr_Eu, S_Eu, S_Eu+Serr_Eu]) / (TB_Eu * Time_Eu)
+    # decay_Eu = A_Eu / OG_A_Eu
+    # decays_Eu.append(decay_Eu[1])
+    # decay_vars_Eu.append((decay_Eu[1]-decay_Eu[0])**2)
+    # lamb_Eu = np.log(2) / half_lives_y["EuUnknown"]
+    # elap_Eu = np.log(decay_Eu) / (-lamb_Eu)
+    # Eu_ages.append(elap_Eu)
+    # print(f"From A of {OG_A_Eu:,.3f} to {A_Eu} -> {elap_Eu} years elapsed")
 
-mean_decay = sum(decays_Eu) / len(decays_Eu)
-var_decay = sum(decay_vars_Eu) / (len(decays_Eu)**2)
-sig_decay = var_decay**0.5
-print(f"sig: {sig_decay}")
-decay_range = np.array([mean_decay+sig_decay, mean_decay, mean_decay-sig_decay])
+net_A = sum(Eu_As) / len(Eu_As)
+net_A_err = np.sqrt(sum(err**2 for err in Eu_A_errs)) / len(Eu_A_errs)
+print(f"Activity estimate: {int(net_A)} +- {net_A_err:.3f}")
+OG_A_Eu = 10*MICROCURIE
+decay_Eu = net_A / OG_A_Eu
+decay_err = net_A_err / OG_A_Eu
 lamb_Eu = np.log(2) / half_lives_y["EuUnknown"]
-elap_range = np.log(decay_range) / (-lamb_Eu)
-print(elap_range[1:3]-elap_range[0:2])
-print(f"{elap_range} years passed")
+ln_dec = np.log(decay_Eu)
+ln_dec_err = decay_err / decay_Eu
+elap_Eu = ln_dec / (-lamb_Eu)
+elap_err = ln_dec_err / (lamb_Eu)
+print(f"Final age estimate: {elap_Eu:.5f} +- {elap_err:.5f} years")
+
+Eu_Es = np.array(Eu_Es)
+Eu_ln_ieffs_base = poly(np.log(Eu_Es))
+Eu_ieffs_lower = np.exp(Eu_ln_ieffs_base - ln_ieff_fit_err)
+Eu_ieffs_upper = np.exp(Eu_ln_ieffs_base + ln_ieff_fit_err)
+
+# mean_decay = sum(decays_Eu) / len(decays_Eu)
+# var_decay = sum(decay_vars_Eu) / (len(decays_Eu)**2)
+# sig_decay = var_decay**0.5
+# print(f"sig: {sig_decay}")
+# decay_range = np.array([mean_decay+sig_decay, mean_decay, mean_decay-sig_decay])
+# lamb_Eu = np.log(2) / half_lives_y["EuUnknown"]
+# elap_range = np.log(decay_range) / (-lamb_Eu)
+# print(elap_range[1:3]-elap_range[0:2])
+# print(f"{elap_range} years passed")
+
+E_range = np.exp(ln_E_range)
+ieff_fit = np.exp(ln_ieff_fit)
+ieff_lower = np.exp(ln_ieff_fit-ln_ieff_fit_err)
+ieff_upper = np.exp(ln_ieff_fit+ln_ieff_fit_err)
 
 plt.plot(np.exp(ln_E_range), np.exp(ln_ieff_fit)*100, label=f"{N_TERMS} term ln fit")
+plt.fill_between(E_range, ieff_lower*100, ieff_upper*100, label="Mean Residual", alpha=0.3, zorder=-5)
 # plt.plot(np.exp(ln_E), np.exp(poly(ln_E))*100, label="Four term fit 2")
-plt.scatter(np.array(Eu_Es), np.array(Eu_effs)*100/GEOM_ATTEN, label="Est. for 152Eu")
-
+# plt.scatter(np.array(Eu_Es), np.array(Eu_effs)*100/GEOM_ATTEN, label="Est. for 152Eu")
+plt.vlines(Eu_Es, Eu_ieffs_lower*100, Eu_ieffs_upper*100, label="Est. for 152Eu", color=f"C{len(known_isos)}")
 plt.ylabel("Intrinsic Efficiency (%)")
 plt.xlabel("Energy (keV)")
 plt.loglog()
@@ -366,24 +491,11 @@ quit()
 for target in id_peaks:
     for peak in id_peaks[target]:
         energy = float(peak.split(":")[0])
-        bin = im*energy + ib
-        print(f"For E = {energy:.5f}keV expect bin {bin:.5f}")
+        centroid = im*energy + ib
+        print(f"For E = {energy:.5f}keV expect bin {centroid:.5f}")
 
 
-target_specs = {}
-target_times = {}
-for t in target_labels:
-    path = f"dat/{t}.mca"
-    spec_c, time_s = get_spec(path)
-    target_times[t] = time_s
-    target_specs[t] = spec_c / time_s
-    spec_bins = np.array(range(len(spec_c)))
-    spec_e = m*spec_bins + b
-    plt.plot(spec_e, spec_c/time_s, label=f"{target_labels[t]}")
-    plt.xlabel("Energy (keV)")
-    plt.ylabel("Intensity (counts per second)")
-    plt.legend()
-    plt.show()
+
 
     # make_maestro_file(path)
 
