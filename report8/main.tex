@@ -45,8 +45,9 @@
 \newcommand{\defsubplot}[2]{\defsubplotW{#1}{#2}{0.45}}
 
 % Common Macros
-\newcommand{\micCi}{\xspace$\mathrm{\mu Ci}$\xspace}
-\newcommand{\CsSrc}{\xspace$\mathrm{^{137}Cs}$\xspace}
+\newcommand{\micCi}{$\mathrm{\mu Ci}$\xspace}
+\newcommand{\CsSrc}{$\mathrm{^{137}Cs}$\xspace}
+\newcommand{\PuBe}{$\mathrm{text}$}
 
 \usepackage{placeins} % FloatBarrier
 \usepackage{amsmath} % align
@@ -80,9 +81,34 @@ The absorption of fast neutrons and scattering of fast neutrons to thermal neutr
 where $\Sigma_rt$ is a macroscopic cross-section for removal, and $I(t)$ the intensity of a neutron beam with initial intensity $I_0$, after attenuation through a thickness $t$.\\
 
 \newcommand{\XSr}{\Sigma_r}
-To directly measure $\XSr$
+To directly measure $\XSr$, one could use a neutron detector with a high-energy threshold to measure only the flux or dose of fast neutrons.
+However, in reality, such detectors are often inefficient, and more mathematically involved approaches (such as subsequently moderating the neutrons, and accounting for moderator absorption of fast neutrons\cite{npre_lab_8_manual_2025}) might instead be taken to make use of a thermal neutron detector.\\
+
+In addition to these processes of attenuation through the material, another important consideration is the reflection of neutrons off of shielding.
+An operator, standing behind the same shielding, might receive more dose if there is shielding close behind them, as neutrons are reflected off of the shield back in the operator's direction.\\
+
+In this laboratory, we measure the attenuation of fast neutrons through varying thicknesses of iron, concrete, and polyethylene, in addition to the reflection of neutrons off of nearby concrete shielding, to characterize the removal cross section $\XSr$ of fast neutrons in these materials, and qualitatively characterize shielding and reflection more broadly.
+
+\subsection{Dose Rate}
+Consider a point source a sufficiently far distance $d$ from an aligned disc detector of radius $a$.
+The geometric efficiency, or fractional solid angle, of this detector thus simplifies to $\Omega_f=\frac{a^2}{d^2}$\cite{knoll_radiation_2010}, allowing the dose $D(t)$ from a total source dose $D_0$ to be characterized using Eq.~\ref{eq:fast-remove}:
+\begin{equation}
+    \label{eq:disc-dose}
+    D(t)=\left[D_0\frac{a^2}{d^2}\right]\exp(-\XSr t)
+\end{equation}
+allowing a linear relationship with slope $-\XSr$ to be observed for experimental $D(t)$, $d$, and $a$:
+\begin{equation}
+    \label{eq:log-dd}
+    \begin{aligned}
+        D(t)&=\left[D_0\frac{a^2}{d^2}\right]\exp(-\XSr t)\\
+        \frac{d^2}{a^2}D(t)&=D_0\exp(-\XSr t)\\
+        \ln\left[\frac{d^2}{a^2}D(t)\right]&=\ln(D_0) - \XSr t
+    \end{aligned}
+\end{equation}
+
 
 \section{Experimental Procedure}\label{sec:methods}
+In this experiment, we employ a 
 \section{Experimental Results}\label{sec:results}
 
 \section{Discussion}\label{sec:disc}
