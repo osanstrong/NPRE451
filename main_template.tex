@@ -10,6 +10,7 @@
 }
 \date{# DATE #, 2026}
 
+
 \usepackage[
     style=ieee
 ]{biblatex}
@@ -31,6 +32,17 @@
     \end{figure}
 }
 \newcommand{\defplot}[2]{\defplotW{#1}{#2}{0.75}}
+\newcommand{\defsubplotW}[3]{
+    % \hfill
+    \begin{subfigure}{#3\linewidth}
+        \includegraphics[width=\textwidth]{fig/#1.png}
+        \caption{#2}
+        \newcommand{\tmplabel}{#1}
+        \label{\tmplabel}
+    \end{subfigure}
+    % \hfill
+}
+\newcommand{\defsubplot}[2]{\defsubplotW{#1}{#2}{0.45}}
 
 % Common Macros
 \newcommand{\micCi}{\xspace$\mathrm{\mu Ci}$\xspace}
