@@ -50,6 +50,10 @@
 \newcommand{\CsSrc}{$\mathrm{^{137}Cs}$\xspace}
 \newcommand{\PuBe}{$\mathrm{^{238}PuBe}$\xspace}
 
+
+\newcommand{\XSr}{\Sigma_R}
+\newcommand{\incm}{$\mathrm{cm^{-1}}$\xspace}
+
 \usepackage{placeins} % FloatBarrier
 \usepackage{amsmath} % align
 \usepackage{xcolor}
@@ -64,7 +68,14 @@
 \pagebreak
 \pagenumbering{arabic}
 \begin{abstract}
-
+    Neutron radiation dose to radiation workers is a strong function of not only the sources of neutrons but the various shielding effects of materials in the immediate surroundings.
+    In this laboratory, we characterize fast neutron shielding in common materials: concrete, steel, and polyethylene, and neutron reflection off of concrete shielding.
+    We measure fast neutron dose rates using a MERIDIAN dose detector at a constant distance and measurement time attenuated through varying thicknesses of each material, then for the same thicknesses of concrete shielding with additional concrete shielding behind the source, behind both the source and the detector, and behind the detector alone.
+    We measure macroscopic fast neutron removal cross-sections $\XSr$ of 0.047~\incm in concrete, 0.079~\incm in steel, and 0.108~\incm in polyethylene.
+    Our observations most closely follow an exponential model for steel ($R^2=1.000$) and concrete ($R^2=0.999$), but deviate slightly for polyethylene ($R^2=0.975$), which match the expectations of neutron interaction for high-z materials like steel and low-z materials like polyethylene.
+    We observe a strong relative dose with secondary shielding surrounding the detector or source without interstitial shielding  between the two (at a maximum of 1.284 times that without any shielding at all), and a noticeable relative dose with thick interstitial shielding with secondary shielding behind the detector, which we attribute to secondary reflection off of the environment.
+    These results suggest the substantial contribution of neutron reflection off of concrete to nearby dose.
+    Our results characterize fast neutron attenuation through concrete, steel, and polyethylene, and reflection off of concrete, and may be of interest to those designing shielding against high energy neutrons, and the safety and doses nearby concrete structures.
 \end{abstract}
 
 \section{Introduction and Background}
@@ -81,7 +92,11 @@ The absorption of fast neutrons and scattering of fast neutrons to thermal neutr
 \end{equation}
 where $\Sigma_rt$ is a macroscopic cross-section for removal, and $I(t)$ the intensity of a neutron beam with initial intensity $I_0$, after attenuation through a thickness $t$.\\
 
-\newcommand{\XSr}{\Sigma_r}
+\defplot{source_spectra}{Energy spectra of various common neutron sources. Figure sourced from lab manual.\cite{npre_lab_8_manual_2025}}
+
+While for absorption of fast neutrons, the model of Eq.~\ref{eq:fast-remove} would be a strong fit over distance, the model might not be as high-fidelity for materials where downscattering interactions dominate the loss of fast neutrons.
+As seen in \figref{source_spectra}, neutrons are often born at a wide range of energies, even before complex interaction with the environment, and for the same thickness of material different energies of neutrons might downscatter to different fast or slow energies, even before differences in cross-sections across energy are considered.\\
+
 To directly measure $\XSr$, one could use a neutron detector with a high-energy threshold to measure only the flux or dose of fast neutrons.
 However, in reality, such detectors are often inefficient, and more mathematically involved approaches (such as subsequently moderating the neutrons, and accounting for moderator absorption of fast neutrons\cite{npre_lab_8_manual_2025}) might instead be taken to make use of a thermal neutron detector.\\
 
@@ -114,7 +129,7 @@ Specific equipment details may be found in Appendix~\ref{app:equip}.\\
 
 \defplotW{Lab8_Setup}{The experimental setup used in this laboratory. For attenuation measurements, shielding combinations were placed in position~X. For reflection observations, concrete shielding blocks were additionally placed behind the source in position~Z, and in behind position~Y, as shown.}{0.5}
 
-\defplot{Lab8_Diag}{A cross-sectional schematic of the experimental setup.}
+\defplot{Lab8_Diag}{A cross-sectional schematic of the experimental setup. Figure sourced from lab manual.\cite{npre_lab_8_manual_2025}}
 
 We arranged the MERIDIAN detector and \PuBe source as shown in \figref{Lab8_Setup}, with additional supervision and care taken to safely handle the \PuBe source, such as by using the long attached rod to manipulate the source less directly.
 In all measurements, the source was placed approximately 75~cm from the front of the detector, which given the length 24~cm of a MERIDIAN detector\cite{noauthor_model_2003}, yields an approximate distance $d=87$~cm.
@@ -133,10 +148,10 @@ For shielding comparison, we performed this radiation measurement procedure for 
 The same bare measurement was used as a 0-thickness measurement for characterizations of all three materials, rather than recording a new measurement for each (lack of) material.\\
 
 % For the layers of each material, we used concrete blocks of $10\pm0.1$~cm thickness each (for a maximum thickness of $30\pm0.3$~cm), pairs of steel plates $2\pm0.1$~cm thick each (up to total $6\pm0.3$~cm), and sets of polyethylene slabs $5\pm0.1$~cm thick (up to total $15\pm0.3$~cm). Reflective shielding placed in positions~Z and Y was composed of several blocks of the same $10\pm0.1$~cm concrete used at position~X.
-For the layers of each material, we used concrete blocks of \~10~cm thickness each (for a maximum thickness of \~30~cm), pairs of steel plates \~2~cm thick each (up to total \~6~cm), and sets of polyethylene slabs \~5~cm thick (up to total \~15~cm). Reflective shielding placed in positions~Z and Y was composed of several blocks of the same \~10~cm concrete used at position~X.
+For the layers of each material, we used concrete blocks of $\sim$10~cm thickness each (for a maximum thickness of $\sim$30~cm), pairs of steel plates $\sim$2~cm thick each (up to total $\sim$6~cm), and sets of polyethylene slabs $\sim$5~cm thick (up to total $\sim$15~cm). Reflective shielding placed in positions~Z and Y was composed of several blocks of the same $\sim$10~cm concrete used at position~X.
 
 \subsection{Experiment 2: Secondary Shielding and Neutron Reflection}
-For observation of neutron reflection, we used only concrete blocks, comparing combinations of concrete shielding in position~X (as in experiment 1) with combinations of shielding arranged behind the source in position~Z (as seen in Figs.~\ref{Lab8_Setup} and \ref{Lab8_Diag}).
+For observation of neutron reflection, we used only concrete blocks, comparing combinations of concrete shielding in position~X (as in experiment 1) with combinations of shielding arranged behind the source in position~Z and position~Y (as seen in Figs.~\ref{Lab8_Setup} and \ref{Lab8_Diag}).
 As in experiment 1, each series of measurements was taken with no shielding, and one, two, and three layers of concrete.\\
 
 We first arranged a large shielding block behind the source in position~Z using around 10 blocks of concrete blocks, and performed measurements for the four thicknesses of shielding in position~X.\\
@@ -156,7 +171,6 @@ We successfully undertook radiation counts corresponding to each combination of 
 \FloatBarrier
 
 The doses received through each combination of shielding at position X are tabulated in Table~\ref{tab:atten-counts}, and logarithmically plotted (accounting for geometric attenuation $\frac{a^2}{d^2}$) in \figref{fig:xsr-plots}.
-\newcommand{\incm}{$\mathrm{cm^{-1}}$\xspace}
 Using a linear regression defined in Eq.~\ref{eq:log-dd}, we estimate macroscopic removal cross-sections $\XSr$ for fast neutrons of 0.047~\incm in concrete (based on a correlation $R^2=0.999$), of 0.079~\incm in steel ($R^2=1.000$), and of 0.108~\incm in polyethylene ($R^2=0.975$).
 
 \newcommand{\murem}{$\mathrm{\mu rem}$\xspace}
@@ -222,8 +236,8 @@ This is what we expect based on their compositions: concrete and steel are compo
 For the observations using secondary concrete shielding in positions~Y and Z, we observe a marked increase in dose for measurements without position~X shielding in Table~\ref{tab:refl-counts}.
 This suggests that while it may not slow down (or ``moderate'') neutrons quickly enough to affect linear models of $\XSr$, neutron scattering is still a substantial phenomenon in concrete, with the highest relative dose (1.284) being measured with both Y and Z secondary shielding, but no X primary shielding.\\
 
-As expected from such scattering behavior, the contributions of Y and Z secondary shielding are less strongly consistent to the log-linear attenuation, with relative doses being high for no X shielding, low for \~10~cm of concrete X shielding, and increasing again for thicker X shielding (Table~\ref{tab:refl-counts}).
-Contribution most noticeably increases again at \~30~cm for the setups with added Y shielding behind the detector.\\
+As expected from such scattering behavior, the contributions of Y and Z secondary shielding are less strongly consistent to the log-linear attenuation, with relative doses being high for no X shielding, low for $\sim$10~cm of concrete X shielding, and increasing again for thicker X shielding (Table~\ref{tab:refl-counts}).
+Contribution most noticeably increases again at $\sim$30~cm for the setups with added Y shielding behind the detector.\\
 
 For Z, YZ, and Y shielding without X shielding, the scattered neutrons have a clear path to the detector, while with significant X shielding, the neutrons scattered off of Z shielding behind the source would still be attenuated substantially through the main X shielding, while any neutrons scattered off of X shielding would be unlikely to then scatter across the smaller shield of Y, and then again into the detector.
 The increase in relative dose around $t\approx30$~cm with Y shielding behind the detector may be a result of scattering of neutrons first off of the nearby environment (such as the nearby metal chairs and cabinets in \figref{Lab8_Setup}), then off of Y shielding into the detector, which would not be affected by X shielding.
@@ -234,7 +248,7 @@ The objectives of this lab were largely met.
 Neutron doses as attenuated through varying thicknesses of concrete, steel, and polyethylene were successfully measured, and used to estimate $\XSr$, and the effect of secondary concrete shielding reflecting behind the detector and source were successfully compared to intermediate concrete shielding.\\
 
 Using a log-linear regression (thickness $t$ vs $\ln(D(t)\frac{d^2}{a^2})$) fast neutron $\XSr$ were measured of 0.047~\incm in concrete, 0.079~\incm in steel, and 0.108~\incm in polyethylene.
-Dose rates had high correlation with the log-linear model for steel ($R^2=1.000$) and concrete ($R^2=0.999$), but a weaker correlation in polyethylene ($R^2=0.975$), as expected from the low-z of polyethylene atoms, for which neutrons rapidly lose energy through scattering.\\
+Dose rates had high correlation with the log-linear model for steel ($R^2=1.000$) and concrete ($R^2=0.999$), but a weaker correlation in polyethylene ($R^2=0.975$), as expected from the low-z of polyethylene atoms, for which neutrons tend to rapidly lose energy through scattering.\\
 
 Neutron reflection off of secondary concrete shielding was most prominent without primary, central shielding, peaking at a relative dose of 1.284 with secondary shielding both behind the detector and source, to that observed with no shielding at all.
 For moderate thicknesses of primary concrete shielding, the neutron reflection off of shielding did not seem to substantially contribute to the relative dose, while for the thickest primary shielding, there was more significant relative dose with shielding directly behind the detector (1.141 with shielding behind source and 1.147 without), likely from secondary reflection off of the environment unaffected by primary shielding.\\
@@ -262,35 +276,44 @@ Where a detail could not be identified for a given device, it is replaced with `
     \scriptsize
     \begin{tabular}{c|cccc}
         Item & Manufacturer & Model & ID Type & ID Number\\\hline
-        Module rack & Canberra (now Mirion)\sref{addr:mirion}& Model 2000 & Inventory \# & NE759377 \\
+        MERIDIAN Dose Detector & Far West Tech.\sref{addr:fwest} & Model 5085 & Property \# & PP10F79084 \\
+        \PuBe Source & Unknown & Unknown & 1959 Activity & 480 mCi \\
+        % Module rack & Canberra (now Mirion)\sref{addr:mirion}& Model 2000 & Inventory \# & NE759377 \\
         % Geiger-Muller Detector & \na & \na & \na & \na \\
         % GM Pulse Inverter & Spectrum Techniques\sref{addr:spect} & 2017 GPI & \na & \na \\
-        Multichannel Analyzer & Ortec\sref{addr:ortec} & EasyMCA & Inventory \# & P10F79090 \\
-        Alpha Spectrometer & Ortec\sref{addr:ortec} & Model 7401, Si surface barrier detector & Property \# & NE 759377\\
+        % Multichannel Analyzer & Ortec\sref{addr:ortec} & EasyMCA & Inventory \# & P10F79090 \\
+        % Alpha Spectrometer & Ortec\sref{addr:ortec} & Model 7401, Si surface barrier detector & Property \# & NE 759377\\
         % Alpha Source & Unknown & 0.1 \micCi \AmSrc & \na & \na\\
-        Vacuum Pump & Unknown & \na & \na & \na \\
-        Mylar Sheets & Unknown & $5\times3.6$~microns thick & \na & \na \\
-        Aluminum Sheets & Unkown & $5\times18$~microns thick & \na & \na \\
+        % Vacuum Pump & Unknown & \na & \na & \na \\
+        % Mylar Sheets & Unknown & $5\times3.6$~microns thick & \na & \na \\
+        % Aluminum Sheets & Unkown & $5\times18$~microns thick & \na & \na \\
         % Weak Source 1 & Spectrum Techniques\sref{addr:spect} & 1.0\micCi ~$^{137}$Cs Beta Source & Date & Sep. 2017 \\
         % Weak Source 2 & Spectrum Techniques\sref{addr:spect} & 1.0\micCi ~$^{137}$Cs Beta Source & Date & Sep. 2017 \\
         % Strong Source & Eckert and Ziegler\sref{addr:eck-zieg} & 30\micCi~$^{137}Cs$ Beta Source & Date & Sep. 2017 \\
         % \InMeta~Source & \na & Irradiated Indium Foil & Date & Feb. 2026 \\
-        High Voltage Power Supply & Caen\sref{addr:caen} & N1470AL & Inventory \# & P10G96054 \\
+        % High Voltage Power Supply & Caen\sref{addr:caen} & N1470AL & Inventory \# & P10G96054 \\
         % Pulser & Ortec\sref{addr:ortec} & Model 480 & \na & \na \\
         % Oscilloscope & Keysight\sref{addr:keys} & Infiniivision DSO-X 2002A & Inventory \# & P10R03513 \\
         % Counter & Ortec\sref{addr:ortec} & Model 871 & Serial \# & 1024 \\
         % Preamplifier & Ortec\sref{addr:ortec} & Model 142PC & Serial \# & 2780r17 \\
         % Amplifier & Ortec\sref{addr:ortec} & Model 590A & Serial \# & 16076205 \\
-        Computer & Dell\sref{addr:dell} & Precision 360 & Eng. IT ID \# & EWS 20426 \\
+        % Computer & Dell\sref{addr:dell} & Precision 360 & Eng. IT ID \# & EWS 20426 \\
 
     \end{tabular}
     \begin{enumerate}[label=\alph*]
-        \item\label{addr:mirion}
-        Mirion Technologies, Inc.:
-        1218 Menlo Drive,
-        Atlanta, GA;
-        Phone: 770.432.2744;
-        \url{https://ir.mirion.com/}
+        \item\label{addr:fwest}
+        Far West Technology, Inc.
+        (health physics instruments division):
+        606 E Main,
+        Puyallup, WA 98372;
+        Phone: 805.964.3615;
+        \url{https://www.fwt.com/index.htm}
+        % \item\label{addr:mirion}
+        % Mirion Technologies, Inc.:
+        % 1218 Menlo Drive,
+        % Atlanta, GA;
+        % Phone: 770.432.2744;
+        % \url{https://ir.mirion.com/}
         % \item\label{addr:spect}
         % Spectrum Techniques:
         % 106 Union Valley Rd, Oak Ridge, TN 37830;
@@ -301,32 +324,32 @@ Where a detail could not be identified for a given device, it is replaced with `
         % 24937 Avenue Tibbitts, Valencia, CA 91355;
         % Phone: +1 866 476-9767;
         % \url{https://isotopeproducts.com/}
-        \item\label{addr:ortec}
-        Advanced Measurement Technology:
-        801 South Illinois Avenue,
-        Oak Ridge, Tennessee 37830,
-        United States;
-        Phone: +1.865.482.4411;
-        Fax: +1.865.483.0396;
-        \url{https://www.ortec-online.com};
-        \item\label{addr:caen}
-        Caen Sp.A.:
-        Via della Vetraia, 11, 55049 Viareggio LU - Italy;
-        Phone: +39 0584 388398;
-        \url{https://www.caen.it/}
+        % \item\label{addr:ortec}
+        % Advanced Measurement Technology:
+        % 801 South Illinois Avenue,
+        % Oak Ridge, Tennessee 37830,
+        % United States;
+        % Phone: +1.865.482.4411;
+        % Fax: +1.865.483.0396;
+        % Email: ortec.info@ametek.com
+        % \url{https://www.ortec-online.com};
+        % \item\label{addr:caen}
+        % Caen Sp.A.:
+        % Via della Vetraia, 11, 55049 Viareggio LU - Italy;
+        % Phone: +39 0584 388398;
+        % \url{https://www.caen.it/}
         % \item\label{addr:keys}
         % Keysight Technologies: 
         % 1900 Garden of the Gods Road, Colorado Springs, CO 80907-3423 United States;
         % Phone: 1 800 829-4444;
         % \url{https://www.keysight.com}
-        Email: ortec.info@ametek.com
-        \item\label{addr:dell}
-        Dell Technologies:
-        Dell Technologies
-        1 Dell Way
-        Round Rock, TX 78664.;
-        Phone: 1-877-275-3355;
-        \url{https://www.dell.com/en-us/lp/contact-us}
+        % \item\label{addr:dell}
+        % Dell Technologies:
+        % Dell Technologies
+        % 1 Dell Way
+        % Round Rock, TX 78664.;
+        % Phone: 1-877-275-3355;
+        % \url{https://www.dell.com/en-us/lp/contact-us}
     \end{enumerate}
 \end{table}
 \FloatBarrier
