@@ -1,4 +1,5 @@
 \documentclass[12pt]{article}
+\usepackage{subcaption}
 \usepackage{graphicx} % Required for inserting images
 
 \title{Lab 8: Neutron Measurements and Shielding}
@@ -113,27 +114,132 @@ Specific equipment details may be found in Appendix~\ref{app:equip}.\\
 
 \defplotW{Lab8_Setup}{The experimental setup used in this laboratory. For attenuation measurements, shielding combinations were placed in position~X. For reflection observations, concrete shielding blocks were additionally placed behind the source in position~Z, and in behind position~Y, as shown.}{0.5}
 
-We arranged the MERIDIAN detector and \PuBe source as shown in \figref{Lab8_Setup}, with additional supervision and care taken to safely handle the \PuBe source, such as by using the long attached rod to manipulate the source less directly.\\
+\defplot{Lab8_Diag}{A cross-sectional schematic of the experimental setup.}
+
+We arranged the MERIDIAN detector and \PuBe source as shown in \figref{Lab8_Setup}, with additional supervision and care taken to safely handle the \PuBe source, such as by using the long attached rod to manipulate the source less directly.
+In all measurements, the source was placed approximately 75~cm from the front of the detector, which given the length 24~cm of a MERIDIAN detector\cite{noauthor_model_2003}, yields an approximate distance $d=87$~cm.
+Combined with a detector width of 22~cm, yielding radius $a=11$~cm, we estimate a geometric attenuation $\frac{a^2}{d^2}=0.0160$, which was held constant through all measurements.
+During measurements when no interaction with the experimental setup was required, we ensured the half of the room adjacent to the source was unoccupied (i.e, no persons stood within approximately 5~meters of the source), to minimize unnecessary exposure to the \PuBe source.\\
 
 We first measured attenuation of neutrons through different materials in position~X.
-To perform each measurement, we arranged the desired thickness of material in a planar arrangement at this position, as seen in \figref{Lab8_setup} for two blocks of concrete.
-Resetting the counts on the MERIDIAN detector, setting acquisition time to 5~minutes and pressing the same button as to reset, we started a 5~minute integral count measurement.
-While waiting for the measurement to finish, we ensured no personnel stood within approximately 10 feet of the detector, to practice ALARA (As Low As Reasonable Achievable) radiation safety for the strong \PuBe source, and kept track of progress with a separate timer.\\
+To perform each measurement, we arranged the desired thickness of material in a planar arrangement at this position, as seen in \figref{Lab8_Setup} for two blocks of concrete.
+Resetting the counts on the MERIDIAN detector, setting acquisition time to 5~minutes and pressing the same button as to reset, we started a 5~minute integral count measurement.\\
+% While waiting for the measurement to finish, we ensured no personnel stood within approximately 10 feet of the detector, to practice ALARA (As Low As Reasonable Achievable) radiation safety for the strong \PuBe source, and kept track of progress with a separate timer.\\
 
 After completing this measurement, we quickly and carefully rearranged shielding materials to the next desired combination, and reset and repeated the measurement.
-In total, we performed measurements of 22~shielding combinations: One measurement with no shielding, measurements for three thicknesses each of concrete, steel, and polyethylene, and measurements for four thicknesses of concrete in position~X with scattering shielding added each to position~Z, position~Y, and both positions~Z and Y.
 
-The exact thicknesses of materials tested in this laboratory are tabulated in Tables~\ref{} and \ref{}
-\begin{table}
+\subsection{Experiment 1: Material Comparison of Neutron Shielding}
+For shielding comparison, we performed this radiation measurement procedure for 10~combinations of shielding: one measurement with no shielding, and measurements for shielding one, two and three layers thick each of concrete, steel, and polyethylene, placed in position~X.
+The same bare measurement was used as a 0-thickness measurement for characterizations of all three materials, rather than recording a new measurement for each (lack of) material.\\
+
+% For the layers of each material, we used concrete blocks of $10\pm0.1$~cm thickness each (for a maximum thickness of $30\pm0.3$~cm), pairs of steel plates $2\pm0.1$~cm thick each (up to total $6\pm0.3$~cm), and sets of polyethylene slabs $5\pm0.1$~cm thick (up to total $15\pm0.3$~cm). Reflective shielding placed in positions~Z and Y was composed of several blocks of the same $10\pm0.1$~cm concrete used at position~X.
+For the layers of each material, we used concrete blocks of \~10~cm thickness each (for a maximum thickness of \~30~cm), pairs of steel plates \~2~cm thick each (up to total \~6~cm), and sets of polyethylene slabs \~5~cm thick (up to total \~15~cm). Reflective shielding placed in positions~Z and Y was composed of several blocks of the same \~10~cm concrete used at position~X.
+
+\subsection{Experiment 2: Secondary Shielding and Neutron Reflection}
+For observation of neutron reflection, we used only concrete blocks, comparing combinations of concrete shielding in position~X (as in experiment 1) with combinations of shielding arranged behind the source in position~Z (as seen in Figs.~\ref{Lab8_Setup} and \ref{Lab8_Diag}).
+As in experiment 1, each series of measurements was taken with no shielding, and one, two, and three layers of concrete.\\
+
+We first arranged a large shielding block behind the source in position~Z using around 10 blocks of concrete blocks, and performed measurements for the four thicknesses of shielding in position~X.\\
+
+We then arranged a shielding block behind the detector (position~Y), keeping the position~Z shielding in place, to observe reflection both from shielding in Y and Z positions, and performed the four measurements again.\\
+
+Finally, we removed the shielding block in Z to observe only reflection from Y, and performed the four measurements a final time.\\
+
+To compare to concrete shielding at position~X with no reflection, the results of experiment~1, with identical thicknesses of concrete, were reused.
+
     
-\end{table}
-\begin{table}
-    
-\end{table}
+% \end{table}
 \section{Experimental Results}\label{sec:results}
+We successfully undertook radiation counts corresponding to each combination of shielding and reflection described above, and in this section detail such results, first as they relate to fast neutron attenuation, then as they relate to shield reflection behavior.
+
+\subsection{Experiment 1: Material Comparison of Shielding}
+\FloatBarrier
+
+The doses received through each combination of shielding at position X are tabulated in Table~\ref{tab:atten-counts}, and logarithmically plotted (accounting for geometric attenuation $\frac{a^2}{d^2}$) in \figref{fig:xsr-plots}.
+\newcommand{\incm}{$\mathrm{cm^{-1}}$\xspace}
+Using a linear regression defined in Eq.~\ref{eq:log-dd}, we estimate macroscopic removal cross-sections $\XSr$ for fast neutrons of 0.047~\incm in concrete (based on a correlation $R^2=0.999$), of 0.079~\incm in steel ($R^2=1.000$), and of 0.108~\incm in polyethylene ($R^2=0.975$).
+
+\newcommand{\murem}{$\mathrm{\mu rem}$\xspace}
+\begin{table}[!htb]
+    \centering
+    \caption{The integrated dose count, measured in \murem, by the MERIDIAN detector over a five-minute period with different combinations of shielding placed in position~X. The 0~Layer thick (no shielding) measurement, being independent of the shield material, was reused for all three materials.}
+    \label{tab:atten-counts}
+    \begin{tabular}{c|cccc}
+        \hline
+        Material & 0~Layers (cm) & 1~Layer & 2~Layer & 3~Layer \\
+        \hline
+        Concrete & 70.0 & 41.6 & 26.9 & 17.0 \\
+        Steel & \textit{70.0} & 60.0 & 50.9 & 43.6 \\
+        Polyethylene & \textit{70.0} & 47.9 & 29.2 & 13.6 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}
+    \centering
+    \defsubplotW{XSr_all}{For all materials compared.}{0.45}\hfill
+    \defsubplot{XSr_conc}{For concrete.}\hfill
+    \defsubplot{XSr_steel}{For steel.}\hfill
+    \defsubplot{XSr_pe}{For polyethylene.}
+    \caption{Plots of attenuation thickness $t$ vs $ln(\frac{d^2}{a^2}D(t))$ through each of the measured materials. In each plot, `$\Sigma R$' denotes the removal cross-section $\XSr$ estimated from measurements for that material.}
+    \label{fig:xsr-plots}
+\end{figure}
+
+\FloatBarrier
+\subsection{Experiment 2: Secondary Shielding and Neutron Reflection}
+For each of the discussed combinations of concrete shielding in position~X and secondary concrete shielding in positions~Y and Z, integrated dose rates measured over the five-minute period are tabulated in 
+
+\begin{table}[!htb]
+    \centering\caption{The integrated dose count by the MERIDIAN detector over a five-minute period with different combinations of concrete shielding placed in positions~X (for thicknesses ranging from 0 to 30~cm), Y and Z (present or not present), relative to measurements with only shielding in position~X. Measurements of position~X shielding alone were reused from experiment~1's concrete tests, of identical configuration.}
+    \label{tab:refl-counts}
+    \begin{tabular}{c|cccc}
+        \hline
+        Shielding Positions & 0~Layers X & 1~Layer X & 2~Layers X & 3~Layers X \\\hline
+        \it X (absolute) & \textit{70.0~$\mu rem$} & \textit{41.6~$\mu rem$} &\it 26.9~$\mu rem$ &\it 17.0~$\mu rem$ \\\hline
+        X & 1 & 1 & 1 & 1 \\
+        XZ & 1.123 & 1.014 & 1.063 & 1.047 \\
+        XYZ & 1.284 & 0.974 & 0.967 & 1.141 \\
+        XY & 1.126 & 0.990 & 1.052 & 1.147 \\\hline
+        % XZ & 78.6 & 42.2 & 28.6 & 17.8 \\
+        % XYZ & 89.9 & 40.5 & 26.0 & 19.4 \\
+        % XY & 78.8 & 41.2 & 28.3 & 19.5 
+    \end{tabular}
+\end{table}
+\FloatBarrier
 
 \section{Discussion}\label{sec:disc}
+All three materials seem to exhibit substantial $\XSr$ which could be feasibly estimated using Eq.~\ref{eq:log-dd} (0.047~\incm in concrete, 0.079~\incm in steel, and the largest, 0.108~\incm in polyethylene).
+While the doses attenuated through concrete and steel shielding appear to strongly follow the behavior prescribed by this attenuation model (having linear correlation $R^2=0.999,1.000$ respectively, and meeting at the same intercept in \figref{XSr_all}), the observations of polyethylene have a weaker correlation $R^2=0.975$ (and do not meet at the same intercept).
+This may relate to the neutron interactions expected in each medium.\\
+
+As defined, $\XSr$ comprises both interactions where fast neutrons are absorbed, and those where they are scattered to lower energy.
+The absorption of fast neutrons would be expected to very closely follow the attenuation model of Eq~\ref{eq:fast-remove}, but for scattering, as neutrons do not simply have discrete ``fast'' or ``slow'' energy, downscattered fast neutrons scattered in thin shielding might still have ``fast'' enough energy should they deflect towards the detector, while in thicker shielding the downscattering would then become more significant as neutrons begin to fall below the ``fast'' threshold.
+Thus, if neutrons lose very little energy to scattering, $\XSr$ might remain sufficiently constant but if they lose much energy, an increasingly drastic might instead be observed.\\
+
+This would suggest that in concrete and steel, fast neutron absorption dominates the effects seen in $\XSr$, which appears to remain constant, while in polyethylene, there is substantial contribution of neutron downscattering, causing $\XSr$ to become more substantial at higher thickness in \figref{XSr_pe}.
+This is what we expect based on their compositions: concrete and steel are composed of high-z elements like Fe, Si, and Ca, for which neutrons lose less energy in scattering collisions\cite{yip_nuclear_2025}, while the organic polyethylene is composed of low-z elements like C and especially H, for which neutrons can lose the most energy in scattering\cite{yip_nuclear_2025}.\\
+
+For the observations using secondary concrete shielding in positions~Y and Z, we observe a marked increase in dose for measurements without position~X shielding in Table~\ref{tab:refl-counts}.
+This suggests that while it may not slow down (or ``moderate'') neutrons quickly enough to affect linear models of $\XSr$, neutron scattering is still a substantial phenomenon in concrete, with the highest relative dose (1.284) being measured with both Y and Z secondary shielding, but no X primary shielding.\\
+
+As expected from such scattering behavior, the contributions of Y and Z secondary shielding are less strongly consistent to the log-linear attenuation, with relative doses being high for no X shielding, low for \~10~cm of concrete X shielding, and increasing again for thicker X shielding (Table~\ref{tab:refl-counts}).
+Contribution most noticeably increases again at \~30~cm for the setups with added Y shielding behind the detector.\\
+
+For Z, YZ, and Y shielding without X shielding, the scattered neutrons have a clear path to the detector, while with significant X shielding, the neutrons scattered off of Z shielding behind the source would still be attenuated substantially through the main X shielding, while any neutrons scattered off of X shielding would be unlikely to then scatter across the smaller shield of Y, and then again into the detector.
+The increase in relative dose around $t\approx30$~cm with Y shielding behind the detector may be a result of scattering of neutrons first off of the nearby environment (such as the nearby metal chairs and cabinets in \figref{Lab8_Setup}), then off of Y shielding into the detector, which would not be affected by X shielding.
+Additionally, while not expected to be as significant as for the lowest-z material polyethylene, some common atoms in concrete (like O, Al) are low enough that downscattering of neutrons to slow speeds (as opposed to absorption or scattering away from the detector) may still be significant contributions to phenomena with thicker concrete shielding.
 \section{Conclusions}\label{sec:conc}
+
+The objectives of this lab were largely met.
+Neutron doses as attenuated through varying thicknesses of concrete, steel, and polyethylene were successfully measured, and used to estimate $\XSr$, and the effect of secondary concrete shielding reflecting behind the detector and source were successfully compared to intermediate concrete shielding.\\
+
+Using a log-linear regression (thickness $t$ vs $\ln(D(t)\frac{d^2}{a^2})$) fast neutron $\XSr$ were measured of 0.047~\incm in concrete, 0.079~\incm in steel, and 0.108~\incm in polyethylene.
+Dose rates had high correlation with the log-linear model for steel ($R^2=1.000$) and concrete ($R^2=0.999$), but a weaker correlation in polyethylene ($R^2=0.975$), as expected from the low-z of polyethylene atoms, for which neutrons rapidly lose energy through scattering.\\
+
+Neutron reflection off of secondary concrete shielding was most prominent without primary, central shielding, peaking at a relative dose of 1.284 with secondary shielding both behind the detector and source, to that observed with no shielding at all.
+For moderate thicknesses of primary concrete shielding, the neutron reflection off of shielding did not seem to substantially contribute to the relative dose, while for the thickest primary shielding, there was more significant relative dose with shielding directly behind the detector (1.141 with shielding behind source and 1.147 without), likely from secondary reflection off of the environment unaffected by primary shielding.\\
+
+While this laboratory characterized human equivalent dose, a repetition with neutron energy spectroscopy might yield further insight about the contributions of neutron scattering energy loss to $\XSr$.
 
 % \bibliographystyle{sty/ieeetran}
 \pagebreak\printbibliography
