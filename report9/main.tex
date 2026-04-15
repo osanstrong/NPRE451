@@ -1,0 +1,172 @@
+\documentclass[12pt]{article}
+\usepackage{subcaption}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Lab 9: Thermal and Fast Neutron Measurement and Pulse Shape Discrimination}
+\author{Owen Strong \\
+\itshape Prof.: Angela DiFulvio\\
+\itshape TA: Kholod Mahmoud \\
+\itshape TA: Shaffer Bauer \\
+\itshape TA: Justin Jia \\
+}
+\date{April 22, 2026}
+
+
+\usepackage[
+    style=ieee
+]{biblatex}
+\bibliography{refs.bib}
+
+\usepackage[letterpaper, margin=1in]{geometry}
+\usepackage{xspace}
+
+% Figure Macros
+\newcommand{\figwidth}{0.75\linewidth}
+\newcommand{\figref}[1]{Fig.~\ref{#1}}
+\newcommand{\defplotW}[3]{
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[width=#3\linewidth]{fig/#1.png}
+        \caption{#2}
+        \newcommand{\tmplabel}{#1}
+        \label{\tmplabel}
+    \end{figure}
+}
+\newcommand{\defplot}[2]{\defplotW{#1}{#2}{0.75}}
+\newcommand{\defsubplotW}[3]{
+    % \hfill
+    \begin{subfigure}{#3\linewidth}
+        \includegraphics[width=\textwidth]{fig/#1.png}
+        \caption{#2}
+        \newcommand{\tmplabel}{#1}
+        \label{\tmplabel}
+    \end{subfigure}
+    % \hfill
+}
+\newcommand{\defsubplot}[2]{\defsubplotW{#1}{#2}{0.45}}
+
+% Common Macros
+\newcommand{\micCi}{$\mathrm{\mu Ci}$\xspace}
+\newcommand{\CsSrc}{$\mathrm{^{137}Cs}$\xspace}
+
+\usepackage{placeins} % FloatBarrier
+\usepackage{amsmath} % align
+\usepackage{xcolor}
+\usepackage[colorlinks=true, citecolor=violet, linkcolor=violet, urlcolor=violet]{hyperref}
+\usepackage{enumitem}
+
+\begin{document}
+\pagenumbering{gobble}
+\maketitle
+\pagebreak
+{\hypersetup{linkcolor=black}\tableofcontents}
+\pagebreak
+\pagenumbering{arabic}
+\begin{abstract}
+
+\end{abstract}
+
+\section{Introduction and Background}
+
+\section{Experimental Procedure}\label{sec:methods}
+\section{Experimental Results}\label{sec:results}
+
+\subsection{Part 1: Thermal Neutron Detection}
+
+\subsection{Part 2: Fast Neutron Detection}
+
+% Selected gate of 80 ns     
+
+\section{Discussion}\label{sec:disc}
+\section{Conclusions}\label{sec:conc}
+
+% \bibliographystyle{sty/ieeetran}
+\pagebreak\printbibliography
+
+\appendix
+\pagebreak
+\FloatBarrier\section{Equipment Details}\label{app:equip}
+In order to better replicate experiments and identify issues, the details of each equipment piece are recorded in Table~\ref{tab:equip}.
+
+\newcommand{\na}{$N/A$}
+\newcommand{\sref}[1]{$^{\ref{#1}}$}
+\FloatBarrier
+Further details of equipment are listed in Table~\ref{tab:equip}.
+Where a detail could not be identified for a given device, it is replaced with ``\na''.
+\begin{table}[!h]
+    \centering
+    \small
+    \caption{Details of the equipment used in this laboratory.}
+    \label{tab:equip}
+    \scriptsize
+    \begin{tabular}{c|cccc}
+        Item & Manufacturer & Model & ID Type & ID Number\\\hline
+        Module rack & Canberra (now Mirion)\sref{addr:mirion}& Model 2000 & Inventory \# & NE759377 \\
+        % Geiger-Muller Detector & \na & \na & \na & \na \\
+        % GM Pulse Inverter & Spectrum Techniques\sref{addr:spect} & 2017 GPI & \na & \na \\
+        Multichannel Analyzer & Ortec\sref{addr:ortec} & EasyMCA & Inventory \# & P10F79090 \\
+        Alpha Spectrometer & Ortec\sref{addr:ortec} & Model 7401, Si surface barrier detector & Property \# & NE 759377\\
+        Alpha Source & Unknown & 0.1 \micCi \AmSrc & \na & \na\\
+        Vacuum Pump & Unknown & \na & \na & \na \\
+        Mylar Sheets & Unknown & $5\times3.6$~microns thick & \na & \na \\
+        Aluminum Sheets & Unkown & $5\times18$~microns thick & \na & \na \\
+        % Weak Source 1 & Spectrum Techniques\sref{addr:spect} & 1.0\micCi ~$^{137}$Cs Beta Source & Date & Sep. 2017 \\
+        % Weak Source 2 & Spectrum Techniques\sref{addr:spect} & 1.0\micCi ~$^{137}$Cs Beta Source & Date & Sep. 2017 \\
+        % Strong Source & Eckert and Ziegler\sref{addr:eck-zieg} & 30\micCi~$^{137}Cs$ Beta Source & Date & Sep. 2017 \\
+        % \InMeta~Source & \na & Irradiated Indium Foil & Date & Feb. 2026 \\
+        High Voltage Power Supply & Caen\sref{addr:caen} & N1470AL & Inventory \# & P10G96054 \\
+        % Pulser & Ortec\sref{addr:ortec} & Model 480 & \na & \na \\
+        % Oscilloscope & Keysight\sref{addr:keys} & Infiniivision DSO-X 2002A & Inventory \# & P10R03513 \\
+        % Counter & Ortec\sref{addr:ortec} & Model 871 & Serial \# & 1024 \\
+        % Preamplifier & Ortec\sref{addr:ortec} & Model 142PC & Serial \# & 2780r17 \\
+        % Amplifier & Ortec\sref{addr:ortec} & Model 590A & Serial \# & 16076205 \\
+        Computer & Dell\sref{addr:dell} & Precision 360 & Eng. IT ID \# & EWS 20426 \\
+
+    \end{tabular}
+    \begin{enumerate}[label=\alph*]
+        \item\label{addr:mirion}
+        Mirion Technologies, Inc.:
+        1218 Menlo Drive,
+        Atlanta, GA;
+        Phone: 770.432.2744;
+        \url{https://ir.mirion.com/}
+        % \item\label{addr:spect}
+        % Spectrum Techniques:
+        % 106 Union Valley Rd, Oak Ridge, TN 37830;
+        % Phone: 865.482.9937;
+        % \url{https://www.spectrumtechniques.com/}
+        % \item\label{addr:eck-zieg}
+        % Eckert \& Ziegler Isotope Products:
+        % 24937 Avenue Tibbitts, Valencia, CA 91355;
+        % Phone: +1 866 476-9767;
+        % \url{https://isotopeproducts.com/}
+        \item\label{addr:ortec}
+        Advanced Measurement Technology:
+        801 South Illinois Avenue,
+        Oak Ridge, Tennessee 37830,
+        United States;
+        Phone: +1.865.482.4411;
+        Fax: +1.865.483.0396;
+        \url{https://www.ortec-online.com};
+        \item\label{addr:caen}
+        Caen Sp.A.:
+        Via della Vetraia, 11, 55049 Viareggio LU - Italy;
+        Phone: +39 0584 388398;
+        \url{https://www.caen.it/}
+        % \item\label{addr:keys}
+        % Keysight Technologies: 
+        % 1900 Garden of the Gods Road, Colorado Springs, CO 80907-3423 United States;
+        % Phone: 1 800 829-4444;
+        % \url{https://www.keysight.com}
+        Email: ortec.info@ametek.com
+        \item\label{addr:dell}
+        Dell Technologies:
+        Dell Technologies
+        1 Dell Way
+        Round Rock, TX 78664.;
+        Phone: 1-877-275-3355;
+        \url{https://www.dell.com/en-us/lp/contact-us}
+    \end{enumerate}
+\end{table}
+\FloatBarrier
+\end{document}
