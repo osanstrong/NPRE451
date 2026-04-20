@@ -1,0 +1,10 @@
+**.vscode/**
+**.aux
+**.bbl
+**.bcf
+**.blg
+**.log
+**.out
+**.toc
+**.run.xml
+dat/DAQ

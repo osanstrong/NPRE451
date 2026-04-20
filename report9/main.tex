@@ -48,6 +48,11 @@
 % Common Macros
 \newcommand{\micCi}{$\mathrm{\mu Ci}$\xspace}
 \newcommand{\CsSrc}{$\mathrm{^{137}Cs}$\xspace}
+\newcommand{\NaSrc}{$\mathrm{^{22}Na}$\xspace}
+
+\newcommand{\PuBe}{$\mathrm{^{239}PuBe}$\xspace}
+\newcommand{\CfSrc}{$\mathrm{^{252}Cf}$\xspace}
+\newcommand{\HeThree}{$\mathrm{^3He}$\xspace}
 
 \usepackage{placeins} % FloatBarrier
 \usepackage{amsmath} % align
@@ -72,11 +77,39 @@
 \section{Experimental Results}\label{sec:results}
 
 \subsection{Part 1: Thermal Neutron Detection}
+\FloatBarrier
+We measured 10-second counts with detector biases at 100~V increments from 0~V to 1800~V, which can be observed for each of these counts in \figref{counting_curve}.
+We ceased counts after 1800~V to avoid potential detector damage, as by this voltage the count rate began rapidly increasing at increased bias.
+Based on the plateau in count rates between 1200~V and 1600~V, we selected an operating voltage of 1400~V, to minimize potential variation in sensitivity.\\
 
+\defplot{counting_curve}{The counting curve across voltage ranging from 0~V to 1800~V biases of the \HeThree detector while measuring the \PuBe source attenuated through polyethylene.}
+
+We then successfully measured a spectrum of counts over 10~minutes for the \PuBe source and \HeThree detector, which may be viewed in \figref{exp1_spectrum}, in which we label the energy peaks corresponding to the energies of tritium and proton products, alongside the sum peak.
+
+\defplot{exp1_spectrum}{The energy spectrum measured over 10~minutes for the \PuBe source (as thermalized through polyethylene) and \HeThree detector. The energy peaks corresponding to neutron-\HeThree reaction products (proton, tritium, and coincidence) are identified and labeled.}
+
+\FloatBarrier
 \subsection{Part 2: Fast Neutron Detection}
+\FloatBarrier
+We measured energy spectra of the \NaSrc and \CsSrc sources, plotted in \figref{fig:nacs-calib}.
+Knowing the Compton edge energies for the 661.7~keV \CsSrc peak (477~keV) and the 511~keV and 1.2~MeV \NaSrc peaks (341~keV and 989~keV, respectively), we observed a linear relationship between event energy and the channel of detector response, seen in \figref{cal_three}.
+Using this relationship, we estimated a linear calibration relationship of $E=1.855c + 101.067$~keV (where $E$ is event energy and $c$ the corresponding channel on the spectrum), and used this to calibrate further spectra.
 
+\begin{figure}
+    \centering
+    \defsubplot{cal_22Na}{\NaSrc, with Compton edges labeled resulting from 511~keV and 1.2~MeV emissions.}
+    \defsubplot{cal_137Cs}{\CsSrc, with the Compton edge labeled resulting from 661.7~keV emission.}
+    \caption{The energy spectra of \NaSrc and \CsSrc sources used to calibrate the detector setup, with known spectrum features labeled in each.}
+    \label{fig:nacs-calib}    
+\end{figure}
+
+\defplot{cal_three}{The known energies of select Compton edges, compared to the corresponding spectrum channel of the detector response.}
+
+\FloatBarrier
+We then mea
 % Selected gate of 80 ns     
 
+\FloatBarrier
 \section{Discussion}\label{sec:disc}
 \section{Conclusions}\label{sec:conc}
 
@@ -106,7 +139,8 @@ Where a detail could not be identified for a given device, it is replaced with `
         % GM Pulse Inverter & Spectrum Techniques\sref{addr:spect} & 2017 GPI & \na & \na \\
         Multichannel Analyzer & Ortec\sref{addr:ortec} & EasyMCA & Inventory \# & P10F79090 \\
         Alpha Spectrometer & Ortec\sref{addr:ortec} & Model 7401, Si surface barrier detector & Property \# & NE 759377\\
-        Alpha Source & Unknown & 0.1 \micCi \AmSrc & \na & \na\\
+        \PuBe Source & Unknown & 1~Ci (at manuf.) & Manuf. Date & 1959 \\
+        % Alpha Source & Unknown & 0.1 \micCi \AmSrc & \na & \na\\
         Vacuum Pump & Unknown & \na & \na & \na \\
         Mylar Sheets & Unknown & $5\times3.6$~microns thick & \na & \na \\
         Aluminum Sheets & Unkown & $5\times18$~microns thick & \na & \na \\

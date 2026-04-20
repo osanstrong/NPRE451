@@ -79,6 +79,9 @@ for e in [E_He, E_B, E_Li]:
 
 bins = np.array([i for i in range(len(spec))])
 plt.plot(bins, spec, label="PuBe source (thermalized)")
+vbar(peaks[0], "E(p), 573 keV", "C1")
+vbar(peaks[1], "E(T), 191 keV", "C2")
+vbar(peaks[2], "E(sum), 764 keV", "C3")
 plt.xlabel("Bin #")
 plt.ylabel("Counts")
 plt.legend()
