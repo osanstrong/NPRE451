@@ -147,7 +147,16 @@ The same spectra, plotted logarithmically and normalized relative to the most pr
 We observe a fairly linear scintillator light output response, with the three chosen calibration edges (from 661.7~keV \CsSrc, 511~keV \NaSrc, and 1.2~MeV \NaSrc) exhibiting a fairly linear relationship between feature energy and scintillator channel, as seen in \figref{cal_three}.
 This is as expected, and validates our use of the linear energy calibration $E=1.855c + 101.067$~keV to interpret energy spectra.\\
 
-We selected a gate time of 
+We selected a gate time of 80~ns: as can be seen in \figref{fig:psdplot}, this gate time, for the given \CfSrc and Stilbene detector, produced the clearest distinction in pulse shape between gamma rays (small tail, lower peak on the PSD plots) and neutron radiation (long tail, higher peak on the PSD plots).
+A gate of 40~ns (\figref{PSD_40ns}) did not observe many peaks before the gate at all, while for 60~ns (\figref{PSD_60ns}), some distinction between the two shapes can be seen, but not clearly enough to discriminate practically.
+The higher gates yielded clearer distinction between gamma and neutron interactions (Figs.~\ref{PSD_80ns} to \ref{PSD_120ns}), but the distinction was most clear for a gate of 80~ns.
+We observe that, using the 80~ns gate, gamma rays featured a tail-to-total ratio (PSD ratio) of below 0.3 (\figref{PSD_80ns}), while neutron interactions yielded PSD ratios of above 0.3, motivating our PSD ratio discrimination of 0.3.\\
+
+We observe several notable effects of shielding on neutron spectra in \figref{spec_shieldmags}.
+When adjusted for acquisition time, the unshielded \CfSrc spectrum features the most counts (78860), as expected, followed by single-layer lead shielding (40372), and in decreasing strength, one (27613), three (24622), and five (22641) layers of polyethylene.
+Notably, the first layer of polyethylene provided the most drastic shielding
+
+
 \section{Conclusions}\label{sec:conc}
 
 % \bibliographystyle{sty/ieeetran}

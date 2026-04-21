@@ -89,15 +89,15 @@ plt.show()
 
 # Experiment 2: spectra through shielding
 ex2_paths = [f"./dat/Cf252_80ns/{root}.txt" for root in [
-    "bare", "lead", "poly1", "poly3", "poly5"
+    "bare", "poly1", "poly3", "poly5", "lead"
 ]]
 
 ex2_names = [
     "No Shielding",
-    "Lead (7.71±0.01 mm)",
     "PE (12.8±0.1 mm)",
     "PE (25.6±0.2 mm)",
-    "PE (38.4±0.3 mm)"
+    "PE (38.4±0.3 mm)",
+    "Lead (7.71±0.01 mm)"
 ]
 
 ex2_counts = []
@@ -106,7 +106,7 @@ for i in range(len(ex2_paths)):
     path = ex2_paths[i]
     name = ex2_names[i]
     counts = raw_to_spec(path)
-    if name == "No Shielding":
+    if name == "No Shielding" or "PE" in name:
         counts*=2
     ex2_specs.append(counts)
     cf = crunch_factor = 1
@@ -128,8 +128,9 @@ plt.show()
 for i in range(len(ex2_paths)):
     name = ex2_names[i]
     spec = ex2_specs[i]
+    total = sum(spec)
     ener = np.array(range(len(spec)))*m + b
-    plt.plot(ener, spec, label=name)
+    plt.plot(ener, spec, label=f"{name} (Total: {int(total)})")
 plt.xlabel("Energy (keV)")
 plt.ylabel("Counts over 10 minutes")
 plt.legend()
