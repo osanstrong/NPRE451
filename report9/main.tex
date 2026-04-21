@@ -106,11 +106,48 @@ Using this relationship, we estimated a linear calibration relationship of $E=1.
 \defplot{cal_three}{The known energies of select Compton edges, compared to the corresponding spectrum channel of the detector response.}
 
 \FloatBarrier
-We then mea
+We successfully measured pulse integrals corresponding to the chosen gate times, which are compared as PSD plots in \figref{fig:psdplot}.
+Based on these distributions, we selected an 80~ns gate for neutron-gamma discrimination, with a PSD ratio of 0.3.\\
+
+\newcommand{\psdplot}[1]{\defsubplot{PSD_#1ns}{With gate of #1~ns.}}
+\begin{figure}
+    \centering
+    \psdplot{40}
+    \hfill
+    \psdplot{60}
+    \hfill
+    \psdplot{80}
+    \hfill
+    \psdplot{100}
+    \hfill
+    \psdplot{120}
+    \caption{Pulse spectrum discrimination (PSD) plots of 3~minute acquisitions of a bare \CfSrc source by a Stilbene detector. Based on these plots, an 80~ns gate was selected for neutron experiments.}
+    \label{fig:psdplot}
+\end{figure}
 % Selected gate of 80 ns     
+
+Using the 80~ns gate tail filter to filter out gamma emissions, we then successfully measured a 5~minute neutron spectrum of the bare \CfSrc source, followed by 10~minute neutron spectra each of the sane source as attenuated by the layer of lead, and by one, three, and five layers each of polyethylene.
+These neutron energy spectra may be viewed in \figref{spec_shieldmags}.
+The same spectra, plotted logarithmically and normalized relative to the most prominent energy, may be seen in \figref{fig:spec_log}
+
+\defplot{spec_shieldmags}{The 10-minute energy spectra observed of the \CfSrc source with a Stilbene detector and PSD of 80~ns gate with ratio 0.3. The spectrum of bare \CfSrc, having been taken over 5~minutes, is doubled in this plot for accurate comparison.}
+
+
+\begin{figure}
+    \centering
+    \defsubplot{spec_shielded}{Full spectrum.}
+    \hfill
+    \defsubplot{spec_shielded_zoom}{Zoomed near peak energy and downscaled by a factor of four for clearer comparison.}
+    \caption{The 10-minute energy spectra observed of the \CfSrc source with a Stilbene detector and PSD of 80~ns gate with ratio 0.3, relative to each spectrum's most prominent energy.}
+    \label{fig:spec_log}
+\end{figure}
 
 \FloatBarrier
 \section{Discussion}\label{sec:disc}
+We observe a fairly linear scintillator light output response, with the three chosen calibration edges (from 661.7~keV \CsSrc, 511~keV \NaSrc, and 1.2~MeV \NaSrc) exhibiting a fairly linear relationship between feature energy and scintillator channel, as seen in \figref{cal_three}.
+This is as expected, and validates our use of the linear energy calibration $E=1.855c + 101.067$~keV to interpret energy spectra.\\
+
+We selected a gate time of 
 \section{Conclusions}\label{sec:conc}
 
 % \bibliographystyle{sty/ieeetran}
