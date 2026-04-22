@@ -85,9 +85,22 @@ This holds true even for neutral particles like photons and neutrons, relying on
 
 For detecting thermal (slow) neutrons, in particular, there are three \emph{nuclear} interactions of particular interest: \HeThree(n,p), 
 \subsection{Spectroscopy of Fast Neutrons}
-Scintillation detectors, which release light upon ionizing interaction, thus also elicit response from neutral particles like gamma rays and neutrons.\\
+Scintillation detectors, which release light upon ionizing interaction, thus also elicit response from neutral particles like gamma rays and neutrons.
+While these scintillators also yield information about the energy of each particle, such a scintillator does not as clearly give energy about \emph{just} the neutrons, as neutron sources are typically accompanied by large amounts of gamma radiation, which also produce energy dependent responses in the detector and occupy the resulting spectrum.
+A radiation scientist must thus find some way to distinguish between observations of gamma rays, and the neutrons they hope to measure.\\
 
-Organic scintillators are of particular interest, as they feature a key difference in response to gamma rays and neutrons, which can be used in a technique called Pulse Shape Discrimination (PSD) to distinguish between the two.
+Organic scintillators are of particular interest, as they feature a very observable difference in response to gamma rays and neutrons, which can be used in a technique called Pulse Shape Discrimination (PSD) to distinguish between the two.\\
+
+In low-z materials, such as those found in an organic detector, the primary interaction of photons with matter is through Compton scattering.\cite{tsoulfanidis_measurement_2015}.
+Compton scattering, in which the electron and photon essentially elastically scatter, is a very direct deposition of energy into charge phenomena (the electron, which is removed from the atom), allowing this deposited energy to be observed by the detector very quickly.
+That is, on an emission-time plot, the emission pulse corresponding to the event, (which the computer integrates to identify the total energy of the event), is very short and quick.\\
+
+Conversely, when a neutron interacts with an atom in the detector, it does so through a nuclear reaction.
+[show the different bonds]
+This has the effect that, when a neutron delivers its energy into an organic scintillator, that energy is delivered over a much longer time, forming a pulse with a long ``tail'' as these secondary and tertiary events continue to be registered by the detector.\\
+
+Thus, since these two events produce different ``shapes'' of energy pulses, the time information of a detector can be used, with an appropriate metric, to distinguish between gamma and neutron events.
+This practice is referred to as Pulse Shape Discrimination, or PSD for short.
 
 [electron response vs neutron response]
 
