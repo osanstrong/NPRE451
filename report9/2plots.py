@@ -89,16 +89,20 @@ plt.show()
 
 # Experiment 2: spectra through shielding
 ex2_paths = [f"./dat/Cf252_80ns/{root}.txt" for root in [
-    "bare", "poly1", "poly3", "poly5", "lead"
+    "bare", "lead", "poly1", "poly3", "poly5"
 ]]
 
 ex2_names = [
     "No Shielding",
+    "Lead (7.71±0.01 mm)",
     "PE (12.8±0.1 mm)",
     "PE (25.6±0.2 mm)",
     "PE (38.4±0.3 mm)",
-    "Lead (7.71±0.01 mm)"
 ]
+
+ex2_times = np.array([
+    5, 10, 5, 5, 5
+]) * 60
 
 ex2_counts = []
 ex2_specs = []
@@ -125,13 +129,18 @@ plt.yscale("log")
 plt.legend()
 plt.show()
 
-for i in range(len(ex2_paths)):
+# for i in range(len(ex2_paths)):
+for i in [0, 2, 3, 4, 1]:
     name = ex2_names[i]
     spec = ex2_specs[i]
+    time = ex2_times[i]
+    spec /= time
     total = sum(spec)
+    
+    print(f"Total counts ({name}): {total:,}")
     ener = np.array(range(len(spec)))*m + b
-    plt.plot(ener, spec, label=f"{name} (Total: {int(total)})")
+    plt.plot(ener, spec, label=f"{name} (Total: {total:.3f} s^-1)", c=f"C{i}")
 plt.xlabel("Energy (keV)")
-plt.ylabel("Counts over 10 minutes")
+plt.ylabel("Counts per second")
 plt.legend()
 plt.show()

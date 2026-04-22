@@ -32,7 +32,8 @@ counts = np.array([
 ])
 SELECTED_BIAS = 1400
 
-# plt.plot(volts, counts)
+# plt.plot(volts, counts, linestyle="dotted", c="C2", zorder=-1)
+# plt.scatter(volts, counts, label="Observed")
 # vbar(SELECTED_BIAS, "Selected Bias: +1400 V", c="C1")
 # plt.xlabel("Operating Bias (V)")
 # plt.ylabel("Counts Observed over 10 seconds (-)")
@@ -68,9 +69,9 @@ def get_spec_cps(path, crop=None):
 spec, time = get_spec("dat/lab9_part1.Spe")
 print(f"spec: {spec}")
 
-peaks = np.array([312, 535, 940])
+peaks = np.array([312, 535, 980])
 
-E_He = [0.573, 0.191, 0.764]
+E_He = [0.191, 0.573, 0.764]
 E_B = [0.84, 1.47, 0.94*2.310 + 0.06*2.792]
 E_Li = [2.73, 2.05, 4.78]
 
@@ -79,8 +80,8 @@ for e in [E_He, E_B, E_Li]:
 
 bins = np.array([i for i in range(len(spec))])
 plt.plot(bins, spec, label="PuBe source (thermalized)")
-vbar(peaks[0], "E(p), 573 keV", "C1")
-vbar(peaks[1], "E(T), 191 keV", "C2")
+vbar(peaks[0], "E(T), 191 keV", "C1")
+vbar(peaks[1], "E(p), 573 keV", "C2")
 vbar(peaks[2], "E(sum), 764 keV", "C3")
 plt.xlabel("Bin #")
 plt.ylabel("Counts")

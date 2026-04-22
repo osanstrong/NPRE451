@@ -73,7 +73,19 @@
 
 \section{Introduction and Background}
 
+Neutron detection is highly important to the safe and effective operation of machines like nuclear reactors.
+However, neutrons undergo a myriad variety of reactions with different materials at different speeds and under different conditions.
+It is thus important to characterize different methods of detecting neutron radiation at different energies.\\
+
+In this laboratory, we investigate the response of a \HeThree gas detector to thermal neutrons, and the use of a stlibene organic scintillator to characterize energies of fast neutrons.
+
+\subsection{Detection of Thermal Neutrons}
+\subsection{Spectroscopy of Fast Neutrons}
+
 \section{Experimental Procedure}\label{sec:methods}
+In this laboratory, we use a 
+\subsection{Part 1: Thermal Neutron Detection}
+\subsection{Part 2: Fast Neutron Detection}
 \section{Experimental Results}\label{sec:results}
 
 \subsection{Part 1: Thermal Neutron Detection}
@@ -144,6 +156,13 @@ The same spectra, plotted logarithmically and normalized relative to the most pr
 
 \FloatBarrier
 \section{Discussion}\label{sec:disc}
+In the counting curve for the \HeThree detector in \figref{counting_curve}, we observe a plateau in counts between approximately 1200 and 1600~V.
+By choosing an operating bias in the middle of this plateau (1400~V), we minimize the likely variation in counting rate that may be caused by slight fluctuations in actual operating bias, compared to the nominal operating bias.\\
+
+Excluding background radiation, we observe three loose peaks in energies.
+Knowing the three energies we expect from responses in a \HeThree detector, we expect the peaks to correspond, in order of increasing energy and channel, to the 191~keV carried by the product tritium ion, the 573~keV carried by the product proton, and the 764~keV of observing both products at once, that is, the full Q-value of the detector reaction.\\
+
+
 We observe a fairly linear scintillator light output response, with the three chosen calibration edges (from 661.7~keV \CsSrc, 511~keV \NaSrc, and 1.2~MeV \NaSrc) exhibiting a fairly linear relationship between feature energy and scintillator channel, as seen in \figref{cal_three}.
 This is as expected, and validates our use of the linear energy calibration $E=1.855c + 101.067$~keV to interpret energy spectra.\\
 
@@ -152,9 +171,13 @@ A gate of 40~ns (\figref{PSD_40ns}) did not observe many peaks before the gate a
 The higher gates yielded clearer distinction between gamma and neutron interactions (Figs.~\ref{PSD_80ns} to \ref{PSD_120ns}), but the distinction was most clear for a gate of 80~ns.
 We observe that, using the 80~ns gate, gamma rays featured a tail-to-total ratio (PSD ratio) of below 0.3 (\figref{PSD_80ns}), while neutron interactions yielded PSD ratios of above 0.3, motivating our PSD ratio discrimination of 0.3.\\
 
+\newcommand{\isec}{s$^{-1}$}
 We observe several notable effects of shielding on neutron spectra in \figref{spec_shieldmags}.
-When adjusted for acquisition time, the unshielded \CfSrc spectrum features the most counts (78860), as expected, followed by single-layer lead shielding (40372), and in decreasing strength, one (27613), three (24622), and five (22641) layers of polyethylene.
-Notably, the first layer of polyethylene provided the most drastic shielding
+When adjusted for acquisition time, the unshielded \CfSrc spectrum features the most overall counts (262.866~\isec), as expected, followed in decreasing strength by one (184.087~\isec), three (164.147~\isec), and five (150.940~\isec) layers of polyethylene, and finally by lead (67.287~\isec).
+We observe a ratio of 0.366 between the total count rates attenuated by lead and one layer of polyethylene, which is not unexpected despite the lead layer ($7.71\pm0.01$~mm) being thinner than a polyethylene layer ($12.8\pm0.1$~mm), as lead is a much denser material.
+However, in the same figure, lead appears to be drastically more effective in attenuating the peak of slow neutrons, which can be confirmed using the normalized plot in \figref{fig:spec_log}, where compared to the peak of low energy neutrons (between 200 and 250~keV), the lead-attenuated spectrum actually features more higher-energy neutrons (250 to 600~keV) than even the unshielded spectrum, confirming this favor towards slowing low energy neutrons.
+Conversely, in the same figure we observe that increasing thicknesses of polyethylene resulted in fewer events of higher energy neutrons compared to the low-energy peak, suggesting that polyethylene is more effective at absorbing and downscattering high-energy neutrons, and could thus be an effective way to "thermalize" neutron sources, given sufficient thickness.
+We observe that Stilbene is thus an effective detector for higher energy neutron spectroscopy, allowing us to identify neutron energies at ranges from 200~keV up to scales of MeV (Figs.~\ref{}), and being able to identify energy dependent phenomena such as the lead plate being more effective at attenuating slower neutrons and polyethylene for faster neutrons within this range.
 
 
 \section{Conclusions}\label{sec:conc}
