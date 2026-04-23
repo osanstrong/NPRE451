@@ -1,5 +1,7 @@
 \documentclass[12pt]{article}
-\usepackage{subcaption}
+\usepackage{subcaption} % Subfigures
+\usepackage{arydshln} % Dashed hlines
+% \usepackage{colortbl} % Thicker hlines
 \usepackage{graphicx} % Required for inserting images
 
 \title{Lab 9: Thermal and Fast Neutron Measurement and Pulse Shape Discrimination}
@@ -53,6 +55,8 @@
 \newcommand{\PuBe}{$\mathrm{^{239}PuBe}$\xspace}
 \newcommand{\CfSrc}{$\mathrm{^{252}Cf}$\xspace}
 \newcommand{\HeThree}{$\mathrm{^3He}$\xspace}
+\newcommand{\BTen}{$\mathrm{^{10}B}$\xspace}
+\newcommand{\LiSix}{$\mathrm{^6Li}$\xspace}
 
 \usepackage{placeins} % FloatBarrier
 \usepackage{amsmath} % align
@@ -77,14 +81,51 @@ Neutron detection is highly important to the safe and effective operation of mac
 However, neutrons undergo a myriad variety of reactions with different materials at different speeds and under different conditions.
 It is thus important to characterize different methods of detecting neutron radiation at different energies.\\
 
-In this laboratory, we investigate the response of a \HeThree gas detector to thermal neutrons, and the use of a stlibene organic scintillator to characterize energies of fast neutrons.
+In this laboratory, we investigate the response of a \HeThree gas detector to thermal neutrons, and the use of a stilbene organic scintillator to characterize energies of fast neutrons.
+Using multichannel analysis, we aim to confirm expected energy spectrum features corresponding to known neutron interaction with the \HeThree detector.
+Using the stilbene detector, we aim to demonstrate the technique of pulse shape discrimination to filter observations of neutron radiation from gamma radiation, and characterize the energy-dependent interactions of fast neutrons with lead and polyethylene shielding.
 
 \subsection{Detection of Thermal Neutrons}
 Radiation detection typically revolves around measuring charge-related phenomena.\cite{npre_lab_9_manual_2025}
 This holds true even for neutral particles like photons and neutrons, relying on interactions of these particles which can then go on to create charge effects, such as by ionizing materials.\\
 
-For detecting thermal (slow) neutrons, in particular, there are three \emph{nuclear} interactions of particular interest: \HeThree(n,p), 
+For detecting thermal (slow) neutrons, in particular, there are three \emph{nuclear} interactions of particular interest: \HeThree(n,p), \BTen(n, $\alpha$), and \LiSix(n, $\alpha$).
+In these interactions between the neutron and a target nucleus, charged particles are produced, which can then be used to detect the event.
+Each reaction produces a predictable net energy $Q$, distributed among products as seen in Table~\ref{tab:qvals}\cite{npre_lab_9_manual_2025}.\\
+
+\begin{table}
+    \centering
+    \caption{The distribution of reaction energy among neutron reaction products for \HeThree, \BTen, and \LiSix detector media.\cite{npre_lab_9_manual_2025}}
+    \label{tab:qvals}
+    \begin{tabular}{c|ccc}
+        \hline
+        Detecting Medium & Product 1 Energy (MeV) & Product 2 Energy (MeV) & Total $Q$ value (MeV) \\
+        \hline
+        \HeThree & ${E_p}=0.573$ & ${E_{^3H}}=0.191$ & 0.764 \\
+        \hdashline
+        \BTen & ${E_{Li}}=0.84$ & $E_{\alpha}=1.47$ & 2.310 (94\%) \\
+                                                    &&& 2.792 (6\%) \\
+        \hdashline
+        \LiSix & $E_{^3H}=2.73$ & $E_\alpha=2.05$ & 4.78\\
+        \hline
+    \end{tabular}
+\end{table}
+
+As these energies are typically far greater than the thermal (\~0.025eV) neutrons initiating them, these reactions say little about the energy of the neutron, only serving to confirm the presence of such a reaction.
+The energies of each product, however, can be seen in a spectrogram.
+Each charged product gradually deposits its energy in the detecting medium as it travels in opposite direction from the other product.
+Should one of the particles interact with the detector wall, as in \figref{wall_product}, then it will have only deposited part of its energy in the medium, down to at a minimum zero, should the reaction take place immediately against the wall.
+As the two products proceed in opposing directions, this results in an energy spectrum ranging from the lowest product energy (i.e., the lighter product immediately intersects the wall) to the combined reaction energy (all products fully deposit in medium), with an edge at the higher product energy (heavy product immediately intersects wall) also visible, as shown in \figref{bf3_spec} for a typical \BTen detector medium, BF$_3$.\\
+
+\defplot{wall_product}{Two extremes of particle energy deposition: On the left, the reaction takes place at the wall, and one particle's energy is \emph{entirely} lost to the wall, and on the right the reaction is far enough away to deposit both products' energies fully in the medium.\cite{npre_lab_9_manual_2025}}
+
+\defplot{bf3_spec}{An expected energy spectrum for a BF$_3$~(i.e. \BTen) detector, ranging from a full reaction deposition on the right to the drop-offs of alpha and lithium product energies.\cite{npre_lab_9_manual_2025}}
+
+In this laboratory, a \HeThree detector is used, and we thus expect to see features corresponding to three energies seen in Table~\ref{tab:qvals} for \HeThree.
+
+\FloatBarrier
 \subsection{Spectroscopy of Fast Neutrons}
+\FloatBarrier
 Scintillation detectors, which release light upon ionizing interaction, thus also elicit response from neutral particles like gamma rays and neutrons.
 While these scintillators also yield information about the energy of each particle, such a scintillator does not as clearly give energy about \emph{just} the neutrons, as neutron sources are typically accompanied by large amounts of gamma radiation, which also produce energy dependent responses in the detector and occupy the resulting spectrum.
 A radiation scientist must thus find some way to distinguish between observations of gamma rays, and the neutrons they hope to measure.\\
@@ -92,22 +133,76 @@ A radiation scientist must thus find some way to distinguish between observation
 Organic scintillators are of particular interest, as they feature a very observable difference in response to gamma rays and neutrons, which can be used in a technique called Pulse Shape Discrimination (PSD) to distinguish between the two.\\
 
 In low-z materials, such as those found in an organic detector, the primary interaction of photons with matter is through Compton scattering.\cite{tsoulfanidis_measurement_2015}.
-Compton scattering, in which the electron and photon essentially elastically scatter, is a very direct deposition of energy into charge phenomena (the electron, which is removed from the atom), allowing this deposited energy to be observed by the detector very quickly.
-That is, on an emission-time plot, the emission pulse corresponding to the event, (which the computer integrates to identify the total energy of the event), is very short and quick.\\
+Compton scattering, in which the electron and photon essentially elastically scatter, results in an electron being very swiftly excited and deexcited (known as \emph{prompt fluorescence}), allowing this deposited energy to be observed by the detector very quickly.
+That is, on an emission-time plot, the emission pulse corresponding to the event, (which the computer integrates to identify the total energy of the event), is very short in time.\\
 
 Conversely, when a neutron interacts with an atom in the detector, it does so through a nuclear reaction.
-[show the different bonds]
+For example, when a fast neutron interacts with a helium nucleus and produces a recoil proton, this recoil proton excites electrons along the proton track into ``triplet states'', which recombine with each other along the track in triplet-triplet annihilation, where triplet states from two molecules combine and decay to singlet energy state, whose decay finally releases energy in \emph{delayed fluorescence}.
+These states are illustrated in \figref{triplet}
+\defplotW{triplet}{The primary mechanisms between singlet and triplet states which produce light in organic scintillators.\cite{lee_pulse_2024}}{0.4}
 This has the effect that, when a neutron delivers its energy into an organic scintillator, that energy is delivered over a much longer time, forming a pulse with a long ``tail'' as these secondary and tertiary events continue to be registered by the detector.\\
 
 Thus, since these two events produce different ``shapes'' of energy pulses, the time information of a detector can be used, with an appropriate metric, to distinguish between gamma and neutron events.
 This practice is referred to as Pulse Shape Discrimination, or PSD for short.
+If an appropriate time gate is detected towards the end of the short peak (prompt fluorescence from gammas), then the fraction of each pulse in the ``tail'' following that gate (i.e., a tail to total ratio, also known as a PSD ratio) can be used to distinguish between gamma and neutron radiation: gamma detections will feature a low ratio, and the slower neutron detections will feature a high ratio.
+By plotting the energy vs tail to tip ratio for each detected pulse in a PSD plot, such as in \figref{psd_example} using different gates, a suitable gate and PSD ratio can be chosen for discrimination, and using spectrum capture software such as \texttt{Compass}\cite{noauthor_compass_nodate}, pulses which fall below the selected PSD ratio at the selected gate (i.e. gamma ray detections) may be rejected from spectrum collection.\\
+\defplotW{psd_example}{PSD plots taken using EJ-309 (a) and stilbene (b) detectors.\cite{di_fulvio_passive_2017}}{0.8}
 
-[electron response vs neutron response]
+In this laboratory, we aim to 
 
+\FloatBarrier
 \section{Experimental Procedure}\label{sec:methods}
-In this laboratory, we use a 
+In this laboratory, we used two experimental setups, for thermal and fast neutron detection respectively.
 \subsection{Part 1: Thermal Neutron Detection}
+\FloatBarrier
+For thermal neutron detection, we employ a \HeThree detector, a high voltage power supply (HVPS), an amplifier and single channel analyzer (Amp \& SCA), a multichannel analyzer (MCA), an oscilloscope, a timer and counter, and a computer with the \texttt{Maestro} software\cite{ortec_maestro_2012}.
+Further equipment details may be found in Appendix~\ref{app:equip}.\\
+
+We constructed, according to \figref{part1_diag}, an experimental setup to record thermal neutrons from a \PuBe source thermalized by attenuating sheets of polyethylene, using a \HeThree detector, which may be seen in \figref{fig:part1_setup}.
+\defplot{part1_diag}{The experimental design for thermal neutron detection. Connection to the oscilloscope is labeled in gray, as this instrument was used for verification purposes, and not during actual measurement.}
+
+\begin{figure}
+    \centering
+    \defsubplot{part1_setup1}{Components adjacent to the \HeThree detector.}
+    \hfill
+    \defsubplot{part1_setup2}{The MCA and computer.}
+    \caption{The experimental setup for thermal neutron detection.}
+    \label{fig:part1_setup}
+\end{figure}
+
+We first identified a suitable operating voltage.
+Starting with the voltage bias on the HVPS set to 100~V, and the \HeThree detector placed in the barrel to observe the \PuBe source behind polyethylene, we recorded counts from the \HeThree detector using the timer and counter module over a 10~second interval.
+We then incremented voltage in 100~V increments up to a maximum bias of 1800~V, recording 10~second counts at each bias.
+Comparing the counts measured between different voltages to identify a ``plateau'' where slight variation in voltage would have minimal effect on observations, we selected an operating voltage of 1400~V.\\
+
+After selecting a suitable operating voltage, we recorded, using the MCA and Maestro, an energy spectrum of the \HeThree detector responding to the thermalized neutrons over 10~minutes, followed by a background spectrum over 5~minutes with the \PuBe source removed.
+
+
+\FloatBarrier
 \subsection{Part 2: Fast Neutron Detection}
+For fast neutron detection and spectroscopy, we employed \CsSrc, \NaSrc, and \CfSrc sources, a sheet of lead, sheets of polyethylene, a stilbene scintillator, a photomultiplier tube (PMT), a digitizer, and a computer with the software \texttt{Compass}\cite{noauthor_compass_nodate} installed.
+Further equipment details may be found in Appendix~\ref{app:equip}.\\
+
+We constructed, according to \figref{part2_diag}, an experimental setup to collect fast neutron spectra.
+This setup may be observed in \figref{part2_setup}.\\
+\FloatBarrier
+\defplot{part2_diag}{The experimental design for fast neutron detection and spectrometry.}
+
+\defplotW{part2_setup}{The experimental setup for fast neutron detection and spectrometry. A \CsSrc, \NaSrc, or \CfSrc source was placed under the scintillator during measurements, alongside any applicable shielding.}{0.5}
+
+We began by calibrating the energy response of the detectors.
+We measured a bare gamma spectrum of a \CsSrc source (which is known\cite{tsoulfanidis_measurement_2015} to feature a 661.7 emission, corresponding to a 477~keV Compton edge), and one of a \NaSrc source (1.2~MeV emission and 511~keV annihilation peak, corresponding to 989~keV and 341~keV Compton edges, respectively).
+Using the sources' known energy features, we obtained a calibration between spectrum bins to energy.\\
+
+We then calibrated a neutron filter using PSD to ignore gamma detections.
+Using the discriminator feature of \texttt{Compass}, we recorded tip to tail ratios for scintillator responses to a \CfSrc source using discriminator gates of 40, 60, 80, 100, and 120~ns, each over a 3~minute period.
+Plotting these data in PSD graphs, we selected a suitable discrimination gate of 80~ns, with a cutoff ignoring events with PSD ratio below 0.3 (gamma ray detections).\\
+
+We then measured energy spectra (consisting solely of fast neutrons, with gamma radiation filtered by \texttt{Compass} according to the above PSD analysis) of the \CfSrc through different combinations of shielding.
+We measured spectra of the source without shielding for 5~minutes, with the layer of lead between the source and detector for 10~minutes, and with one, three, and five layers of polyethylene between the source and detector for 5~minutes each.\\
+
+We measured the layer of lead to be 7.71$\pm$0.01~mm, and all layers of polyethylene to be 12.8$\pm$0.1~mm thick each.
+\FloatBarrier
 \section{Experimental Results}\label{sec:results}
 
 \subsection{Part 1: Thermal Neutron Detection}
@@ -203,6 +298,16 @@ We observe that Stilbene is thus an effective detector for higher energy neutron
 
 
 \section{Conclusions}\label{sec:conc}
+
+The objectives of this laboratory were largely met.\\
+
+Using a suitable operating bias of +1400~V, a spectrum of \HeThree detector response to a thermalized \PuBe source was measured, which featured identifiable peaks and edges corresponding to the expected range of observed energies from nuclear reaction products in \HeThree, confirming this interaction of thermal neutrons in the detector medium.\\
+
+Using \CsSrc and \NaSrc of known emission energies, the stilbene detector energy response was characterized as sufficiently linear, featuring a correlation $R^2=0.999$ and a relationship $E=1.855c + 101.067$~keV between spectrum channel $c$ and event energy $E$.
+Pulse spectrum discrimination was successfully demonstrated using a gate time of 80~ns and a cutoff ratio of 0.3, with clear distinction observed between gamma and neutron responses and used to filter out gamma responses, demonstrating the viability of the technique for neutron spectroscopy using organic scintillators.
+Using the successful discrimination, fast neutron energy spectra were successfully measured from a \CfSrc source without shielding and with 7.71~mm of lead, and 12.8, 25.6, and 38.4~mm of polyethylene.
+These spectra showed a ratio of 0.366 between total count rates attenuated by 7.71~mm of lead and by 12.8~mm of polyethylene, demonstrating the efficacy of lead, a very dense material, in shielding neutrons broadly.
+The same spectra also showed a comparative reduction in slower neutrons after lead attenuation, and a comparative reduction in faster neutrons after increasing attenuation through polyethylene, suggesting lead to be more effective at shielding against slower neutron radiation, and polyethylene to be more effective at selectively shielding higher energy neutrons, confirming its viability as a neutron ``thermalizing'' material.\\
 
 % \bibliographystyle{sty/ieeetran}
 \pagebreak\printbibliography
