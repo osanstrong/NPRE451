@@ -72,7 +72,16 @@
 \pagebreak
 \pagenumbering{arabic}
 \begin{abstract}
-
+A key requirement in operating nuclear machinery is the detection of neutrons at a variety of energies.
+In this lab, we characterize the detection of thermal neutrons using a \HeThree detector, demonstrate spectrometry of fast neutrons using a stilbene detector and pulse shape discrimination, and use spectrometry to compare energy dependent shielding in lead and polyethylene.
+We measure the energy spectrum of a \HeThree detector's response reactions to polyethylene-thermalized neutrons from a \PuBe source.
+We measure the energy spectra of \CsSrc and \NaSrc sources to calibrate a stilbene scintillator, measure a bare \CfSrc with digital analysis of pulse integrals with 40, 60, 80, 100, and 120~ns gate times to identify suitable pulse shape discrimination parameters, and using this discrimination measure fast neutron energy spectra of the \CfSrc source without shielding, with 7.71$\pm$0.01~mm of lead, and with 12.8$\pm$0.1, 25.6$\pm$0.2, and 38.4$\pm$0.3~mm each of polyethylene to observe energy dependent shielding effects in these materials.
+In the response spectrum of the \HeThree detector to thermalized neutron radiation, we observe the expected features corresponding to \HeThree(n, p), confirming this reaction in the detector medium.
+In the gamma spectra of \CsSrc and \NaSrc sources measured with the stilbene detector, we observe a strong linear energy response and find a calibration of $E=1.855c + 101.067$~keV between channel $c$ and event energy $E$.
+In pulse shape discrimination plots (comparing frequency of events at different energies and tail ratios at a given gate), we identify viable discrimination between neutron and gamma ray observations using a gate time of 80~ns, and a tail ratio of 0.3, below which pulses may be rejected as gamma radiation-induced.
+In the calibrated energy spectra of \CfSrc from this detector through different shieldings, we observe a ratio of 0.366 between the total count rates attenuated by lead and by the thinnest thickness of polyethylene, as expected from the high density of lead. We also observe a bias of the lead-attenuated spectrum towards higher energy neutrons, and of the polyethylene-attenuated spectra towards lower energy neutrons, suggesting that lead is more effective at shielding lower energy neutrons and polyethylene selectively against fast neutrons (acting as a ``thermalizer'' through absorption and downscattering, as used in the \HeThree experiment).
+These results confirm the expected reaction behavior of the \HeThree detector medium to thermal neutrons, the efficacy of pulse shape discrimination between gamma and neutron radiation in organic scintillators, and the energy variation in shielding abilities between lead and polyethylene, in particular demonstrating the ability of polyethylene to thermalize neutron sources.
+These results may be of use to those considering the use of \HeThree detectors for thermal neutron detection, the use of organic scintillators to perform neutron spectroscopy (and in particular the technique of pulse shape discrimination), and those wishing to shield selectively against different energies of neutron radiation, for example to thermalize neutrons from a predominantly fast neutron source.
 \end{abstract}
 
 \section{Introduction and Background}
@@ -86,6 +95,7 @@ Using multichannel analysis, we aim to confirm expected energy spectrum features
 Using the stilbene detector, we aim to demonstrate the technique of pulse shape discrimination to filter observations of neutron radiation from gamma radiation, and characterize the energy-dependent interactions of fast neutrons with lead and polyethylene shielding.
 
 \subsection{Detection of Thermal Neutrons}
+\FloatBarrier
 Radiation detection typically revolves around measuring charge-related phenomena.\cite{npre_lab_9_manual_2025}
 This holds true even for neutral particles like photons and neutrons, relying on interactions of these particles which can then go on to create charge effects, such as by ionizing materials.\\
 
@@ -99,7 +109,7 @@ Each reaction produces a predictable net energy $Q$, distributed among products 
     \label{tab:qvals}
     \begin{tabular}{c|ccc}
         \hline
-        Detecting Medium & Product 1 Energy (MeV) & Product 2 Energy (MeV) & Total $Q$ value (MeV) \\
+        Detecting Medium & Product 1 (MeV) & Product 2 (MeV) & Total Energy $Q$ (MeV) \\
         \hline
         \HeThree & ${E_p}=0.573$ & ${E_{^3H}}=0.191$ & 0.764 \\
         \hdashline
@@ -138,24 +148,22 @@ That is, on an emission-time plot, the emission pulse corresponding to the event
 
 Conversely, when a neutron interacts with an atom in the detector, it does so through a nuclear reaction.
 For example, when a fast neutron interacts with a helium nucleus and produces a recoil proton, this recoil proton excites electrons along the proton track into ``triplet states'', which recombine with each other along the track in triplet-triplet annihilation, where triplet states from two molecules combine and decay to singlet energy state, whose decay finally releases energy in \emph{delayed fluorescence}.
-These states are illustrated in \figref{triplet}
+These states are illustrated in \figref{triplet}.
 \defplotW{triplet}{The primary mechanisms between singlet and triplet states which produce light in organic scintillators.\cite{lee_pulse_2024}}{0.4}
-This has the effect that, when a neutron delivers its energy into an organic scintillator, that energy is delivered over a much longer time, forming a pulse with a long ``tail'' as these secondary and tertiary events continue to be registered by the detector.\\
+This has the effect that, when a neutron delivers its energy into an organic scintillator, that energy is delivered over a much longer time, forming a pulse with a long ``tail'' as these secondary events continue to be registered by the detector.\\
 
 Thus, since these two events produce different ``shapes'' of energy pulses, the time information of a detector can be used, with an appropriate metric, to distinguish between gamma and neutron events.
 This practice is referred to as Pulse Shape Discrimination, or PSD for short.
-If an appropriate time gate is detected towards the end of the short peak (prompt fluorescence from gammas), then the fraction of each pulse in the ``tail'' following that gate (i.e., a tail to total ratio, also known as a PSD ratio) can be used to distinguish between gamma and neutron radiation: gamma detections will feature a low ratio, and the slower neutron detections will feature a high ratio.
-By plotting the energy vs tail to tip ratio for each detected pulse in a PSD plot, such as in \figref{psd_example} using different gates, a suitable gate and PSD ratio can be chosen for discrimination, and using spectrum capture software such as \texttt{Compass}\cite{noauthor_compass_nodate}, pulses which fall below the selected PSD ratio at the selected gate (i.e. gamma ray detections) may be rejected from spectrum collection.\\
+If an appropriate time gate is selected towards the end of the short peak (prompt fluorescence from gammas), then the fraction of each pulse in the ``tail'' following that gate (i.e., a tail to total ratio, also known as a PSD ratio) can be used to distinguish between gamma and neutron radiation: gamma detections will feature a low ratio, and the slower neutron detections will feature a high ratio.
+By plotting the energy vs tail to tip ratio for each detected pulse in a PSD plot, such as in \figref{psd_example}, using different gates, a suitable gate and PSD ratio can be chosen for discrimination, and using spectrum capture software such as \texttt{Compass}\cite{noauthor_compass_nodate}, pulses which fall below the selected PSD ratio at the selected gate (i.e. gamma ray detections) may be rejected from spectrum collection.\\
 \defplotW{psd_example}{PSD plots taken using EJ-309 (a) and stilbene (b) detectors.\cite{di_fulvio_passive_2017}}{0.8}
-
-In this laboratory, we aim to 
 
 \FloatBarrier
 \section{Experimental Procedure}\label{sec:methods}
 In this laboratory, we used two experimental setups, for thermal and fast neutron detection respectively.
 \subsection{Part 1: Thermal Neutron Detection}
 \FloatBarrier
-For thermal neutron detection, we employ a \HeThree detector, a high voltage power supply (HVPS), an amplifier and single channel analyzer (Amp \& SCA), a multichannel analyzer (MCA), an oscilloscope, a timer and counter, and a computer with the \texttt{Maestro} software\cite{ortec_maestro_2012}.
+For thermal neutron detection, we employed a \HeThree detector, a high voltage power supply (HVPS), an amplifier and single channel analyzer (Amp \& SCA), a multichannel analyzer (MCA), an oscilloscope, a timer and counter, and a computer with the \texttt{Maestro} software\cite{ortec_maestro_2012}.
 Further equipment details may be found in Appendix~\ref{app:equip}.\\
 
 We constructed, according to \figref{part1_diag}, an experimental setup to record thermal neutrons from a \PuBe source thermalized by attenuating sheets of polyethylene, using a \HeThree detector, which may be seen in \figref{fig:part1_setup}.
@@ -192,7 +200,7 @@ This setup may be observed in \figref{part2_setup}.\\
 
 We began by calibrating the energy response of the detectors.
 We measured a bare gamma spectrum of a \CsSrc source (which is known\cite{tsoulfanidis_measurement_2015} to feature a 661.7 emission, corresponding to a 477~keV Compton edge), and one of a \NaSrc source (1.2~MeV emission and 511~keV annihilation peak, corresponding to 989~keV and 341~keV Compton edges, respectively).
-Using the sources' known energy features, we obtained a calibration between spectrum bins to energy.\\
+Using the sources' known energy features, we obtained a calibration between spectrum bins and event energy.\\
 
 We then calibrated a neutron filter using PSD to ignore gamma detections.
 Using the discriminator feature of \texttt{Compass}, we recorded tip to tail ratios for scintillator responses to a \CfSrc source using discriminator gates of 40, 60, 80, 100, and 120~ns, each over a 3~minute period.
@@ -255,7 +263,7 @@ Based on these distributions, we selected an 80~ns gate for neutron-gamma discri
 \end{figure}
 % Selected gate of 80 ns     
 
-Using the 80~ns gate tail filter to filter out gamma emissions, we then successfully measured a 5~minute neutron spectrum of the bare \CfSrc source, followed by 10~minute neutron spectra each of the sane source as attenuated by the layer of lead, and by one, three, and five layers each of polyethylene.
+Using the 80~ns gate tail filter to filter out gamma emissions, we then successfully measured a 5~minute neutron spectrum of the bare \CfSrc source, followed by a 10~minute neutron spectra of the same source as attenuated by the layer of lead, and 5~minute spectra of the source attenuated by one, three, and five layers each of polyethylene.
 These neutron energy spectra may be viewed in \figref{spec_shieldmags}.
 The same spectra, plotted logarithmically and normalized relative to the most prominent energy, may be seen in \figref{fig:spec_log}
 
@@ -277,7 +285,8 @@ In the counting curve for the \HeThree detector in \figref{counting_curve}, we o
 By choosing an operating bias in the middle of this plateau (1400~V), we minimize the likely variation in counting rate that may be caused by slight fluctuations in actual operating bias, compared to the nominal operating bias.\\
 
 Excluding background radiation, we observe three loose peaks in energies.
-Knowing the three energies we expect from responses in a \HeThree detector, we expect the peaks to correspond, in order of increasing energy and channel, to the 191~keV carried by the product tritium ion, the 573~keV carried by the product proton, and the 764~keV of observing both products at once, that is, the full Q-value of the detector reaction.\\
+Knowing the three energies we expect from responses in a \HeThree detector, we expect the peaks to correspond, in order of increasing energy and channel, to the 191~keV carried by the product tritium ion, the 573~keV carried by the product proton, and the 764~keV of observing both products at once, that is, the full Q-value of the detector reaction.
+We expect the continuous distribution over energy between these peaks to correspond not just to general spectrum broadening, but the continuous range of energies deposited by events where one product intersects the wall before depositing all its energy in the medium.\\
 
 
 We observe a fairly linear scintillator light output response, with the three chosen calibration edges (from 661.7~keV \CsSrc, 511~keV \NaSrc, and 1.2~MeV \NaSrc) exhibiting a fairly linear relationship between feature energy and scintillator channel, as seen in \figref{cal_three}.
@@ -294,7 +303,7 @@ When adjusted for acquisition time, the unshielded \CfSrc spectrum features the 
 We observe a ratio of 0.366 between the total count rates attenuated by lead and one layer of polyethylene, which is not unexpected despite the lead layer ($7.71\pm0.01$~mm) being thinner than a polyethylene layer ($12.8\pm0.1$~mm), as lead is a much denser material.
 However, in the same figure, lead appears to be drastically more effective in attenuating the peak of slow neutrons, which can be confirmed using the normalized plot in \figref{fig:spec_log}, where compared to the peak of low energy neutrons (between 200 and 250~keV), the lead-attenuated spectrum actually features more higher-energy neutrons (250 to 600~keV) than even the unshielded spectrum, confirming this favor towards slowing low energy neutrons.
 Conversely, in the same figure we observe that increasing thicknesses of polyethylene resulted in fewer events of higher energy neutrons compared to the low-energy peak, suggesting that polyethylene is more effective at absorbing and downscattering high-energy neutrons, and could thus be an effective way to "thermalize" neutron sources, given sufficient thickness.
-We observe that Stilbene is thus an effective detector for higher energy neutron spectroscopy, allowing us to identify neutron energies at ranges from 200~keV up to scales of MeV (Figs.~\ref{}), and being able to identify energy dependent phenomena such as the lead plate being more effective at attenuating slower neutrons and polyethylene for faster neutrons within this range.
+We observe that Stilbene is thus an effective detector for higher energy neutron spectroscopy, allowing the identification of neutron energies at ranges from 200~keV up to scales of MeV (Figs.~\ref{fig:spec_log} and \ref{spec_shieldmags}), and being able to identify energy dependent phenomena such as the lead plate being more effective at attenuating slower neutrons and polyethylene for faster neutrons within this range.
 
 
 \section{Conclusions}\label{sec:conc}
@@ -331,26 +340,36 @@ Where a detail could not be identified for a given device, it is replaced with `
     \begin{tabular}{c|cccc}
         Item & Manufacturer & Model & ID Type & ID Number\\\hline
         Module rack & Canberra (now Mirion)\sref{addr:mirion}& Model 2000 & Inventory \# & NE759377 \\
+        \HeThree detector & Unknown & Unknown & Illinois Property \# & P10R16596 \\
         % Geiger-Muller Detector & \na & \na & \na & \na \\
         % GM Pulse Inverter & Spectrum Techniques\sref{addr:spect} & 2017 GPI & \na & \na \\
-        Multichannel Analyzer & Ortec\sref{addr:ortec} & EasyMCA & Inventory \# & P10F79090 \\
-        Alpha Spectrometer & Ortec\sref{addr:ortec} & Model 7401, Si surface barrier detector & Property \# & NE 759377\\
+        Multichannel Analyzer & Ortec\sref{addr:ortec} & EasyMCA & Inventory \# & P10F79088 \\
+        Organic Scintillator & Unknown & Stilbene Scintillator & Illinois Property \# P10H05497 \\
+        % Photomultiplier Tube & Unknown & Unknown & Unknown & Unknown \\
+
+        \CsSrc Source & Spectrum\sref{addr:spect} & 1~\micCi (at manuf.) & Manuf. Date & 2017 \\
+        \NaSrc Source & Spectrum\sref{addr:spect} & 1~\micCi (at manuf.) & Manuf. Date & 2017 \\
+        % Alpha Spectrometer & Ortec\sref{addr:ortec} & Model 7401, Si surface barrier detector & Property \# & NE 759377\\
         \PuBe Source & Unknown & 1~Ci (at manuf.) & Manuf. Date & 1959 \\
+        \CfSrc Source & Unknown & 5~\micCi & Manuf. Date & Unknown \\
+
         % Alpha Source & Unknown & 0.1 \micCi \AmSrc & \na & \na\\
-        Vacuum Pump & Unknown & \na & \na & \na \\
-        Mylar Sheets & Unknown & $5\times3.6$~microns thick & \na & \na \\
-        Aluminum Sheets & Unkown & $5\times18$~microns thick & \na & \na \\
+        % Vacuum Pump & Unknown & \na & \na & \na \\
+        % Mylar Sheets & Unknown & $5\times3.6$~microns thick & \na & \na \\
+        % Aluminum Sheets & Unkown & $5\times18$~microns thick & \na & \na \\
         % Weak Source 1 & Spectrum Techniques\sref{addr:spect} & 1.0\micCi ~$^{137}$Cs Beta Source & Date & Sep. 2017 \\
         % Weak Source 2 & Spectrum Techniques\sref{addr:spect} & 1.0\micCi ~$^{137}$Cs Beta Source & Date & Sep. 2017 \\
         % Strong Source & Eckert and Ziegler\sref{addr:eck-zieg} & 30\micCi~$^{137}Cs$ Beta Source & Date & Sep. 2017 \\
         % \InMeta~Source & \na & Irradiated Indium Foil & Date & Feb. 2026 \\
         High Voltage Power Supply & Caen\sref{addr:caen} & N1470AL & Inventory \# & P10G96054 \\
         % Pulser & Ortec\sref{addr:ortec} & Model 480 & \na & \na \\
-        % Oscilloscope & Keysight\sref{addr:keys} & Infiniivision DSO-X 2002A & Inventory \# & P10R03513 \\
+        Oscilloscope & Keysight\sref{addr:keys} & Infiniivision DSO-X 2002A & Inventory \# & P10R03513 \\
         % Counter & Ortec\sref{addr:ortec} & Model 871 & Serial \# & 1024 \\
         % Preamplifier & Ortec\sref{addr:ortec} & Model 142PC & Serial \# & 2780r17 \\
-        % Amplifier & Ortec\sref{addr:ortec} & Model 590A & Serial \# & 16076205 \\
+        Fast Digitizer & Caen\sref{addr:caen} & DT5730 / DT5730S & Unknown & \na \\
+        Amplifier & Ortec\sref{addr:ortec} & Model 590A & Serial \# & 16076205 \\
         Computer & Dell\sref{addr:dell} & Precision 360 & Eng. IT ID \# & EWS 20426 \\
+        Computer & Dell\sref{addr:dell} & Precision 360 & Name & TL-101B-04 \\
 
     \end{tabular}
     \begin{enumerate}[label=\alph*]
@@ -360,16 +379,6 @@ Where a detail could not be identified for a given device, it is replaced with `
         Atlanta, GA;
         Phone: 770.432.2744;
         \url{https://ir.mirion.com/}
-        % \item\label{addr:spect}
-        % Spectrum Techniques:
-        % 106 Union Valley Rd, Oak Ridge, TN 37830;
-        % Phone: 865.482.9937;
-        % \url{https://www.spectrumtechniques.com/}
-        % \item\label{addr:eck-zieg}
-        % Eckert \& Ziegler Isotope Products:
-        % 24937 Avenue Tibbitts, Valencia, CA 91355;
-        % Phone: +1 866 476-9767;
-        % \url{https://isotopeproducts.com/}
         \item\label{addr:ortec}
         Advanced Measurement Technology:
         801 South Illinois Avenue,
@@ -378,17 +387,27 @@ Where a detail could not be identified for a given device, it is replaced with `
         Phone: +1.865.482.4411;
         Fax: +1.865.483.0396;
         \url{https://www.ortec-online.com};
+        Email: ortec.info@ametek.com
+        \item\label{addr:spect}
+        Spectrum Techniques:
+        106 Union Valley Rd, Oak Ridge, TN 37830;
+        Phone: 865.482.9937;
+        \url{https://www.spectrumtechniques.com/}
+        % \item\label{addr:eck-zieg}
+        % Eckert \& Ziegler Isotope Products:
+        % 24937 Avenue Tibbitts, Valencia, CA 91355;
+        % Phone: +1 866 476-9767;
+        % \url{https://isotopeproducts.com/}
         \item\label{addr:caen}
         Caen Sp.A.:
         Via della Vetraia, 11, 55049 Viareggio LU - Italy;
         Phone: +39 0584 388398;
         \url{https://www.caen.it/}
-        % \item\label{addr:keys}
-        % Keysight Technologies: 
-        % 1900 Garden of the Gods Road, Colorado Springs, CO 80907-3423 United States;
-        % Phone: 1 800 829-4444;
-        % \url{https://www.keysight.com}
-        Email: ortec.info@ametek.com
+        \item\label{addr:keys}
+        Keysight Technologies: 
+        1900 Garden of the Gods Road, Colorado Springs, CO 80907-3423 United States;
+        Phone: 1 800 829-4444;
+        \url{https://www.keysight.com}
         \item\label{addr:dell}
         Dell Technologies:
         Dell Technologies
