@@ -157,15 +157,16 @@ MIN_E = 15e3 # 15 keV
 MAX_E = 35e3 # 35 keV
 
 def hist(dat, label, minx, maxx, scale=1):
-    bins = np.linspace(minx, maxx, 100)
+    bins = np.linspace(minx, maxx, 200)
     counts, bins = np.histogram(dat, bins)
     plt.stairs(counts*scale, bins, label=label)
+    return counts, bins
 
 def histE(dat, label, scale=1):
-    hist(dat, label, MIN_E, MAX_E, scale=scale)
+    return hist(dat, label, MIN_E, MAX_E, scale=scale)
 
 def histDT(dat, label, scale=1):
-    hist(dat, label, -GATE_NS*2, GATE_NS*2, scale=scale)
+    return hist(dat, label, -GATE_NS*2, GATE_NS*2, scale=scale)
 # hist(ch4, label="Channel 4")
 
 BASE_TIME = 72 # hours
@@ -190,11 +191,11 @@ sh28_dt3 = np.concatenate([ch3_dt, scale(sh22_dt3)])
 sh28_dt4 = np.concatenate([ch4_dt, scale(sh22_dt4)])
 
 histDT(sh28_dt3, label=f"37.5mm ({(CUT_TIME+SHORT_TIME):.2f} hr), Ch3", scale=1/(CUT_TIME+SHORT_TIME))
-histDT(sh28_dt4, label=f"37.5mm ({(CUT_TIME+SHORT_TIME):.2f} hr), Ch4", scale=1/(CUT_TIME+SHORT_TIME))
+sh284_counts, bins = histDT(sh28_dt4, label=f"37.5mm ({(CUT_TIME+SHORT_TIME):.2f} hr), Ch4", scale=1/(CUT_TIME+SHORT_TIME))
 
 
 histDT(scale(bare_dt3), label="Bare (72 hr), Ch 3", scale=1/BASE_TIME)
-histDT(scale(bare_dt4), label="Bare (72 hr), Ch 4", scale=1/BASE_TIME)
+bare4_counts, bins = histDT(scale(bare_dt4), label="Bare (72 hr), Ch 4", scale=1/BASE_TIME)
 
 
 xmin, xmax = plt.xlim()
@@ -210,5 +211,11 @@ plt.xlabel("dt (ns)")
 # plt.xlim(xmin, xmax)
 # plt.xlabel("E (eV)")
 plt.ylabel("Counts / hour")
+plt.legend()
+plt.show()
+
+plt.stairs(sh284_counts / bare4_counts, bins, label=" 37.5mm / Bare (Ch 4)")
+plt.xlabel("dt (ns)")
+plt.ylabel("Ratio of count rates")
 plt.legend()
 plt.show()
