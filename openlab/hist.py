@@ -70,24 +70,145 @@ for i in range(len(ch0)):
         if -GATE_NS < dt4 and dt4 < GATE_NS:
             ch4_dt.append(dt4)
             k+=1
-    
-    
+
+
+ch3_dt = np.array(ch3_dt) # ns
+ch4_dt = np.array(ch4_dt)
+
+# E = 1/2 m v2
+NEUTRON_MASS = 1.675e-27 # kg
+EV_PER_J = 6.242e+18
+L = 1 # m
+S_PER_NS = 1e-9
+
+def dt_to_E(dt_spec_ns):
+    v = L / (dt_spec_ns * S_PER_NS)
+    E = 0.5 * NEUTRON_MASS * (v**2) * EV_PER_J
+    return E
+
+ch3_E = dt_to_E(ch3_dt)
+ch4_E = dt_to_E(ch4_dt)
+shielded_E = ch4_E
+
+# Load existing dt spec
+def load_barespec(channel_num):
+    path = f"dat_Bare/ch{channel_num}_TOFSPEC.txt"
+    with open(path, "r") as tofspec:
+        text = tofspec.read()
+        vals = [int(s) for s in text.split("\n") if not len(s)==0]
+        # print(vals)
+        TOF_MAX = 1024
+        bins = np.linspace(-TOF_MAX, TOF_MAX, int(len(vals)))
+        # bins = np.linspace(-1, 1, len(vals)) # start with just a scale of 0 to 1 then rescale after building a new series of mock data
+        # mock
+        # pos_idx = np.where(bins > 0) and np.where(bins < GATE_NS)
+
+        return bins, np.array(vals)#[int(len(vals)/2):]
+
+def load_bare_mockdt(channel_num):
+    '''T spectra are loaded in histogram/spectrum form already,
+    so to rebin in coarser bins (this doesn't work for finer bins),
+    we simply add one 'value' of halfway between the two bins to a new list of mock data'''
+    path = f"dat_Bare/ch{channel_num}_TOFSPEC.txt"
+    with open(path, "r") as tofspec:
+        text = tofspec.read()
+        counts = [int(s) for s in text.split("\n") if not len(s)==0]
+        bins = np.linspace(-1, 1, len(counts)+1) # start with just a scale of 0 to 1 then rescale after building a new series of mock data
+        db = bins[1] - bins[0]
+        vals = [] # mock data
+        for i in range(len(counts)):
+            vals.extend([bins[i]+0.5*db] * counts[i])
+        
+        return np.array(vals)
+
+def load_22hrShield_mockdt(channel_num):
+    '''T spectra are loaded in histogram/spectrum form already,
+    so to rebin in coarser bins (this doesn't work for finer bins),
+    we simply add one 'value' of halfway between the two bins to a new list of mock data'''
+    path = f"dat_22hr/ch{channel_num}_TOFSPEC.txt"
+    with open(path, "r") as tofspec:
+        text = tofspec.read()
+        counts = [int(s) for s in text.split("\n") if not len(s)==0]
+        bins = np.linspace(-1, 1, len(counts)+1) # start with just a scale of 0 to 1 then rescale after building a new series of mock data
+        db = bins[1] - bins[0]
+        vals = [] # mock data
+        for i in range(len(counts)):
+            vals.extend([bins[i]+0.5*db] * counts[i])
+        
+        return np.array(vals)
+
+
+# bare_dtbins, bare_counts = load_barespec(3)
+# bare_Ebins = np.flip(dt_to_E(bare_dtbins))
+# print(bare_Ebins)
+# bare_counts = np.flip(bare_counts)
+# print(f"Max count: {max(bare_counts)}")
+bare_dt4 = load_bare_mockdt(4)
+bare_dt3 = load_bare_mockdt(3)
+
+sh22_dt4 = load_22hrShield_mockdt(4)
+sh22_dt3 = load_22hrShield_mockdt(3)
 
 
 
 print(f"Lengths: 0: {len(ch0)}, 3: {len(ch3)}, 4: {len(ch4)}")
 
+MIN_E = 15e3 # 15 keV
+MAX_E = 35e3 # 35 keV
 
-
-def hist(dat, label):
-    bins = np.linspace(min(dat), max(dat), 1000)
+def hist(dat, label, minx, maxx, scale=1):
+    bins = np.linspace(minx, maxx, 100)
     counts, bins = np.histogram(dat, bins)
-    plt.stairs(counts, bins, label=label)
-# hist(ch4, label="Channel 4")
-hist(ch4_dt, label="Channel 4")
-# hist(ch3_dt, label="Channel 3")
+    plt.stairs(counts*scale, bins, label=label)
 
+def histE(dat, label, scale=1):
+    hist(dat, label, MIN_E, MAX_E, scale=scale)
+
+def histDT(dat, label, scale=1):
+    hist(dat, label, -GATE_NS*2, GATE_NS*2, scale=scale)
+# hist(ch4, label="Channel 4")
+
+BASE_TIME = 72 # hours
+actual_time_fraction = 301 / 2000 # Based on raw data sizes of Ch3, which was 2000MB for the known 72 hours vs 301 for the one that got cut short
+SHORT_TIME = BASE_TIME * actual_time_fraction
+SHORT_TIME = BASE_TIME * len(ch3_dt) / len(bare_dt3)
+
+# histDT(ch4_dt, label=f"37.5 mm ({SHORT_TIME:.2f} hr), Ch 4", scale=1/SHORT_TIME)
+# histDT(ch3_dt, label=f"37.5 mm ({SHORT_TIME:.2f} hr), Ch 3", scale=1/SHORT_TIME)
+
+
+scale = lambda dt: dt*1042+44
+CUT_TIME = 22.5 # hours
+CUT_TIME = BASE_TIME * len(sh22_dt3) / len(bare_dt3)
+print(f"Cut time estimate: {CUT_TIME:.3f} h")
+# histDT(scale(sh22_dt3), label=f"37.5mm ({CUT_TIME:.2f} hr), Ch3", scale=1/CUT_TIME)
+# histDT(scale(sh22_dt4), label=f"37.5mm ({CUT_TIME:.2f} hr), Ch4", scale=1/CUT_TIME)
+
+
+
+sh28_dt3 = np.concatenate([ch3_dt, scale(sh22_dt3)])
+sh28_dt4 = np.concatenate([ch4_dt, scale(sh22_dt4)])
+
+histDT(sh28_dt3, label=f"37.5mm ({(CUT_TIME+SHORT_TIME):.2f} hr), Ch3", scale=1/(CUT_TIME+SHORT_TIME))
+histDT(sh28_dt4, label=f"37.5mm ({(CUT_TIME+SHORT_TIME):.2f} hr), Ch4", scale=1/(CUT_TIME+SHORT_TIME))
+
+
+histDT(scale(bare_dt3), label="Bare (72 hr), Ch 3", scale=1/BASE_TIME)
+histDT(scale(bare_dt4), label="Bare (72 hr), Ch 4", scale=1/BASE_TIME)
+
+
+xmin, xmax = plt.xlim()
+# plt.plot(bare_dtbins, np.flip(bare_counts), label="Bare ch3")
+# plt.xlim(xmin, xmax)
 plt.xlabel("dt (ns)")
-plt.ylabel("Counts")
+
+# histE(ch3_E, label="Channel 3")
+# histE(ch4_E, label="Channel 4")
+# xmin, xmax = plt.xlim()
+# pad = 20
+# # plt.plot(bare_Ebins, bare_counts, label="Bare meausurement")
+# plt.xlim(xmin, xmax)
+# plt.xlabel("E (eV)")
+plt.ylabel("Counts / hour")
 plt.legend()
 plt.show()
