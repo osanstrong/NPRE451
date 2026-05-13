@@ -44,7 +44,7 @@ j = 0
 k = 0
 
 GATE_NS = 600
-CH4_0_OFFSET = -11.25 # ns
+CH4_0_OFFSET = -6.534 # ns
 
 for i in range(len(ch0)):
     t0 = ch0[i]
@@ -175,28 +175,38 @@ MAX_E = 200
 
 DT_PAD = 30
 
+# E = 1/2 m (l/t)^2
+# sqrt(2E/m) = l/t
+# t = l / sqrt(2E/m)
+def get_DT(E):
+    return 1 / np.sqrt(2*E*(1/EV_PER_J)/NEUTRON_MASS)
 LEFT_DT = 417.2 # ns
+MID_DT = get_DT(25e3) * 1e9 # ns
+print(f"25 keV dt: {MID_DT:e}")
 RIGHT_DT = 511.2
 
 MIN_DT = LEFT_DT - DT_PAD*2
-MAX_DT = RIGHT_DT + DT_PAD*0.5
+MAX_DT = RIGHT_DT + DT_PAD*2
 
-MIN_DT = -GATE_NS
-MAX_DT = GATE_NS
+# MIN_DT = -GATE_NS
+# MAX_DT = GATE_NS
 
+SIG_DT = 1.614 # NS
 
 UC_DIST = 0.01 # m
-UC_TIME = 7 # ns
+UC_TIME = SIG_DT # ns
 res = lambda dt: 2*np.sqrt((UC_DIST/L)**2 + (UC_TIME/dt)**2)
 
 res_30 = res(LEFT_DT)
+res_25 = res(25)
 res_20 = res(RIGHT_DT)
 
-UC_E30 = res(LEFT_DT) * 30 / 2
-UC_E20 = res(RIGHT_DT) * 20 / 2
+SIG_E30 = res(LEFT_DT) * 30
+SIG_E25 = res(MID_DT) * 25
+SIG_E20 = res(RIGHT_DT) * 20
 
 print(f"Energy Resolution: {res_20*100:.2f}% to {res_30*100:.2f}%")
-print(f"Energy UC: {UC_E20:.2f} keV to {UC_E30:.2f} keV")
+print(f"Energy UC: {SIG_E20:.2f} keV to {SIG_E30:.2f} keV")
 
 
 NUM_BINS = 50
@@ -206,13 +216,23 @@ def hist(dat, label, minx, maxx, scale:float=1, style="solid"):
     plt.stairs(counts*scale, bins, label=label, linestyle=style)
     return counts, bins
 
-def histE(dat, label, scale:float=1, style="solid"):
-    return hist(dat, label, MIN_E, MAX_E, scale=scale, style=style)
+def histE(dat, label, scale:float=1, style="solid", sig=SIG_E25):
+    # return hist(dat, label, MIN_E, MAX_E, scale=scale, style=style)
+    bins = np.concatenate([np.arange(MIN_E, MAX_E, 2*sig), np.array([MAX_E])])
+    counts, bins = np.histogram(dat, bins)
+    plt.stairs(counts*scale, bins, label=label, linestyle=style)
+    return counts, bins
 
 def histDT(dat, label, scale:float=1, style="solid"):
-    return hist(dat, label, MIN_DT, MAX_DT, scale=scale, style=style)
+    # return hist(dat, label, MIN_DT, MAX_DT, scale=scale, style=style)
+    bins = np.concatenate([np.arange(MIN_DT, MAX_DT, 2*SIG_DT), np.array([MAX_DT])])
+    counts, bins = np.histogram(dat, bins)
+    plt.stairs(counts*scale, bins, label=label, linestyle=style)
+    return counts, bins
 
-def vbar(x, label, c=None, style="dashed", err=0, alpha=0.3):
+# def histDT(dat, label)
+
+def vbar(x, label, c=None, style="dashed", err=0.0, alpha=0.3):
     ymin, ymax = plt.ylim()
     if err == 0:
         plt.plot([x, x], [ymin, ymax], label=label, c=c, linestyle=style)
@@ -244,17 +264,26 @@ sh28_E3 = dt_to_E(sh28_dt3)
 sh28_E4 = dt_to_E(sh28_dt4)
 
 #### dt bins
-# histDT(sh28_dt3, label=f"37.5mm ({(CUT_TIME+SHORT_TIME):.2f} hr), Ch3", scale=1/(CUT_TIME+SHORT_TIME))
-# sh284_counts, bins = histDT(sh28_dt4, label=f"37.5mm ({(CUT_TIME+SHORT_TIME):.2f} hr), Ch4", scale=1/(CUT_TIME+SHORT_TIME))
-# histDT(bare_dt3, label="Bare (72 hr), Ch 3", scale=1/BASE_TIME)
-# bare4_counts, bins = histDT(bare_dt4, label="Bare (72 hr), Ch 4", scale=1/BASE_TIME)
-# # vbar(RIGHT_DT, f"{RIGHT_DT} ns ({RIGHT_E} keV)")
-# # vbar(LEFT_DT, f"{LEFT_DT} ns ({LEFT_E} keV)")
+# NUM_BINS = 32
 
-# plt.xlabel("dt (ns)")
-# plt.ylabel("Counts / hour")
-# plt.legend()
-# plt.show()
+plt.hlines(0, MIN_DT, MAX_DT, colors="black")
+sh283_counts, bins = histDT(sh28_dt3, label=f"37.5mm ({(CUT_TIME+SHORT_TIME):.2f} hr), Ch3", scale=1/(CUT_TIME+SHORT_TIME))
+sh284_counts, bins = histDT(sh28_dt4, label=f"37.5mm ({(CUT_TIME+SHORT_TIME):.2f} hr), Ch4", scale=1/(CUT_TIME+SHORT_TIME))
+bare3_counts, bins = histDT(bare_dt3, label="Bare (72 hr), Ch 3", scale=1/BASE_TIME)
+bare4_counts, bins = histDT(bare_dt4, label="Bare (72 hr), Ch 4", scale=1/BASE_TIME)
+plt.stairs(sh284_counts/(CUT_TIME+SHORT_TIME) - bare4_counts/(BASE_TIME), bins, label="Shielding Effect (37.5mm Fe - Bare, CLYC)")
+vbar(RIGHT_DT, f"{RIGHT_DT} ns ({RIGHT_E} keV)", err=SIG_DT, c="C1")
+vbar(MID_DT, f"{MID_DT:.1f} ns ({25} keV)", err=SIG_DT, c="C2")
+vbar(LEFT_DT, f"{LEFT_DT} ns ({LEFT_E} keV)", err=SIG_DT, c="C3")
+
+
+
+
+plt.xlabel("dt (ns)")
+plt.ylabel("Counts / hour")
+plt.legend(loc="upper left")
+plt.show()
+
 
 # plt.stairs(sh284_counts / bare4_counts, bins, label=" 37.5mm Fe / Bare (CLYC, Ch 4)")
 # vbar(RIGHT_DT, f"{RIGHT_DT} ns ({RIGHT_E} keV)")
@@ -275,14 +304,57 @@ sh28_E4 = dt_to_E(sh28_dt4)
 MIN_E = 15
 MAX_E = 35
 
+# histE(sh28_E3, label=f"Bare Stilbene (Total {(CUT_TIME+SHORT_TIME):.2f} hr), Ch3", scale=1/(CUT_TIME+SHORT_TIME))
+# sh284_counts, bins = histE(sh28_E4, label=f"37.5mm Fe CLYC (Total {(CUT_TIME+SHORT_TIME):.2f} hr), Ch4", scale=1/(CUT_TIME+SHORT_TIME))
+
+# histE(bare_E3, label="Bare Stilbene (72 hr), Ch 3", scale=1/BASE_TIME)
+# bare4_counts, bins = histE(bare_E4, label="Bare CLYC (72 hr), Ch 4", scale=1/BASE_TIME)
+
+
+E_bins = np.flip(dt_to_E(bins))
+sh284_Ecounts = np.flip(sh284_counts)
+bare4_Ecounts = np.flip(bare4_counts)
+sh283_Ecounts = np.flip(sh283_counts)
+bare3_Ecounts = np.flip(bare3_counts)
+plt.stairs(sh284_Ecounts/(CUT_TIME+SHORT_TIME), E_bins, label=f"37.5mm ({(CUT_TIME+SHORT_TIME):.2f} hr), Ch4")
+plt.stairs(bare4_Ecounts/(CUT_TIME+SHORT_TIME), E_bins, label="Bare (72 hr), Ch 4")
+
+plt.stairs(sh283_Ecounts/(CUT_TIME+SHORT_TIME), E_bins, label=f"37.5mm ({(CUT_TIME+SHORT_TIME):.2f} hr), Ch3")
+plt.stairs(bare3_Ecounts/(CUT_TIME+SHORT_TIME), E_bins, label="Bare (72 hr), Ch 3")
+
+plt.hlines(0, min(E_bins), max(E_bins), colors="black")
+plt.stairs(-(bare4_Ecounts/BASE_TIME - sh284_Ecounts/(CUT_TIME+SHORT_TIME)), E_bins, label="Shielding Effect (37.5 mm - Bare)", linestyle="solid")
+
+# vbar(LEFT_E, f"{LEFT_E} keV", err=UC_E20, c="C4")
+# vbar(25, "25 keV", err=res(0.5*(LEFT_DT+RIGHT_DT))*25/2, c="C5")
+# vbar(RIGHT_E, f"{RIGHT_E} keV", err=UC_E30, c="C6")
+
+vbar(LEFT_E, f"{LEFT_E} keV", c="C4", err=SIG_E20)
+vbar(25, "25 keV", c="C5", err=SIG_E25)
+vbar(RIGHT_E, f"{RIGHT_E} keV", c="C6", err=SIG_E30)
+plt.xlabel("E (keV)")
+plt.ylabel("Counts / hour")
+plt.legend()
+plt.show()
+
+
+
+
 histE(sh28_E3, label=f"Bare Stilbene (Total {(CUT_TIME+SHORT_TIME):.2f} hr), Ch3", scale=1/(CUT_TIME+SHORT_TIME))
-sh284_counts, bins = histE(sh28_E4, label=f"37.5mm Fe CLYC (Total {(CUT_TIME+SHORT_TIME):.2f} hr), Ch4", scale=1/(CUT_TIME+SHORT_TIME))
+sh284_Ecounts, E_bins = histE(sh28_E4, label=f"37.5mm Fe CLYC (Total {(CUT_TIME+SHORT_TIME):.2f} hr), Ch4", scale=1/(CUT_TIME+SHORT_TIME))
 
 histE(bare_E3, label="Bare Stilbene (72 hr), Ch 3", scale=1/BASE_TIME)
-bare4_counts, bins = histE(bare_E4, label="Bare CLYC (72 hr), Ch 4", scale=1/BASE_TIME)
-vbar(LEFT_E, f"{LEFT_E} keV", err=UC_E20, c="C4")
-vbar(25, "25 keV", err=res(0.5*(LEFT_DT+RIGHT_DT))*25/2, c="C5")
-vbar(RIGHT_E, f"{RIGHT_E} keV", err=UC_E30, c="C6")
+bare4_Ecounts, E_bins = histE(bare_E4, label="Bare CLYC (72 hr), Ch 4", scale=1/BASE_TIME)
+plt.hlines(0, min(E_bins), max(E_bins), colors="black")
+plt.stairs(-(bare4_Ecounts/BASE_TIME - sh284_Ecounts/(CUT_TIME+SHORT_TIME)), E_bins, label="Shielding Effect (37.5 mm - Bare)", linestyle="solid")
+
+# vbar(LEFT_E, f"{LEFT_E} keV", err=UC_E20, c="C4")
+# vbar(25, "25 keV", err=res(0.5*(LEFT_DT+RIGHT_DT))*25/2, c="C5")
+# vbar(RIGHT_E, f"{RIGHT_E} keV", err=UC_E30, c="C6")
+
+vbar(LEFT_E, f"{LEFT_E} keV", c="C4", err=SIG_E20)
+vbar(25, "25 keV", c="C5", err=SIG_E25)
+vbar(RIGHT_E, f"{RIGHT_E} keV", c="C6", err=SIG_E30)
 plt.xlabel("E (keV)")
 plt.ylabel("Counts / hour")
 plt.legend()
@@ -336,12 +408,62 @@ sh22raw_dt0 = load_mockdt("dat_22hr/raw_ch0_TOFSPEC.txt")
 MIN_DT = -30*2
 MAX_DT = 130*2
 NUM_BINS = 100
-histDT(sh22_dt4, "Shielded CLYC, 72 hr")
-# histDT(bareuf_dt4, "Unfiltered Bare CLYC, 72 h")
-# histDT(sh22raw_dt0, "Raw Shielded")
-# histDT(sh22raw_dt4, "")
-plt.xlabel("dt (ns)")
-plt.ylabel("Counts")
-plt.legend()
-plt.show()
+# histDT(sh22_dt4, "Shielded CLYC, 72 hr")
+# # histDT(bareuf_dt4, "Unfiltered Bare CLYC, 72 h")
+# # histDT(sh22raw_dt0, "Raw Shielded")
+# # histDT(sh22raw_dt4, "")
+# plt.xlabel("dt (ns)")
+# plt.ylabel("Counts")
+# plt.legend()
+# plt.show()
 
+
+
+def load_mockE(path):
+    '''E spectra are loaded in histogram/spectrum form already,
+    so to rebin in coarser bins (this doesn't work for finer bins),
+    we simply add one 'value' of halfway between the two bins to a new list of mock data'''
+    # path = f"dat_Bare/raw2_ch{channel_num}_TOFSPEC.txt"
+    with open(path, "r") as enerspec:
+        text = enerspec.read()
+        counts = [int(s) for s in text.split("\n") if not len(s)==0]
+        # bins = np.linspace(-1, 1, len(counts)+1) # start with just a scale of 0 to 1 then rescale after building a new series of mock data
+        # db = bins[1] - bins[0]
+        bins = np.array([i for i in range(len(counts)+1)])
+        db = 1
+        vals = [] # mock data
+        for i in range(len(counts)):
+            vals.extend([bins[i]+0.5*db] * counts[i])
+        
+        return np.array(vals)
+
+# bare_DE4 = load_mockE("espec/ch4_bare_ESPEC.txt")
+# shld_DE4 = load_mockE("espec/ch4_shld_ESPEC.txt")
+# MIN_E = 0
+# MAX_E = max(bare_DE4)
+# MIN_E = 9
+# MAX_E = 170
+# NUM_BINS = 50
+# plt.hlines(0, MIN_E, MAX_E, colors="black")
+# counts_bare, bins = histE(bare_DE4, f"CLYC Unshielded, ({BASE_TIME:.1f} hr)", scale=1/(BASE_TIME))
+# counts_shld, bins = histE(shld_DE4, f"CLYC 37.5 mm Fe, ({CUT_TIME:.1f} hr)", scale=1/CUT_TIME)
+# # fig, ax = plt.subplots()
+# plt.stairs(counts_shld/CUT_TIME - counts_bare/BASE_TIME, bins, label="Shield effect (37.5 mm - Bare)")
+# plt.xlabel("Channel (bin #)")
+# plt.ylabel("Counts / hour")
+# plt.legend()
+# plt.show()
+
+
+# plt.stairs((counts_shld/CUT_TIME)/ (counts_bare/BASE_TIME), bins, label=" 37.5mm Fe / Bare (CLYC, Ch 4)")
+# plt.xlabel("Channel (bin #)")
+# plt.ylabel("Count Ratio")
+# plt.legend()
+# plt.show()
+
+
+# plt.stairs(counts_shld/CUT_TIME - counts_bare/BASE_TIME, bins, label=" 37.5mm Fe - Bare (CLYC, Ch 4)")
+# plt.xlabel("Channel (bin #)")
+# plt.ylabel("Count Rate")
+# plt.legend()
+# plt.show()
